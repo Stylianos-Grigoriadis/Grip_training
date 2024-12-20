@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import colorednoise as cn
 import Lib_grip as lb
+from scipy.signal import welch
 
 plt.rcParams['font.family'] = 'serif'
 plt.rcParams['font.size'] = 16
@@ -32,12 +33,9 @@ def outputs(white, pink, sine):
 
 def change_sd_and_average(signal, desired_sd, desired_average):
     sd_signal = np.std(signal)
-
     signal = signal * desired_sd / sd_signal
     average_signal = np.mean(signal)
-
     signal = signal + desired_average - average_signal
-
 
     return signal
 
@@ -49,15 +47,16 @@ def z_transform(signal, desired_sd, desired_average):
 
     return transformed_signal
 
-num_points = 65
-frequency = 5  # frequency of sine wave in Hz
-sampling_rate = 100  # sampling rate in Hz
-t = np.linspace(0, num_points / sampling_rate, num_points)  # time vector
+def sine_wave_creation(N, Number_of_periods):
+    frequency = Number_of_periods * 2
+    sampling_rate = N
+    t = np.linspace(0, N / sampling_rate, N)
+    sine_wave = np.sin(np.pi * frequency * t)
 
+    return sine_wave
 
-
-sine_wave = np.sin(np.pi * frequency * t)
-
+def seperate_signal(signal, sets):
+    pass
 # desired_sd = 20
 # desired_average = 50
 #
@@ -97,16 +96,15 @@ sine_wave = np.sin(np.pi * frequency * t)
 # plt.legend()
 # plt.show()
 
+num_points = 65
 
 white_signal = white_noise = np.random.normal(0, 1, num_points)
 pink_noise = cn.powerlaw_psd_gaussian(1, num_points)
-sine_wave = np.sin(np.pi * frequency * t)
+sine_wave = sine_wave_creation(num_points, 5)
+
 
 desired_sd = 15
 desired_average = 50
-white_signal_my_way = change_sd_and_average(white_signal, desired_sd, desired_average)
-pink_noise_my_way = change_sd_and_average(pink_noise, desired_sd, desired_average)
-sine_wave_my_way = change_sd_and_average(sine_wave, desired_sd, desired_average)
 
 white_signal_z_ = z_transform(white_signal, desired_sd, desired_average)
 pink_noise_z_ = z_transform(pink_noise, desired_sd, desired_average)
@@ -114,17 +112,42 @@ sine_wave_z_ = z_transform(sine_wave, desired_sd, desired_average)
 
 print('***Before conversion')
 outputs(white_noise, pink_noise, sine_wave)
-print('***After my way')
-outputs(white_signal_my_way, pink_noise_my_way, sine_wave_my_way)
 print('***After z transformation')
 outputs(white_signal_z_, pink_noise_z_, sine_wave_z_)
 
-# plt.plot(white_signal_my_way, label='white_signal_my_way', lw=5)
-# plt.plot(pink_noise_my_way, label='pink_noise_my_way', lw=5)
-plt.plot(sine_wave_my_way, label='sine_wave_my_way', lw=5)
-# plt.plot(white_signal_z_, label='white_signal_z_')
-# plt.plot(pink_noise_z_, label='pink_noise_z_', c='k')
-plt.plot(sine_wave_z_, label='sine_wave_z_')
+
+plt.plot(white_signal_z_, label='white_signal_z_', c='gray', lw=3)
+plt.plot(pink_noise_z_, label='pink_noise_z_', c='pink', lw=3)
+plt.plot(sine_wave_z_, label='sine_wave_z_', c='red', lw=3)
 plt.legend()
 plt.show()
 
+frequencies, psd = welch(pink_noise_z_, 1, nperseg=1024)
+# Convert to log-log scale for fitting
+log_freq = np.log10(frequencies[1:])  # Skip zero frequency
+log_psd = np.log10(psd[1:])
+
+# Fit a linear model to the log-log data
+slope, intercept = np.polyfit(log_freq, log_psd, 1)
+best_fit_line = slope * log_freq + intercept
+
+print(f"Estimated slope of PSD: {slope:.2f}")
+if -1.2 < slope < -0.8:
+    print("The signal is likely pink noise.")
+elif slope < -1.8:
+    print("The signal might be brown/red noise.")
+elif slope > -0.5:
+    print("The signal might be white noise.")
+else:
+    print("The signal doesn't match typical noise patterns.")
+
+# Plot the PSD and the best-fit line
+plt.figure(figsize=(10, 6))
+plt.loglog(frequencies, psd, label="PSD", linewidth=2)
+plt.loglog(10**log_freq, 10**best_fit_line, '--', label=f"Best-fit line (slope={slope:.2f})", color='red')
+plt.title("Power Spectral Density (PSD) with Best-Fit Line")
+plt.xlabel("Frequency (Hz)")
+plt.ylabel("Power/Frequency (dB/Hz)")
+plt.grid(which="both", linestyle="--", linewidth=0.5)
+plt.legend()
+plt.show()
