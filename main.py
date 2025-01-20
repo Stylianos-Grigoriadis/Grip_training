@@ -60,7 +60,6 @@ def pink_noise_signal_creation(N, desired_sd, desired_average):
 
         pink_noise = cn.powerlaw_psd_gaussian(1, N)
 
-
         pink_noise_z = z_transform(pink_noise, desired_sd, desired_average)
 
         slope, positive_freqs_log, positive_magnitude_log, intercept, name, r, p, positive_freqs, positive_magnitude = quality_assessment_of_temporal_structure_FFT_method(pink_noise_z, 'pink_noise_z')
@@ -68,24 +67,24 @@ def pink_noise_signal_creation(N, desired_sd, desired_average):
         if (-0.51 <= slope <= -0.49) and (r <= -0.7) and (p < 0.05):
 
             #  Figure of Frequincies vs Magnitude
-            plt.figure(figsize=(10,6))
-            plt.plot(positive_freqs, positive_magnitude)
-            plt.title(f'{name}\nFFT of Sine Wave')
-            plt.xlabel('Frequency (Hz)')
-            plt.ylabel('Magnitude')
-            plt.grid()
-            plt.show()
-
-            plt.figure(figsize=(10, 6))
-            plt.scatter(positive_freqs_log, positive_magnitude_log, label='Log-Log Data', color='blue')
-            plt.plot(positive_freqs_log, slope * positive_freqs_log + intercept,
-                     label=f'Fit: \nSlope = {slope:.2f}\nr = {r}\np = {p}', color='red')
-            plt.title(f'{name}\nLog-Log Plot of FFT (Frequency vs Magnitude)')
-            plt.xlabel('Log(Frequency) (Hz)')
-            plt.ylabel('Log(Magnitude)')
-            plt.legend()
-            plt.grid()
-            plt.show()
+            # plt.figure(figsize=(10,6))
+            # plt.plot(positive_freqs, positive_magnitude)
+            # plt.title(f'{name}\nFFT of Sine Wave')
+            # plt.xlabel('Frequency (Hz)')
+            # plt.ylabel('Magnitude')
+            # plt.grid()
+            # plt.show()
+            #
+            # plt.figure(figsize=(10, 6))
+            # plt.scatter(positive_freqs_log, positive_magnitude_log, label='Log-Log Data', color='blue')
+            # plt.plot(positive_freqs_log, slope * positive_freqs_log + intercept,
+            #          label=f'Fit: \nSlope = {slope:.2f}\nr = {r}\np = {p}', color='red')
+            # plt.title(f'{name}\nLog-Log Plot of FFT (Frequency vs Magnitude)')
+            # plt.xlabel('Log(Frequency) (Hz)')
+            # plt.ylabel('Log(Magnitude)')
+            # plt.legend()
+            # plt.grid()
+            # plt.show()
             pink = True
         else:
             print('Not valid pink noise signal')
@@ -170,14 +169,22 @@ def one_sine_signal_from_several(num_signals, num_points, desired_sd, desired_av
     flattened_list = list(chain.from_iterable(one_sine_signal))
 
     return flattened_list
-num_points = 65
+num_points = 100
 desired_sd = 15
 desired_average = 50
 num_signals = 10
 
-for i in range(100):
-    pink_noise = pink_noise_signal_creation(num_points, desired_sd, desired_average)
+# for i in range(1, 11):
+#
+#     pink_noise = pink_noise_signal_creation(num_points, desired_sd, desired_average)
+#     df = pd.DataFrame(pink_noise)
+#     directory = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Pilot study 2\Signals\pink noise signals\100 data points'
+#     lb.create_txt_file(pink_noise, rf'pink noise signal {num_points} datapoints {i}', directory)
 
+
+white_noise = white_noise_signal_creation(num_points, desired_sd, desired_average)
+pink_noise = pink_noise_signal_creation(num_points, desired_sd, desired_average)
+sine_wave = sine_wave_signal_creation(num_points, desired_sd, desired_average, 5)
 #
 # white_noise = one_white_signal_from_several(num_signals, num_points, desired_sd, desired_average)
 # pink_noise = one_pink_signal_from_several(num_signals, num_points, desired_sd, desired_average)
@@ -198,8 +205,8 @@ for i in range(100):
 # lb.DFA(sine_wave)
 #
 #
-# plt.plot(white_noise, label='white_signal', c='gray', lw=3)
-# plt.plot(pink_noise, label='pink_noise', c='pink', lw=3)
-# plt.plot(sine_wave, label='sine_wave', c='red', lw=3)
-# plt.legend()
-# plt.show()
+plt.plot(white_noise, label='white_signal', c='gray', lw=3)
+plt.plot(pink_noise, label='pink_noise', c='pink', lw=3)
+plt.plot(sine_wave, label='sine_wave', c='red', lw=3)
+plt.legend()
+plt.show()
