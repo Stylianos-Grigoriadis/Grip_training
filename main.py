@@ -53,7 +53,7 @@ def sine_wave_signal_creation(N, desired_sd, desired_average, Number_of_periods)
 
     return sine_wave_z
 
-def pink_noise_signal_creation(N, desired_sd, desired_average):
+def pink_noise_signal_creation_using_cn(N, desired_sd, desired_average):
     pink = False
     iterations = 0
     while pink == False:
@@ -64,7 +64,7 @@ def pink_noise_signal_creation(N, desired_sd, desired_average):
 
         slope, positive_freqs_log, positive_magnitude_log, intercept, name, r, p, positive_freqs, positive_magnitude = quality_assessment_of_temporal_structure_FFT_method(pink_noise_z, 'pink_noise_z')
 
-        if (-0.51 <= slope <= -0.49) and (r <= -0.7) and (p < 0.05):
+        if round(slope, 2) == -0.5 and (r <= -0.7) and (p < 0.05):
 
             #  Figure of Frequincies vs Magnitude
             # plt.figure(figsize=(10,6))
@@ -74,7 +74,7 @@ def pink_noise_signal_creation(N, desired_sd, desired_average):
             # plt.ylabel('Magnitude')
             # plt.grid()
             # plt.show()
-            #
+
             # plt.figure(figsize=(10, 6))
             # plt.scatter(positive_freqs_log, positive_magnitude_log, label='Log-Log Data', color='blue')
             # plt.plot(positive_freqs_log, slope * positive_freqs_log + intercept,
@@ -94,6 +94,7 @@ def pink_noise_signal_creation(N, desired_sd, desired_average):
     return pink_noise_z
 
 def white_noise_signal_creation(N, desired_sd, desired_average):
+
     white_noise = np.random.normal(0, 1, N)
     white_signal_z = z_transform(white_noise, desired_sd, desired_average)
 
@@ -146,7 +147,7 @@ def quality_assessment_of_temporal_structure_FFT_method(signal, name):
 def one_pink_signal_from_several(num_signals, num_points, desired_sd, desired_average):
     one_pink_signal = []
     for i in range(num_signals):
-        one_pink_signal.append(pink_noise_signal_creation(num_points, desired_sd, desired_average))
+        one_pink_signal.append(pink_noise_signal_creation_using_cn(num_points, desired_sd, desired_average))
 
     flattened_list = list(chain.from_iterable(one_pink_signal))
 
@@ -169,7 +170,7 @@ def one_sine_signal_from_several(num_signals, num_points, desired_sd, desired_av
     flattened_list = list(chain.from_iterable(one_sine_signal))
 
     return flattened_list
-num_points = 100
+num_points = 65
 desired_sd = 15
 desired_average = 50
 num_signals = 10
@@ -180,11 +181,17 @@ num_signals = 10
 #     df = pd.DataFrame(pink_noise)
 #     directory = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Pilot study 2\Signals\pink noise signals\100 data points'
 #     lb.create_txt_file(pink_noise, rf'pink noise signal {num_points} datapoints {i}', directory)
+H_list = []
+for i in range(100):
 
+    white_noise = white_noise_signal_creation(num_points, desired_sd, desired_average)
+    pink_noise = pink_noise_signal_creation_using_cn(num_points, desired_sd, desired_average)
+    sine_wave = sine_wave_signal_creation(num_points, desired_sd, desired_average, 5)
+    H_list.append(lb.DFA(pink_noise))
+plt.plot(H_list)
+plt.title(f'Average = {np.mean(H_list)}\nSD = {np.std(H_list)}')
+plt.show()
 
-white_noise = white_noise_signal_creation(num_points, desired_sd, desired_average)
-pink_noise = pink_noise_signal_creation(num_points, desired_sd, desired_average)
-sine_wave = sine_wave_signal_creation(num_points, desired_sd, desired_average, 5)
 #
 # white_noise = one_white_signal_from_several(num_signals, num_points, desired_sd, desired_average)
 # pink_noise = one_pink_signal_from_several(num_signals, num_points, desired_sd, desired_average)
