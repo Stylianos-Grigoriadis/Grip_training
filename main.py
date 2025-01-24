@@ -7,6 +7,7 @@ from scipy.signal import welch
 from scipy import stats
 from itertools import chain
 from scipy.stats import pearsonr
+import os
 
 
 plt.rcParams['font.family'] = 'serif'
@@ -170,7 +171,7 @@ def one_sine_signal_from_several(num_signals, num_points, desired_sd, desired_av
     flattened_list = list(chain.from_iterable(one_sine_signal))
 
     return flattened_list
-num_points = 65
+num_points = 100
 desired_sd = 15
 desired_average = 50
 num_signals = 10
@@ -181,16 +182,16 @@ num_signals = 10
 #     df = pd.DataFrame(pink_noise)
 #     directory = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Pilot study 2\Signals\pink noise signals\100 data points'
 #     lb.create_txt_file(pink_noise, rf'pink noise signal {num_points} datapoints {i}', directory)
-H_list = []
-for i in range(100):
-
-    white_noise = white_noise_signal_creation(num_points, desired_sd, desired_average)
-    pink_noise = pink_noise_signal_creation_using_cn(num_points, desired_sd, desired_average)
-    sine_wave = sine_wave_signal_creation(num_points, desired_sd, desired_average, 5)
-    H_list.append(lb.DFA(pink_noise))
-plt.plot(H_list)
-plt.title(f'Average = {np.mean(H_list)}\nSD = {np.std(H_list)}')
-plt.show()
+# H_list = []
+# for i in range(100):
+#
+#     white_noise = white_noise_signal_creation(num_points, desired_sd, desired_average)
+#     pink_noise = pink_noise_signal_creation_using_cn(num_points, desired_sd, desired_average)
+#     sine_wave = sine_wave_signal_creation(num_points, desired_sd, desired_average, 5)
+#     H_list.append(lb.DFA(pink_noise))
+# plt.plot(H_list)
+# plt.title(f'Average = {np.mean(H_list)}\nSD = {np.std(H_list)}')
+# plt.show()
 
 #
 # white_noise = one_white_signal_from_several(num_signals, num_points, desired_sd, desired_average)
@@ -212,8 +213,20 @@ plt.show()
 # lb.DFA(sine_wave)
 #
 #
-plt.plot(white_noise, label='white_signal', c='gray', lw=3)
-plt.plot(pink_noise, label='pink_noise', c='pink', lw=3)
-plt.plot(sine_wave, label='sine_wave', c='red', lw=3)
-plt.legend()
-plt.show()
+# plt.plot(white_noise, label='white_signal', c='gray', lw=3)
+# plt.plot(pink_noise, label='pink_noise', c='pink', lw=3)
+# plt.plot(sine_wave, label='sine_wave', c='red', lw=3)
+# plt.legend()
+# plt.show()
+
+all_pink_noises = []
+for i in range(1, 1001):
+    pink_noise = pink_noise_signal_creation_using_cn(num_points, desired_sd, desired_average)
+    directory = r'C:\Users\Stylianos\Desktop\Python\PhD\Grip_training'
+    os.makedirs(directory, exist_ok=True)
+    all_pink_noises.append(pink_noise)
+df_all = pd.DataFrame(all_pink_noises).transpose()
+df_all.columns = [f'Signal_{i}' for i in range(1, 1001)]
+file_path = os.path.join(directory, 'Pink_noise_100.csv')
+df_all.to_csv(file_path, index=False)
+print(f'Pink_noise_100points_1000.csv')
