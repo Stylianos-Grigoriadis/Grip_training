@@ -23,3 +23,5 @@ print('Signals of 65')
 lb.outputs(white_65, pink_65, sine_65)
 print('Signals of 100')
 lb.outputs(white_100, pink_100, sine_100)
+
+
