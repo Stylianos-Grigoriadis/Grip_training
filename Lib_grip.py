@@ -207,11 +207,11 @@ def isometric_generator_with_reps(Number_of_data_points,value):
     array_force = np.full(int(targets_in_each_rep/2), value)
     array_zero = np.zeros(int(targets_in_each_rep/2))
     array_single_rep = np.concatenate((array_zero, array_force))
-    signal = np.tile(array_single_rep,reps_in_set)
+    signal = np.tile(array_single_rep, reps_in_set)
     return signal
 
 def isometric_generator_single_rep(Number_of_data_points,value):
-    signal = np.full(Number_of_data_points,value)
+    signal = np.full(Number_of_data_points, value)
     return signal
 
 def create_txt_file(signal, name, path):
@@ -724,7 +724,7 @@ def pink_noise_signal_creation_using_cn(N, desired_sd, desired_average):
         else:
             # print('Not valid pink noise signal')
             iterations +=1
-            print(iterations)
+            # print(iterations)
 
     return pink_noise_z
 
@@ -806,4 +806,37 @@ def one_sine_signal_from_several(num_signals, num_points, desired_sd, desired_av
 
     return flattened_list
 
+def integrate_signal(signal):
+    """
+    Integrates the input signal to compute the cumulative sum
+    after subtracting the mean of the signal.
+    Parameters:
+    signal (numpy array): Input time series signal
+    Returns:
+    numpy array: Integrated (cumulative sum) signal
+    """
+    # Compute the mean of the signal
+    mean_signal = np.mean(signal)
+    # Subtract the mean from the signal
+    detrended_signal = signal - mean_signal
+    # Compute the cumulative sum (integrated series)
+    integrated_signal = np.cumsum(detrended_signal)
+    return integrated_signal
 
+def moving_average(data):
+    series = pd.Series(data)
+    moving_avg = series.rolling(window=5).mean()
+    return moving_avg
+
+def perturbation_single_trial_with_random_change(Number_of_data_points, starting_point, ending_point):
+    """This function creates a perturbation from the starting point to the ending point, this happens at a random moment
+    from the 40% to the 60% of the duration of the perturbation"""
+
+    shift_amount = float(ending_point - starting_point)
+    signal = np.full(Number_of_data_points, starting_point)
+    low_limit = Number_of_data_points * 0.4
+    high_limit = Number_of_data_points * 0.6 + 1
+    random_index = np.random.randint(low_limit, high_limit)
+    signal[random_index:] = signal[random_index:] + shift_amount
+
+    return signal
