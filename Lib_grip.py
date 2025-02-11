@@ -1,6 +1,6 @@
 import numpy as np
-from fathon import fathonUtils as fu
-import fathon
+# import fathon
+# from fathon import fathonUtils as fu
 import matplotlib.pyplot as plt
 from scipy.stats import linregress
 import pandas as pd
@@ -10,31 +10,33 @@ from scipy.optimize import curve_fit
 from scipy.signal import decimate
 from scipy.signal import welch
 from scipy import stats
+import itertools
 from itertools import chain
 from scipy.stats import pearsonr
 
-def DFA(variable):
-    a = fu.toAggregated(variable)
-        #b = fu.toAggregated(b)
 
-    pydfa = fathon.DFA(a)
-
-    winSizes = fu.linRangeByStep(start=4, end=int(len(variable)/4))
-    revSeg = True
-    polOrd = 1
-
-    n, F = pydfa.computeFlucVec(winSizes, revSeg=revSeg, polOrd=polOrd)
-
-    H, H_intercept = pydfa.fitFlucVec()
-    plt.plot(np.log(n), np.log(F), 'ro')
-    plt.plot(np.log(n), H_intercept + H * np.log(n), 'k-', label='H = {:.2f}'.format(H))
-    plt.xlabel('ln(n)', fontsize=14)
-    plt.ylabel('ln(F(n))', fontsize=14)
-    plt.title('DFA', fontsize=14)
-    plt.legend(loc=0, fontsize=14)
-    #plt.clf()
-    plt.show()
-    return H
+# def DFA(variable):
+#     a = fu.toAggregated(variable)
+#         #b = fu.toAggregated(b)
+#
+#     pydfa = fathon.DFA(a)
+#
+#     winSizes = fu.linRangeByStep(start=4, end=int(len(variable)/4))
+#     revSeg = True
+#     polOrd = 1
+#
+#     n, F = pydfa.computeFlucVec(winSizes, revSeg=revSeg, polOrd=polOrd)
+#
+#     H, H_intercept = pydfa.fitFlucVec()
+#     plt.plot(np.log(n), np.log(F), 'ro')
+#     plt.plot(np.log(n), H_intercept + H * np.log(n), 'k-', label='H = {:.2f}'.format(H))
+#     plt.xlabel('ln(n)', fontsize=14)
+#     plt.ylabel('ln(F(n))', fontsize=14)
+#     plt.title('DFA', fontsize=14)
+#     plt.legend(loc=0, fontsize=14)
+#     #plt.clf()
+#     plt.show()
+#     return H
 
 def Ent_Ap(data, dim, r):
     """
@@ -375,8 +377,13 @@ def spatial_error(df):
 
     spatial_error = []
     for i in range(len(df['Time'])):
+        # Spatial error with absolute values
         spatial_error.append((abs(df['Performance'][i]-df['Target'][i])))
+        # Spatial error with algebraic values
+        #spatial_error.append((df['Performance'][i]-df['Target'][i]))
     spatial_error = np.array(spatial_error)
+    # Removes the np.float64(...) while printing Spatial error
+    spatial_error = [float(val) if val is not None else float('nan') for val in spatial_error]
     return spatial_error
 
 def read_my_txt_file(path):

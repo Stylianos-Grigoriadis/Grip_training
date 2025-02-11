@@ -28,7 +28,7 @@ desired_average = 50
 
 for i in range(1, 11):
     pink_65 = lb.pink_noise_signal_creation_using_cn(num_points_65, desired_sd, desired_average)
-    # lb.create_txt_file(pink_65, f'Training_pink_65.1_T{i}', r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Pilot study 3\Signals\Pink_65.1')
+    lb.create_txt_file(pink_65, f'Training_pink_65.2_T{i}', r'C:\Users\USER\Desktop\Biomechanincs\projects\Grip Strength\pilot trials\Pink_65.2')
 
 isometric_10_perc_MVC = lb.isometric_generator_single_rep(300, 16.6)
 isometric_50_perc_MVC = lb.isometric_generator_single_rep(300, 83.3)
@@ -40,16 +40,16 @@ Pert_down_T2 = lb.perturbation_single_trial_with_random_change(500, 50, 16.6)
 Pert_down_T3 = lb.perturbation_single_trial_with_random_change(500, 50, 16.6)
 
 
-# lb.create_txt_file(isometric_10_perc_MVC, f'isometric_10_perc_MVC', r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Pilot study 3\Signals\Pink_65.1')
-# lb.create_txt_file(isometric_50_perc_MVC, f'isometric_50_perc_MVC', r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Pilot study 3\Signals\Pink_65.1')
-# lb.create_txt_file(Pert_up_T1, f'Pert_up_T1', r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Pilot study 3\Signals\Pink_65.1')
-# lb.create_txt_file(Pert_up_T2, f'Pert_up_T2', r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Pilot study 3\Signals\Pink_65.1')
-# lb.create_txt_file(Pert_up_T3, f'Pert_up_T3', r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Pilot study 3\Signals\Pink_65.1')
-# lb.create_txt_file(Pert_down_T1, f'Pert_down_T1', r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Pilot study 3\Signals\Pink_65.1')
-# lb.create_txt_file(Pert_down_T2, f'Pert_down_T2', r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Pilot study 3\Signals\Pink_65.1')
-# lb.create_txt_file(Pert_down_T3, f'Pert_down_T3', r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Pilot study 3\Signals\Pink_65.1')
+# lb.create_txt_file(isometric_10_perc_MVC, f'isometric_10_perc_MVC', r'C:\Users\USER\Desktop\Biomechanincs\projects\Grip Strength\Signals\isometrics')
+# lb.create_txt_file(isometric_50_perc_MVC, f'isometric_50_perc_MVC', r'C:\Users\USER\Desktop\Biomechanincs\projects\Grip Strength\Signals\isometrics')
+# lb.create_txt_file(Pert_up_T1, f'Pert_up_T1', r'C:\Users\USER\Desktop\Biomechanincs\projects\Grip Strength\Signals\perturbations')
+# lb.create_txt_file(Pert_up_T2, f'Pert_up_T2', r'C:\Users\USER\Desktop\Biomechanincs\projects\Grip Strength\Signals\perturbations')
+# lb.create_txt_file(Pert_up_T3, f'Pert_up_T3', r'C:\Users\USER\Desktop\Biomechanincs\projects\Grip Strength\Signals\perturbations')
+# lb.create_txt_file(Pert_down_T1, f'Pert_down_T1', r'C:\Users\USER\Desktop\Biomechanincs\projects\Grip Strength\Signals\perturbations')
+# lb.create_txt_file(Pert_down_T2, f'Pert_down_T2', r'C:\Users\USER\Desktop\Biomechanincs\projects\Grip Strength\Signals\perturbations')
+# lb.create_txt_file(Pert_down_T3, f'Pert_down_T3', r'C:\Users\USER\Desktop\Biomechanincs\projects\Grip Strength\Signals\perturbations')
 
-# Hello Stylianos
+
 
 
 
