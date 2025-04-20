@@ -9,6 +9,9 @@ import glob
 import lib
 import seaborn as sns
 
+plt.rcParams['font.family'] = 'serif'
+plt.rcParams['font.size'] = 16
+
 directory = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Pilot study 4\Results'
 os.chdir(directory)
 results = pd.read_excel('Perturbation_results_3_sd.xlsx')
@@ -32,19 +35,36 @@ custom_palette = {
     "White_100": "#D3D3D3",      # Light gray (third)
     "Sine_65": "#4F4F4F",  # Dark gray (first)
     "Pink_65": "#FFC0CB",  # Soft pink (second)
-    "White_65": "#D3D3D3"  # Light gray (third)
-}
+    "White_65": "#D3D3D3",  # Light gray (third)
+    }
 
 # Create the boxplot with the correct order
 plt.figure(figsize=(12, 6))
-sns.boxplot(x='Set', y='Min Time to adapt', hue='Group ID', data=df_long, palette=custom_palette, showfliers=False)
+bar = sns.boxplot(x='Set', y='Min Time to adapt', hue='Group ID', data=df_long, palette=custom_palette, showfliers=True)
+
+hatches = ['', '', '', '',
+           '////', '////', '////', '////',
+           '', '', '', '',
+           '////', '////', '////', '////',
+           '', '', '', '',
+           '////', '////', '////', '////',
+           '', '////', '', '////', '', '////',
+           ]
+
+for i, thisbar in enumerate(bar.patches):
+    print(i)
+    # Set a different hatch for each bar
+    thisbar.set_hatch(hatches[i])
+
 
 # Customize plot
-plt.title('Spatial Error Across Sets and Groups')
-plt.ylabel('Average Spatial Error')
+custom_labels = ['Before Down', 'After Down', 'Before Up', 'After Up']
+plt.xticks(ticks=[0, 1, 2, 3], labels=custom_labels)
+plt.title('Time to Adapt')
+plt.ylabel('Minimum Time to Adapt')
 plt.xlabel('')
 plt.legend()
-# plt.ylim(0,400)
 
 # Show plot
+plt.tight_layout()
 plt.show()
