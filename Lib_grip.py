@@ -15,29 +15,6 @@ from itertools import chain
 from scipy.stats import pearsonr
 
 
-# def DFA(variable):
-#     a = fu.toAggregated(variable)
-#         #b = fu.toAggregated(b)
-#
-#     pydfa = fathon.DFA(a)
-#
-#     winSizes = fu.linRangeByStep(start=4, end=int(len(variable)/4))
-#     revSeg = True
-#     polOrd = 1
-#
-#     n, F = pydfa.computeFlucVec(winSizes, revSeg=revSeg, polOrd=polOrd)
-#
-#     H, H_intercept = pydfa.fitFlucVec()
-#     plt.plot(np.log(n), np.log(F), 'ro')
-#     plt.plot(np.log(n), H_intercept + H * np.log(n), 'k-', label='H = {:.2f}'.format(H))
-#     plt.xlabel('ln(n)', fontsize=14)
-#     plt.ylabel('ln(F(n))', fontsize=14)
-#     plt.title('DFA', fontsize=14)
-#     plt.legend(loc=0, fontsize=14)
-#     #plt.clf()
-#     plt.show()
-#     return H
-
 def Ent_Ap(data, dim, r):
     """
     Ent_Ap20120321
@@ -180,17 +157,17 @@ def read_kinvent(path):
             df_set_9,
             df_set_10)
 
-def pink_signal_generator(Number_of_data_points, upper_lim, lower_lim):
-    """This function creates a pink noise signal as a np.array with N Number_of_data_points between upper_lim and lower_lim"""
-    dfa = False
-    while dfa == False:
-        signal = cn.powerlaw_psd_gaussian(1, Number_of_data_points)
-        α_exp = DFA(signal)
-        if α_exp < 1.05 and α_exp > 0.95:
-            dfa = True
-    signal = Perc(signal,upper_lim,lower_lim)
-
-    return signal
+# def pink_signal_generator(Number_of_data_points, upper_lim, lower_lim):
+#     """This function creates a pink noise signal as a np.array with N Number_of_data_points between upper_lim and lower_lim"""
+#     dfa = False
+#     while dfa == False:
+#         signal = cn.powerlaw_psd_gaussian(1, Number_of_data_points)
+#         α_exp = DFA(signal)
+#         if α_exp < 1.05 and α_exp > 0.95:
+#             dfa = True
+#     signal = Perc(signal,upper_lim,lower_lim)
+#
+#     return signal
 
 def sine_signal_generator(Number_of_data_points, frequency, upper_lim, lower_lim):
 
@@ -313,6 +290,13 @@ def synchronization_of_Time_and_ClosestSampleTime_Stylianos(df, Targets_N):
 def synchronization_of_Time_and_ClosestSampleTime_Anestis(df):
     """ This function creates a new dataframe by synchronizing the Time column to the ClosestSampleTime column and then returns a new dataframe with the correct values"""
 
+    # The following lines where added because sometimes the ClosestSampleTime column starts with a negative value.
+    # A temporal fix is to make each negative value None and erase it after
+    for i in range(len(df['ClosestSampleTime'])):
+        if df['ClosestSampleTime'][i] < 0:
+            df.loc[i, "ClosestSampleTime"] = None
+            df.loc[i, "Target"] = None
+
     time_index = []
     for i in range(len(df)):
         # Calculate the difference of the element i of the column ClosestSampleTime with every value of the column Time
@@ -330,6 +314,7 @@ def synchronization_of_Time_and_ClosestSampleTime_Anestis(df):
     performance = df.loc[time_index, 'Performance'].to_numpy()
     targets = df['Target'].dropna().to_numpy()
     time_close_to_target = df['ClosestSampleTime'].dropna().to_numpy()
+
 
     # Create the dataframe which will be returned afterward.
     dist = {'Indices': time_index,
@@ -438,44 +423,43 @@ def asymptotes(df):
             'adaptation_time' : adaptation_index*time_for_each_target}
     return dict
 
-def adaptation_time_using_sd(df, sd_factor, first_values, consecutive_values, name, plot=False):
+def adaptation_time_using_sd(df, sd_factor, consecutive_values, name, mean_spatial_error_isometric_trials, sd_spatial_error_isometric_trials, plot=False):
     """
     This function returns the time after the perturbation which was needed to adapt to the perturbation
     Parameters
     Input
-            df                  :   The Dataframe
-            perturbation_index  :   The index where the perturbation occurred
-            sd_factor           :   This will be multiplied with the sd of the error before the perturbation
-                                    and if the error after the is less than the mean + sd*sd_factor and more than
-                                    the mean - sd*sd_factor, the algorithm will consider that the adaptation of the
-                                    perturbation occurred
-            first_values        :   At first the error will be too much so to calculate the mean and sd before the perturbation
-                                    right, we erase some values from the beginning
-            consecutive_values  :   This is how many values the algorithm needs to consider so that it decides that the adaptation occurred.
-            total targets       :   The total number of targets
-            Plot                :   Plot the spatial error and the time of adaptation (default value False)
+            df                                      :   The Dataframe
+            sd_factor                               :   This will be multiplied with the sd of the error before the perturbation
+                                                        and if the error after the is less than the mean + sd*sd_factor and more than
+                                                        the mean - sd*sd_factor, the algorithm will consider that the adaptation of the
+                                                        perturbation occurred
+            consecutive_values                      :   This is how many values the algorithm needs to consider so that it decides that the adaptation occurred.
+            name                                    :   The name of the participant and/or the trial
+            mean_spatial_error_isometric_trials     :   The average of spatial error which has been previously calculated by isometric trials
+            sd_spatial_error_isometric_trials       :   The sd of spatial error which has been previously calculated by isometric trials
+            Plot                                    :   Plot the spatial error and the time of adaptation (default value False)
 
     Output
-            time_of_adaptation  :   The time it took the df['Performance'] to steadily reach df['Target']. This
-                                    number corresponds to the first value of time at which for the next X consecutive_values
-                                    the spatial error was lower than the average +- (sd * sd_factor)
+            time_of_adaptation                      :   The time it took the df['Performance'] to steadily reach df['Target']. This
+                                                        number corresponds to the first value of time at which for the next X consecutive_values
+                                                        the spatial error was lower than the average +- (sd * sd_factor)
     """
     # First synchronize the Time and ClosestSampleTime columns and create a new df with
     # only the synchronized values
     df = synchronization_of_Time_and_ClosestSampleTime_Anestis(df)
     # print(df['Target'])
-    print(df)
-    print(df['Target'].dtype)
+
     perturbation_index = df[df['Target'] != df['Target'].shift(1)].index[1]
     print(perturbation_index)
 
     # Calculate the spatial error and the average and sd of the spatial error
     # after the first_values
     spatial_er = spatial_error(df)
-    plt.plot(spatial_er)
-    plt.show()
-    mean = np.mean(spatial_er[first_values:perturbation_index])
-    sd_before_perturbation = np.std(spatial_er[first_values:perturbation_index])
+    # plt.plot(spatial_er)
+    # plt.show()
+
+    mean = mean_spatial_error_isometric_trials
+    sd_before_perturbation = sd_spatial_error_isometric_trials
 
     # Create an array with consecutive_values equal number
     consecutive_values_list = np.arange(0,consecutive_values,1)

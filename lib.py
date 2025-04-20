@@ -3,8 +3,6 @@ import scipy.stats
 from scipy import signal
 import matplotlib.pyplot as plt
 import statistics
-from fathon import fathonUtils as fu
-import fathon
 import numpy as np
 from numpy.fft import fft, fftfreq
 import colorednoise as cn
@@ -142,7 +140,7 @@ def Butterworth(fs,fc,var):
     """
     w = fc / (fs / 2)
 
-    b, a = signal.butter(2, w, 'low')
+    b, a = signal.butter(N=2, Wn=w, btype='low', fs=fs)
     return signal.filtfilt(b, a, var)
 
 def Average(lst):
@@ -243,29 +241,6 @@ def derivative(array,fs):
     for i in range(len(array)-1):
         der.append((array[i+1]-array[i])/dt)
     return der
-
-def DFA(variable):
-    a = fu.toAggregated(variable)
-        #b = fu.toAggregated(b)
-
-    pydfa = fathon.DFA(a)
-
-    winSizes = fu.linRangeByStep(start=4, end=int(len(variable)/4))
-    revSeg = True
-    polOrd = 1
-
-    n, F = pydfa.computeFlucVec(winSizes, revSeg=revSeg, polOrd=polOrd)
-
-    H, H_intercept = pydfa.fitFlucVec()
-    plt.plot(np.log(n), np.log(F), 'ro')
-    plt.plot(np.log(n), H_intercept + H * np.log(n), 'k-', label='H = {:.2f}'.format(H))
-    plt.xlabel('ln(n)', fontsize=14)
-    plt.ylabel('ln(F(n))', fontsize=14)
-    plt.title('DFA', fontsize=14)
-    plt.legend(loc=0, fontsize=14)
-    #plt.clf()
-    plt.show()
-    return H
 
 def Pink_noise_generator():
     pass
