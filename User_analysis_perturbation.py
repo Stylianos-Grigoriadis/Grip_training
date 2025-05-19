@@ -51,7 +51,7 @@ for file in files:
     ID_team = ID[:-2]
     list_ID_team.append(ID_team)
 
-    # print(ID)
+    print(ID)
 
     #########################################################################################################
     # Isometric trials analysis for calculation of mean and sd of spatial error to use at time to adapt later
@@ -142,18 +142,18 @@ for file in files:
     # plt.legend()
     # plt.show()
 
-    time_to_adapt_before_down_1 = lb.adaptation_time_using_sd(Perturbation_before_down_1, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=False)
-    time_to_adapt_before_down_2 = lb.adaptation_time_using_sd(Perturbation_before_down_2, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=False)
-    time_to_adapt_before_down_3 = lb.adaptation_time_using_sd(Perturbation_before_down_3, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=False)
-    time_to_adapt_before_up_1 = lb.adaptation_time_using_sd(Perturbation_before_up_1, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=False)
-    time_to_adapt_before_up_2 = lb.adaptation_time_using_sd(Perturbation_before_up_2, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=False)
-    time_to_adapt_before_up_3 = lb.adaptation_time_using_sd(Perturbation_before_up_3, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=False)
-    time_to_adapt_after_down_1 = lb.adaptation_time_using_sd(Perturbation_after_down_1, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=False)
-    time_to_adapt_after_down_2 = lb.adaptation_time_using_sd(Perturbation_after_down_2, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=False)
-    time_to_adapt_after_down_3 = lb.adaptation_time_using_sd(Perturbation_after_down_3, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=False)
-    time_to_adapt_after_up_1 = lb.adaptation_time_using_sd(Perturbation_after_up_1, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=False)
-    time_to_adapt_after_up_2 = lb.adaptation_time_using_sd(Perturbation_after_up_2, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=False)
-    time_to_adapt_after_up_3 = lb.adaptation_time_using_sd(Perturbation_after_up_3, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=False)
+    time_to_adapt_before_down_1 = lb.adaptation_time_using_sd(Perturbation_before_down_1, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=True)
+    time_to_adapt_before_down_2 = lb.adaptation_time_using_sd(Perturbation_before_down_2, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=True)
+    time_to_adapt_before_down_3 = lb.adaptation_time_using_sd(Perturbation_before_down_3, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=True)
+    time_to_adapt_before_up_1 = lb.adaptation_time_using_sd(Perturbation_before_up_1, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=True)
+    time_to_adapt_before_up_2 = lb.adaptation_time_using_sd(Perturbation_before_up_2, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=True)
+    time_to_adapt_before_up_3 = lb.adaptation_time_using_sd(Perturbation_before_up_3, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=True)
+    time_to_adapt_after_down_1 = lb.adaptation_time_using_sd(Perturbation_after_down_1, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=True)
+    time_to_adapt_after_down_2 = lb.adaptation_time_using_sd(Perturbation_after_down_2, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=True)
+    time_to_adapt_after_down_3 = lb.adaptation_time_using_sd(Perturbation_after_down_3, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=True)
+    time_to_adapt_after_up_1 = lb.adaptation_time_using_sd(Perturbation_after_up_1, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=True)
+    time_to_adapt_after_up_2 = lb.adaptation_time_using_sd(Perturbation_after_up_2, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=True)
+    time_to_adapt_after_up_3 = lb.adaptation_time_using_sd(Perturbation_after_up_3, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=True)
 
 
     def safe_mean(*args):
@@ -231,44 +231,116 @@ for file in files:
             'Min Time to adapt after up': list_min_time_to_adapt_after_up,
             }
 
-df_results = pd.DataFrame(dist)
-print(df_results)
+results = pd.DataFrame(dist)
+print(results)
 # directory_to_save = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Pilot study 4\Results'
 # os.chdir(directory_to_save)
-# df_results.to_excel('Perturbation_results_2_sd.xlsx')
+# results.to_excel('Perturbation_results_2_sd.xlsx')
 
-# df_long = df_results.melt(id_vars=['Group ID'],
-#                   value_vars=['Average Spatial error set 1', 'Average Spatial error set 2',
-#                               'Average Spatial error set 3', 'Average Spatial error set 4',
-#                               'Average Spatial error set 5'],
-#                   var_name='Set', value_name='Average Spatial Error')  # Ensure correct name
-#
-#
-#
-# # Rename set names for readability
-# df_long['Set'] = df_long['Set'].str.replace('Average Spatial error set ', 'Set ')
-#
-# df_long['ID'] = pd.Categorical(df_long['ID'], categories=["static", "pink", "white"], ordered=True)
-#
-# # Custom color palette
-# custom_palette = {
-#     "static": "#4F4F4F",    # Dark gray (first)
-#     "pink": "#FFC0CB",      # Soft pink (second)
-#     "white": "#D3D3D3"      # Light gray (third)
-# }
-#
-# # Create the boxplot with the correct order
-# plt.figure(figsize=(12, 6))
-# sns.boxplot(x='Set', y='Average Spatial Error', hue='ID', data=df_long, palette=custom_palette, showfliers=False)
-#
-# # Customize plot
-# plt.title('Spatial Error Across Sets and Groups')
-# plt.ylabel('Average Spatial Error')
-# plt.xlabel('')
-# plt.legend()
-# plt.ylim(0,400)
-#
-# # Show plot
-# plt.show()
-#
-#
+# Plot of Minimum adaptation times
+df_long = results.melt(id_vars=['Group ID'],
+                  value_vars=['Min Time to adapt before down', 'Min Time to adapt after down',
+                              'Min Time to adapt before up', 'Min Time to adapt after up'],
+                  var_name='Set', value_name='Min Time to adapt')  # Ensure correct name
+
+
+
+# Rename set names for readability
+df_long['Set'] = df_long['Set'].str.replace('Average Spatial error set ', 'Set ')
+
+df_long['ID'] = pd.Categorical(df_long['Group ID'], categories=["Sine_100", "Pink_100", "White_100", "Sine_65", "Pink_65", "White_65"], ordered=True)
+
+# Custom color palette
+custom_palette = {
+    "Sine_100": "#4F4F4F",    # Dark gray (first)
+    "Pink_100": "#FFC0CB",      # Soft pink (second)
+    "White_100": "#D3D3D3",      # Light gray (third)
+    "Sine_65": "#4F4F4F",  # Dark gray (first)
+    "Pink_65": "#FFC0CB",  # Soft pink (second)
+    "White_65": "#D3D3D3",  # Light gray (third)
+    }
+
+# Create the boxplot with the correct order
+plt.figure(figsize=(12, 6))
+bar = sns.boxplot(x='Set', y='Min Time to adapt', hue='Group ID', data=df_long, palette=custom_palette, showfliers=True)
+
+hatches = ['', '', '', '',
+           '////', '////', '////', '////',
+           '', '', '', '',
+           '////', '////', '////', '////',
+           '', '', '', '',
+           '////', '////', '////', '////',
+           '', '////', '', '////', '', '////',
+           ]
+
+for i, thisbar in enumerate(bar.patches):
+    print(i)
+    # Set a different hatch for each bar
+    thisbar.set_hatch(hatches[i])
+
+
+# Customize plot
+custom_labels = ['Before Down', 'After Down', 'Before Up', 'After Up']
+plt.xticks(ticks=[0, 1, 2, 3], labels=custom_labels)
+plt.title('Time to Adapt')
+plt.ylabel('Minimum Time to Adapt')
+plt.xlabel('')
+plt.legend()
+
+# Show plot
+plt.tight_layout()
+plt.show()
+
+# Plot of Average adaptation times
+df_long = results.melt(id_vars=['Group ID'],
+                  value_vars=['Average Time to adapt before down', 'Average Time to adapt after down',
+                              'Average Time to adapt before up', 'Average Time to adapt after up'],
+                  var_name='Set', value_name='Average Time to adapt')  # Ensure correct name
+
+
+
+# Rename set names for readability
+df_long['Set'] = df_long['Set'].str.replace('Average Spatial error set ', 'Set ')
+
+df_long['ID'] = pd.Categorical(df_long['Group ID'], categories=["Sine_100", "Pink_100", "White_100", "Sine_65", "Pink_65", "White_65"], ordered=True)
+
+# Custom color palette
+custom_palette = {
+    "Sine_100": "#4F4F4F",    # Dark gray (first)
+    "Pink_100": "#FFC0CB",      # Soft pink (second)
+    "White_100": "#D3D3D3",      # Light gray (third)
+    "Sine_65": "#4F4F4F",  # Dark gray (first)
+    "Pink_65": "#FFC0CB",  # Soft pink (second)
+    "White_65": "#D3D3D3",  # Light gray (third)
+    }
+
+# Create the boxplot with the correct order
+plt.figure(figsize=(12, 6))
+bar = sns.boxplot(x='Set', y='Average Time to adapt', hue='Group ID', data=df_long, palette=custom_palette, showfliers=True)
+
+hatches = ['', '', '', '',
+           '////', '////', '////', '////',
+           '', '', '', '',
+           '////', '////', '////', '////',
+           '', '', '', '',
+           '////', '////', '////', '////',
+           '', '////', '', '////', '', '////',
+           ]
+
+for i, thisbar in enumerate(bar.patches):
+    print(i)
+    # Set a different hatch for each bar
+    thisbar.set_hatch(hatches[i])
+
+
+# Customize plot
+custom_labels = ['Before Down', 'After Down', 'Before Up', 'After Up']
+plt.xticks(ticks=[0, 1, 2, 3], labels=custom_labels)
+plt.title('Time to Adapt')
+plt.ylabel('Average Time to Adapt')
+plt.xlabel('')
+plt.legend()
+
+# Show plot
+plt.tight_layout()
+plt.show()

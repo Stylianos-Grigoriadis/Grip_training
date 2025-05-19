@@ -450,7 +450,10 @@ def adaptation_time_using_sd(df, sd_factor, consecutive_values, name, mean_spati
     # print(df['Target'])
 
     perturbation_index = df[df['Target'] != df['Target'].shift(1)].index[1]
-    print(perturbation_index)
+    # print(df.columns)
+    print(f'Perturbation index = {perturbation_index}')
+    # plt.plot(df['Target'])
+    # plt.show()
 
     # Calculate the spatial error and the average and sd of the spatial error
     # after the first_values
