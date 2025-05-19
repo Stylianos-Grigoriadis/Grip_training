@@ -102,20 +102,20 @@ for file in files:
     list_avg_spatial_error_10.append(avg_spatial_error_10)
 
     # Create a dictionery
-    dist = {
-            'ID'        : list_ID,
-            'Group ID'  : list_ID_team,
-            'Mean Spatial error trail 1': list_avg_spatial_error_1,
-            'Mean Spatial error trail 2': list_avg_spatial_error_2,
-            'Mean Spatial error trail 3': list_avg_spatial_error_3,
-            'Mean Spatial error trail 4': list_avg_spatial_error_4,
-            'Mean Spatial error trail 5': list_avg_spatial_error_5,
-            'Mean Spatial error trail 6': list_avg_spatial_error_6,
-            'Mean Spatial error trail 7': list_avg_spatial_error_7,
-            'Mean Spatial error trail 8': list_avg_spatial_error_8,
-            'Mean Spatial error trail 9': list_avg_spatial_error_9,
-            'Mean Spatial error trail 10': list_avg_spatial_error_10
-            },
+dist = {
+        'ID'        : list_ID,
+        'Group ID'  : list_ID_team,
+        'Mean Spatial error trail 1': list_avg_spatial_error_1,
+        'Mean Spatial error trail 2': list_avg_spatial_error_2,
+        'Mean Spatial error trail 3': list_avg_spatial_error_3,
+        'Mean Spatial error trail 4': list_avg_spatial_error_4,
+        'Mean Spatial error trail 5': list_avg_spatial_error_5,
+        'Mean Spatial error trail 6': list_avg_spatial_error_6,
+        'Mean Spatial error trail 7': list_avg_spatial_error_7,
+        'Mean Spatial error trail 8': list_avg_spatial_error_8,
+        'Mean Spatial error trail 9': list_avg_spatial_error_9,
+        'Mean Spatial error trail 10': list_avg_spatial_error_10
+        },
 
 df_results = pd.DataFrame(dist)
 #print(dist)
