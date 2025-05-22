@@ -8,9 +8,15 @@ from scipy.stats import linregress
 from Lib_grip import spatial_error
 import glob
 
-# Set folder Data as directory.
-directory_path = r'C:\Users\USER\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\Grip training\Pilot study 4\Data'
+
+stylianos = True
+if stylianos == True:
+    directory_path = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Pilot study 4\data to fix code'
+else:
+    directory_path = r'C:\Users\USER\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\Grip training\Pilot study 4\Data'
+
 files = glob.glob(os.path.join(directory_path, "*"))
+
 
 
 list_avg_spatial_error_1 = []
@@ -32,11 +38,10 @@ for file in files:
     os.chdir(file)
     ID = os.path.basename(file)
     list_ID.append(ID)
-    ID_team = ID.split("_")
-    list_ID_team.append(ID_team)
-    #print(ID)
-#print(list_ID_team)
-#print(list_ID)
+    ID_team = ID.split(".")
+    list_ID_team.append(ID_team[0])
+    print(ID) # We keep this so that we know which participant is assessed during the run of the code
+
 
     # Trial analysis for calculation of mean and sd of spatial error
     file_training_trials = file + r'\Training_trials'
@@ -79,6 +84,7 @@ for file in files:
 
     # Calculation of mean spatial error for each trial
     avg_spatial_error_1 = np.mean(spatial_errors1)
+    print(avg_spatial_error_1)
     avg_spatial_error_2 = np.mean(spatial_errors2)
     avg_spatial_error_3 = np.mean(spatial_errors3)
     avg_spatial_error_4 = np.mean(spatial_errors4)
@@ -91,6 +97,9 @@ for file in files:
 
     # Append lists of spatial errors
     list_avg_spatial_error_1.append(avg_spatial_error_1)
+    print(type(list_avg_spatial_error_1[-1]))
+    print(list_avg_spatial_error_1[-1])
+
     list_avg_spatial_error_2.append(avg_spatial_error_2)
     list_avg_spatial_error_3.append(avg_spatial_error_3)
     list_avg_spatial_error_4.append(avg_spatial_error_4)
@@ -115,10 +124,16 @@ dist = {
         'Mean Spatial error trail 8': list_avg_spatial_error_8,
         'Mean Spatial error trail 9': list_avg_spatial_error_9,
         'Mean Spatial error trail 10': list_avg_spatial_error_10
-        },
+        }
+print(type(dist))
 
 df_results = pd.DataFrame(dist)
 #print(dist)
-directory_to_save = r'C:\Users\USER\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\Grip training\Pilot study 4\Results'
+
+if stylianos == True:
+    directory_to_save = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Pilot study 4\Results'
+else:
+    directory_to_save = r'C:\Users\USER\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\Grip training\Pilot study 4\Results'
+
 os.chdir(directory_to_save)
-df_results.to_excel('Mean_spatial_error_results.xlsx')
+df_results.to_excel('Mean_spatial_error_results stylianos.xlsx')
