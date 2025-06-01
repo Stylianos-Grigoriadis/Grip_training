@@ -25,7 +25,6 @@ df_long = results.melt(id_vars=['Group ID'],
 
 
 # Rename set names for readability
-df_long['Set'] = df_long['Set'].str.replace('Average Spatial error set ', 'Set ')
 
 df_long['ID'] = pd.Categorical(df_long['Group ID'], categories=["Sine_100", "Pink_100", "White_100", "Sine_65", "Pink_65", "White_65"], ordered=True)
 

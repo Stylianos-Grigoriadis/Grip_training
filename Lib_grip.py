@@ -157,17 +157,6 @@ def read_kinvent(path):
             df_set_9,
             df_set_10)
 
-# def pink_signal_generator(Number_of_data_points, upper_lim, lower_lim):
-#     """This function creates a pink noise signal as a np.array with N Number_of_data_points between upper_lim and lower_lim"""
-#     dfa = False
-#     while dfa == False:
-#         signal = cn.powerlaw_psd_gaussian(1, Number_of_data_points)
-#         α_exp = DFA(signal)
-#         if α_exp < 1.05 and α_exp > 0.95:
-#             dfa = True
-#     signal = Perc(signal,upper_lim,lower_lim)
-#
-#     return signal
 
 def sine_signal_generator(Number_of_data_points, frequency, upper_lim, lower_lim):
 
@@ -364,11 +353,7 @@ def spatial_error(df):
     for i in range(len(df['Time'])):
         # Spatial error with absolute values
         spatial_error.append((abs(df['Performance'][i]-df['Target'][i])))
-        # Spatial error with algebraic values
-        #spatial_error.append((df['Performance'][i]-df['Target'][i]))
     spatial_error = np.array(spatial_error)
-    # Removes the np.float64(...) while printing Spatial error
-    spatial_error = [float(val) if val is not None else float('nan') for val in spatial_error]
     return spatial_error
 
 def read_my_txt_file(path):

@@ -16,8 +16,8 @@ def FFT(var,fs):
 
     f = freqs[mask]
     a = pSpec[mask]
-    plt.plot(f,a)
-    plt.show()
+    # plt.plot(f,a)
+    # plt.show()
     sumA=[0]
     for i in range(1,len(a)):
         sumA.append(a[i]+sumA[i-1])
@@ -132,15 +132,15 @@ def Linear_Interpolation(col, step, plus):
 
     return newdf
 
-def Butterworth(fs,fc,var):
+def Butterworth(fs, fc, var):
     """ Parameter:
             fs:     sampling frequency
             fc:     cutoff frequency for example 30Hz
             var:    data series
     """
-    w = fc / (fs / 2)
 
-    b, a = signal.butter(N=2, Wn=w, btype='low', fs=fs)
+
+    b, a = signal.butter(N=2, Wn=fc, btype='low', fs=fs)
     return signal.filtfilt(b, a, var)
 
 def Average(lst):

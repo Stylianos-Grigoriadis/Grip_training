@@ -7,11 +7,12 @@ import numpy as np
 from scipy.stats import linregress
 from Lib_grip import spatial_error
 import glob
+import lib
 
 
 stylianos = True
 if stylianos == True:
-    directory_path = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Pilot study 4\data to fix code'
+    directory_path = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Pilot study 4\Data'
 else:
     directory_path = r'C:\Users\USER\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\Grip training\Pilot study 4\Data'
 
@@ -39,6 +40,7 @@ for file in files:
     ID = os.path.basename(file)
     list_ID.append(ID)
     ID_team = ID.split(".")
+    print(ID_team)
     list_ID_team.append(ID_team[0])
     print(ID) # We keep this so that we know which participant is assessed during the run of the code
 
@@ -57,6 +59,42 @@ for file in files:
     df8 = pd.read_csv(r'Trial_8.csv', skiprows=2)
     df9 = pd.read_csv(r'Trial_9.csv', skiprows=2)
     df10 = pd.read_csv(r'Trial_10.csv', skiprows=2)
+    print(df1.columns)
+
+    # Filtering process
+    Performance_1 = df1['Performance']
+    Performance_2 = df2['Performance']
+    Performance_3 = df3['Performance']
+    Performance_4 = df4['Performance']
+    Performance_5 = df5['Performance']
+    Performance_6 = df6['Performance']
+    Performance_7 = df7['Performance']
+    Performance_8 = df8['Performance']
+    Performance_9 = df9['Performance']
+    Performance_10 = df10['Performance']
+
+    low_pass_filter_frequency = 15
+    Performance_1_filtered = lib.Butterworth(75, low_pass_filter_frequency, Performance_1)
+    Performance_2_filtered = lib.Butterworth(75, low_pass_filter_frequency, Performance_2)
+    Performance_3_filtered = lib.Butterworth(75, low_pass_filter_frequency, Performance_3)
+    Performance_4_filtered = lib.Butterworth(75, low_pass_filter_frequency, Performance_4)
+    Performance_5_filtered = lib.Butterworth(75, low_pass_filter_frequency, Performance_5)
+    Performance_6_filtered = lib.Butterworth(75, low_pass_filter_frequency, Performance_6)
+    Performance_7_filtered = lib.Butterworth(75, low_pass_filter_frequency, Performance_7)
+    Performance_8_filtered = lib.Butterworth(75, low_pass_filter_frequency, Performance_8)
+    Performance_9_filtered = lib.Butterworth(75, low_pass_filter_frequency, Performance_9)
+    Performance_10_filtered = lib.Butterworth(75, low_pass_filter_frequency, Performance_10)
+
+    df1['Performance'] = Performance_1_filtered
+    df2['Performance'] = Performance_2_filtered
+    df3['Performance'] = Performance_3_filtered
+    df4['Performance'] = Performance_4_filtered
+    df5['Performance'] = Performance_5_filtered
+    df6['Performance'] = Performance_6_filtered
+    df7['Performance'] = Performance_7_filtered
+    df8['Performance'] = Performance_8_filtered
+    df9['Performance'] = Performance_9_filtered
+    df10['Performance'] = Performance_10_filtered
 
     # Synchronise training trials
     synch_df1 = lb.synchronization_of_Time_and_ClosestSampleTime_Anestis(df1)
@@ -84,7 +122,6 @@ for file in files:
 
     # Calculation of mean spatial error for each trial
     avg_spatial_error_1 = np.mean(spatial_errors1)
-    print(avg_spatial_error_1)
     avg_spatial_error_2 = np.mean(spatial_errors2)
     avg_spatial_error_3 = np.mean(spatial_errors3)
     avg_spatial_error_4 = np.mean(spatial_errors4)
@@ -97,9 +134,6 @@ for file in files:
 
     # Append lists of spatial errors
     list_avg_spatial_error_1.append(avg_spatial_error_1)
-    print(type(list_avg_spatial_error_1[-1]))
-    print(list_avg_spatial_error_1[-1])
-
     list_avg_spatial_error_2.append(avg_spatial_error_2)
     list_avg_spatial_error_3.append(avg_spatial_error_3)
     list_avg_spatial_error_4.append(avg_spatial_error_4)
@@ -125,10 +159,12 @@ dist = {
         'Mean Spatial error trail 9': list_avg_spatial_error_9,
         'Mean Spatial error trail 10': list_avg_spatial_error_10
         }
-print(type(dist))
+
+
 
 df_results = pd.DataFrame(dist)
-#print(dist)
+
+print(dist)
 
 if stylianos == True:
     directory_to_save = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Pilot study 4\Results'
@@ -136,4 +172,4 @@ else:
     directory_to_save = r'C:\Users\USER\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\Grip training\Pilot study 4\Results'
 
 os.chdir(directory_to_save)
-df_results.to_excel('Mean_spatial_error_results stylianos.xlsx')
+df_results.to_excel('Mean_spatial_error_results_with_15_low_pass_filter.xlsx')
