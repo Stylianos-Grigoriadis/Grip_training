@@ -41,14 +41,26 @@ list_min_time_to_adapt_after_up = []
 list_ID = []
 list_ID_team = []
 
-sd_factor = 2
+sd_factor = 3
 consecutive_values = 36
 
 for file in files:
     os.chdir(file)
     ID = os.path.basename(file)
     list_ID.append(ID)
-    ID_team = ID[:-2]
+    # ID_team = ID[:-2]
+    if "Pink_100" in ID:
+        ID_team = "Pink_100"
+    elif "Pink_65" in ID:
+        ID_team = "Pink_65"
+    elif "White_100" in ID:
+        ID_team = "White_100"
+    elif "White_65" in ID:
+        ID_team = "White_65"
+    elif "Sine_100" in ID:
+        ID_team = "Sine_100"
+    elif "Sine_65" in ID:
+        ID_team = "Sine_65"
     list_ID_team.append(ID_team)
 
     print(ID)
@@ -62,8 +74,8 @@ for file in files:
     Isometric_trial_10 = pd.read_csv(r'Isometric_trial_10.csv', skiprows=2)
     # print(Isometric_trial_10.columns)
 
-    Isometric_trial_50['Performance'] = lib.Butterworth(75, 50, Isometric_trial_50['Performance'])
-    Isometric_trial_10['Performance'] = lib.Butterworth(75, 50, Isometric_trial_10['Performance'])
+    # Isometric_trial_50['Performance'] = lib.Butterworth(75, 50, Isometric_trial_50['Performance'])
+    # Isometric_trial_10['Performance'] = lib.Butterworth(75, 50, Isometric_trial_10['Performance'])
 
     Isometric_50_force = Isometric_trial_50['Performance'].to_numpy()
     Isometric_10_force = Isometric_trial_10['Performance'].to_numpy()
@@ -142,18 +154,18 @@ for file in files:
     # plt.legend()
     # plt.show()
 
-    time_to_adapt_before_down_1 = lb.adaptation_time_using_sd(Perturbation_before_down_1, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=True)
-    time_to_adapt_before_down_2 = lb.adaptation_time_using_sd(Perturbation_before_down_2, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=True)
-    time_to_adapt_before_down_3 = lb.adaptation_time_using_sd(Perturbation_before_down_3, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=True)
-    time_to_adapt_before_up_1 = lb.adaptation_time_using_sd(Perturbation_before_up_1, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=True)
-    time_to_adapt_before_up_2 = lb.adaptation_time_using_sd(Perturbation_before_up_2, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=True)
-    time_to_adapt_before_up_3 = lb.adaptation_time_using_sd(Perturbation_before_up_3, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=True)
-    time_to_adapt_after_down_1 = lb.adaptation_time_using_sd(Perturbation_after_down_1, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=True)
-    time_to_adapt_after_down_2 = lb.adaptation_time_using_sd(Perturbation_after_down_2, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=True)
-    time_to_adapt_after_down_3 = lb.adaptation_time_using_sd(Perturbation_after_down_3, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=True)
-    time_to_adapt_after_up_1 = lb.adaptation_time_using_sd(Perturbation_after_up_1, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=True)
-    time_to_adapt_after_up_2 = lb.adaptation_time_using_sd(Perturbation_after_up_2, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=True)
-    time_to_adapt_after_up_3 = lb.adaptation_time_using_sd(Perturbation_after_up_3, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=True)
+    time_to_adapt_before_down_1 = lb.adaptation_time_using_sd(Perturbation_before_down_1, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=False)
+    time_to_adapt_before_down_2 = lb.adaptation_time_using_sd(Perturbation_before_down_2, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=False)
+    time_to_adapt_before_down_3 = lb.adaptation_time_using_sd(Perturbation_before_down_3, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=False)
+    time_to_adapt_before_up_1 = lb.adaptation_time_using_sd(Perturbation_before_up_1, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=False)
+    time_to_adapt_before_up_2 = lb.adaptation_time_using_sd(Perturbation_before_up_2, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=False)
+    time_to_adapt_before_up_3 = lb.adaptation_time_using_sd(Perturbation_before_up_3, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=False)
+    time_to_adapt_after_down_1 = lb.adaptation_time_using_sd(Perturbation_after_down_1, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=False)
+    time_to_adapt_after_down_2 = lb.adaptation_time_using_sd(Perturbation_after_down_2, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=False)
+    time_to_adapt_after_down_3 = lb.adaptation_time_using_sd(Perturbation_after_down_3, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=False)
+    time_to_adapt_after_up_1 = lb.adaptation_time_using_sd(Perturbation_after_up_1, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=False)
+    time_to_adapt_after_up_2 = lb.adaptation_time_using_sd(Perturbation_after_up_2, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=False)
+    time_to_adapt_after_up_3 = lb.adaptation_time_using_sd(Perturbation_after_up_3, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=False)
 
 
     def safe_mean(*args):
@@ -205,6 +217,8 @@ for file in files:
     print(min_time_to_adapt_after_down)
     print(min_time_to_adapt_after_up)
 
+    print(list_ID_team)
+
 
 
 dist = {'ID'        : list_ID,
@@ -247,8 +261,10 @@ df_long = results.melt(id_vars=['Group ID'],
 
 # Rename set names for readability
 df_long['Set'] = df_long['Set'].str.replace('Average Spatial error set ', 'Set ')
+print(df_long['Group ID'].unique())
 
 df_long['ID'] = pd.Categorical(df_long['Group ID'], categories=["Sine_100", "Pink_100", "White_100", "Sine_65", "Pink_65", "White_65"], ordered=True)
+print(df_long['Group ID'].unique())
 
 # Custom color palette
 custom_palette = {
