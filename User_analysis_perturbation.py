@@ -41,8 +41,8 @@ list_min_time_to_adapt_after_up = []
 list_ID = []
 list_ID_team = []
 
-sd_factor = 3
-consecutive_values = 36
+sd_factor = 2
+consecutive_values = 37
 
 for file in files:
     os.chdir(file)
