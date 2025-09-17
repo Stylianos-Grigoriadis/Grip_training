@@ -152,102 +152,215 @@ results = pd.read_excel('Mean_spatial_error_results_with_15_low_pass_filter.xlsx
 
 
 print(results.columns)
-SE_Sine_Slow_T1 = results.loc[(results['Signal ID'] == 'Sine') & (results['Speed ID'] == 'Slow'), 'Mean Spatial error trail 1'].to_numpy()
-SE_Sine_Slow_T2 = results.loc[(results['Signal ID'] == 'Sine') & (results['Speed ID'] == 'Slow'), 'Mean Spatial error trail 2'].to_numpy()
-SE_Sine_Slow_T3 = results.loc[(results['Signal ID'] == 'Sine') & (results['Speed ID'] == 'Slow'), 'Mean Spatial error trail 3'].to_numpy()
-SE_Sine_Slow_T4 = results.loc[(results['Signal ID'] == 'Sine') & (results['Speed ID'] == 'Slow'), 'Mean Spatial error trail 4'].to_numpy()
-SE_Sine_Slow_T5 = results.loc[(results['Signal ID'] == 'Sine') & (results['Speed ID'] == 'Slow'), 'Mean Spatial error trail 5'].to_numpy()
-SE_Sine_Slow_T6 = results.loc[(results['Signal ID'] == 'Sine') & (results['Speed ID'] == 'Slow'), 'Mean Spatial error trail 6'].to_numpy()
-SE_Sine_Slow_T7 = results.loc[(results['Signal ID'] == 'Sine') & (results['Speed ID'] == 'Slow'), 'Mean Spatial error trail 7'].to_numpy()
-SE_Sine_Slow_T8 = results.loc[(results['Signal ID'] == 'Sine') & (results['Speed ID'] == 'Slow'), 'Mean Spatial error trail 8'].to_numpy()
-SE_Sine_Slow_T9 = results.loc[(results['Signal ID'] == 'Sine') & (results['Speed ID'] == 'Slow'), 'Mean Spatial error trail 9'].to_numpy()
-SE_Sine_Slow_T10 = results.loc[(results['Signal ID'] == 'Sine') & (results['Speed ID'] == 'Slow'), 'Mean Spatial error trail 10'].to_numpy()
-SE_Sine_Fast_T1 = results.loc[(results['Signal ID'] == 'Sine') & (results['Speed ID'] == 'Fast'), 'Mean Spatial error trail 1'].to_numpy()
-SE_Sine_Fast_T2 = results.loc[(results['Signal ID'] == 'Sine') & (results['Speed ID'] == 'Fast'), 'Mean Spatial error trail 2'].to_numpy()
-SE_Sine_Fast_T3 = results.loc[(results['Signal ID'] == 'Sine') & (results['Speed ID'] == 'Fast'), 'Mean Spatial error trail 3'].to_numpy()
-SE_Sine_Fast_T4 = results.loc[(results['Signal ID'] == 'Sine') & (results['Speed ID'] == 'Fast'), 'Mean Spatial error trail 4'].to_numpy()
-SE_Sine_Fast_T5 = results.loc[(results['Signal ID'] == 'Sine') & (results['Speed ID'] == 'Fast'), 'Mean Spatial error trail 5'].to_numpy()
-SE_Sine_Fast_T6 = results.loc[(results['Signal ID'] == 'Sine') & (results['Speed ID'] == 'Fast'), 'Mean Spatial error trail 6'].to_numpy()
-SE_Sine_Fast_T7 = results.loc[(results['Signal ID'] == 'Sine') & (results['Speed ID'] == 'Fast'), 'Mean Spatial error trail 7'].to_numpy()
-SE_Sine_Fast_T8 = results.loc[(results['Signal ID'] == 'Sine') & (results['Speed ID'] == 'Fast'), 'Mean Spatial error trail 8'].to_numpy()
-SE_Sine_Fast_T9 = results.loc[(results['Signal ID'] == 'Sine') & (results['Speed ID'] == 'Fast'), 'Mean Spatial error trail 9'].to_numpy()
-SE_Sine_Fast_T10 = results.loc[(results['Signal ID'] == 'Sine') & (results['Speed ID'] == 'Fast'), 'Mean Spatial error trail 10'].to_numpy()
+SE_Sine_average_slow = []
+SE_Pink_average_slow = []
+SE_White_average_slow = []
+SE_Sine_average_fast = []
+SE_Pink_average_fast = []
+SE_White_average_fast = []
+SE_Sine_average = []
+SE_Pink_average = []
+SE_White_average = []
+SE_Sine_sd_slow = []
+SE_Pink_sd_slow = []
+SE_White_sd_slow = []
+SE_Sine_sd_fast = []
+SE_Pink_sd_fast = []
+SE_White_sd_fast = []
+SE_Sine_sd = []
+SE_Pink_sd = []
+SE_White_sd = []
 
-SE_Pink_Slow_T1 = results.loc[(results['Signal ID'] == 'Pink') & (results['Speed ID'] == 'Slow'), 'Mean Spatial error trail 1'].to_numpy()
-SE_Pink_Slow_T2 = results.loc[(results['Signal ID'] == 'Pink') & (results['Speed ID'] == 'Slow'), 'Mean Spatial error trail 2'].to_numpy()
-SE_Pink_Slow_T3 = results.loc[(results['Signal ID'] == 'Pink') & (results['Speed ID'] == 'Slow'), 'Mean Spatial error trail 3'].to_numpy()
-SE_Pink_Slow_T4 = results.loc[(results['Signal ID'] == 'Pink') & (results['Speed ID'] == 'Slow'), 'Mean Spatial error trail 4'].to_numpy()
-SE_Pink_Slow_T5 = results.loc[(results['Signal ID'] == 'Pink') & (results['Speed ID'] == 'Slow'), 'Mean Spatial error trail 5'].to_numpy()
-SE_Pink_Slow_T6 = results.loc[(results['Signal ID'] == 'Pink') & (results['Speed ID'] == 'Slow'), 'Mean Spatial error trail 6'].to_numpy()
-SE_Pink_Slow_T7 = results.loc[(results['Signal ID'] == 'Pink') & (results['Speed ID'] == 'Slow'), 'Mean Spatial error trail 7'].to_numpy()
-SE_Pink_Slow_T8 = results.loc[(results['Signal ID'] == 'Pink') & (results['Speed ID'] == 'Slow'), 'Mean Spatial error trail 8'].to_numpy()
-SE_Pink_Slow_T9 = results.loc[(results['Signal ID'] == 'Pink') & (results['Speed ID'] == 'Slow'), 'Mean Spatial error trail 9'].to_numpy()
-SE_Pink_Slow_T10 = results.loc[(results['Signal ID'] == 'Pink') & (results['Speed ID'] == 'Slow'), 'Mean Spatial error trail 10'].to_numpy()
-SE_Pink_Fast_T1 = results.loc[(results['Signal ID'] == 'Pink') & (results['Speed ID'] == 'Fast'), 'Mean Spatial error trail 1'].to_numpy()
-SE_Pink_Fast_T2 = results.loc[(results['Signal ID'] == 'Pink') & (results['Speed ID'] == 'Fast'), 'Mean Spatial error trail 2'].to_numpy()
-SE_Pink_Fast_T3 = results.loc[(results['Signal ID'] == 'Pink') & (results['Speed ID'] == 'Fast'), 'Mean Spatial error trail 3'].to_numpy()
-SE_Pink_Fast_T4 = results.loc[(results['Signal ID'] == 'Pink') & (results['Speed ID'] == 'Fast'), 'Mean Spatial error trail 4'].to_numpy()
-SE_Pink_Fast_T5 = results.loc[(results['Signal ID'] == 'Pink') & (results['Speed ID'] == 'Fast'), 'Mean Spatial error trail 5'].to_numpy()
-SE_Pink_Fast_T6 = results.loc[(results['Signal ID'] == 'Pink') & (results['Speed ID'] == 'Fast'), 'Mean Spatial error trail 6'].to_numpy()
-SE_Pink_Fast_T7 = results.loc[(results['Signal ID'] == 'Pink') & (results['Speed ID'] == 'Fast'), 'Mean Spatial error trail 7'].to_numpy()
-SE_Pink_Fast_T8 = results.loc[(results['Signal ID'] == 'Pink') & (results['Speed ID'] == 'Fast'), 'Mean Spatial error trail 8'].to_numpy()
-SE_Pink_Fast_T9 = results.loc[(results['Signal ID'] == 'Pink') & (results['Speed ID'] == 'Fast'), 'Mean Spatial error trail 9'].to_numpy()
-SE_Pink_Fast_T10 = results.loc[(results['Signal ID'] == 'Pink') & (results['Speed ID'] == 'Fast'), 'Mean Spatial error trail 10'].to_numpy()
+SE_slow_average = []
+SE_fast_average = []
+SE_slow_sd = []
+SE_fast_sd = []
 
-SE_White_Slow_T1 = results.loc[(results['Signal ID'] == 'White') & (results['Speed ID'] == 'Slow'), 'Mean Spatial error trail 1'].to_numpy()
-SE_White_Slow_T2 = results.loc[(results['Signal ID'] == 'White') & (results['Speed ID'] == 'Slow'), 'Mean Spatial error trail 2'].to_numpy()
-SE_White_Slow_T3 = results.loc[(results['Signal ID'] == 'White') & (results['Speed ID'] == 'Slow'), 'Mean Spatial error trail 3'].to_numpy()
-SE_White_Slow_T4 = results.loc[(results['Signal ID'] == 'White') & (results['Speed ID'] == 'Slow'), 'Mean Spatial error trail 4'].to_numpy()
-SE_White_Slow_T5 = results.loc[(results['Signal ID'] == 'White') & (results['Speed ID'] == 'Slow'), 'Mean Spatial error trail 5'].to_numpy()
-SE_White_Slow_T6 = results.loc[(results['Signal ID'] == 'White') & (results['Speed ID'] == 'Slow'), 'Mean Spatial error trail 6'].to_numpy()
-SE_White_Slow_T7 = results.loc[(results['Signal ID'] == 'White') & (results['Speed ID'] == 'Slow'), 'Mean Spatial error trail 7'].to_numpy()
-SE_White_Slow_T8 = results.loc[(results['Signal ID'] == 'White') & (results['Speed ID'] == 'Slow'), 'Mean Spatial error trail 8'].to_numpy()
-SE_White_Slow_T9 = results.loc[(results['Signal ID'] == 'White') & (results['Speed ID'] == 'Slow'), 'Mean Spatial error trail 9'].to_numpy()
-SE_White_Slow_T10 = results.loc[(results['Signal ID'] == 'White') & (results['Speed ID'] == 'Slow'), 'Mean Spatial error trail 10'].to_numpy()
-SE_White_Fast_T1 = results.loc[(results['Signal ID'] == 'White') & (results['Speed ID'] == 'Fast'), 'Mean Spatial error trail 1'].to_numpy()
-SE_White_Fast_T2 = results.loc[(results['Signal ID'] == 'White') & (results['Speed ID'] == 'Fast'), 'Mean Spatial error trail 2'].to_numpy()
-SE_White_Fast_T3 = results.loc[(results['Signal ID'] == 'White') & (results['Speed ID'] == 'Fast'), 'Mean Spatial error trail 3'].to_numpy()
-SE_White_Fast_T4 = results.loc[(results['Signal ID'] == 'White') & (results['Speed ID'] == 'Fast'), 'Mean Spatial error trail 4'].to_numpy()
-SE_White_Fast_T5 = results.loc[(results['Signal ID'] == 'White') & (results['Speed ID'] == 'Fast'), 'Mean Spatial error trail 5'].to_numpy()
-SE_White_Fast_T6 = results.loc[(results['Signal ID'] == 'White') & (results['Speed ID'] == 'Fast'), 'Mean Spatial error trail 6'].to_numpy()
-SE_White_Fast_T7 = results.loc[(results['Signal ID'] == 'White') & (results['Speed ID'] == 'Fast'), 'Mean Spatial error trail 7'].to_numpy()
-SE_White_Fast_T8 = results.loc[(results['Signal ID'] == 'White') & (results['Speed ID'] == 'Fast'), 'Mean Spatial error trail 8'].to_numpy()
-SE_White_Fast_T9 = results.loc[(results['Signal ID'] == 'White') & (results['Speed ID'] == 'Fast'), 'Mean Spatial error trail 9'].to_numpy()
-SE_White_Fast_T10 = results.loc[(results['Signal ID'] == 'White') & (results['Speed ID'] == 'Fast'), 'Mean Spatial error trail 10'].to_numpy()
-
-SE_Sine_Fast_Sets_list = [SE_Sine_Fast_T1, SE_Sine_Fast_T2, SE_Sine_Fast_T3, SE_Sine_Fast_T4, SE_Sine_Fast_T5, SE_Sine_Fast_T6, SE_Sine_Fast_T7, SE_Sine_Fast_T8, SE_Sine_Fast_T9, SE_Sine_Fast_T10]
-SE_Sine_Slow_Sets_list = [SE_Sine_Slow_T1, SE_Sine_Slow_T2, SE_Sine_Slow_T3, SE_Sine_Slow_T4, SE_Sine_Slow_T5, SE_Sine_Slow_T6, SE_Sine_Slow_T7, SE_Sine_Slow_T8, SE_Sine_Slow_T9, SE_Sine_Slow_T10]
-SE_Pink_Fast_Sets_list = [SE_Pink_Fast_T1, SE_Pink_Fast_T2, SE_Pink_Fast_T3, SE_Pink_Fast_T4, SE_Pink_Fast_T5, SE_Pink_Fast_T6, SE_Pink_Fast_T7, SE_Pink_Fast_T8, SE_Pink_Fast_T9, SE_Pink_Fast_T10]
-SE_Pink_Slow_Sets_list = [SE_Pink_Slow_T1, SE_Pink_Slow_T2, SE_Pink_Slow_T3, SE_Pink_Slow_T4, SE_Pink_Slow_T5, SE_Pink_Slow_T6, SE_Pink_Slow_T7, SE_Pink_Slow_T8, SE_Pink_Slow_T9, SE_Pink_Slow_T10]
-SE_White_Fast_Sets_list = [SE_White_Fast_T1, SE_White_Fast_T2, SE_White_Fast_T3, SE_White_Fast_T4, SE_White_Fast_T5, SE_White_Fast_T6, SE_White_Fast_T7, SE_White_Fast_T8, SE_White_Fast_T9, SE_White_Fast_T10]
-SE_White_Slow_Sets_list = [SE_White_Slow_T1, SE_White_Slow_T2, SE_White_Slow_T3, SE_White_Slow_T4, SE_White_Slow_T5, SE_White_Slow_T6, SE_White_Slow_T7, SE_White_Slow_T8, SE_White_Slow_T9, SE_White_Slow_T10]
-
-SE_Sine_Fast_average = []
-SE_Sine_Fast_sd = []
-SE_Sine_Slow_average = []
-SE_Sine_Slow_sd = []
-SE_Pink_Fast_average = []
-SE_Pink_Fast_sd = []
-SE_Pink_Slow_average = []
-SE_Pink_Slow_sd = []
-SE_White_Fast_average = []
-SE_White_Fast_sd = []
-SE_White_Slow_average = []
-SE_White_Slow_sd = []
-
-for Sine_Fast, Sine_Slow, Pink_Fast, Pink_Slow, White_Fast, White_Slow in zip(SE_Sine_Fast_Sets_list, SE_Sine_Slow_Sets_list, SE_Pink_Fast_Sets_list, SE_Pink_Slow_Sets_list, SE_White_Fast_Sets_list, SE_White_Slow_Sets_list):
-    SE_Sine_Fast_average.append(np.mean(Sine_Fast))
-    SE_Sine_Fast_sd.append(np.std(Sine_Fast))
-    SE_Sine_Slow_average.append(np.mean(Sine_Slow))
-    SE_Sine_Slow_sd.append(np.std(Sine_Slow))
-    SE_Pink_Fast_average.append(np.mean(Pink_Fast))
-    SE_Pink_Fast_sd.append(np.std(Pink_Fast))
-    SE_Pink_Slow_average.append(np.mean(Pink_Slow))
-    SE_Pink_Slow_sd.append(np.std(Pink_Slow))
-    SE_White_Fast_average.append(np.mean(White_Fast))
-    SE_White_Fast_sd.append(np.std(White_Fast))
-    SE_White_Slow_average.append(np.mean(White_Slow))
-    SE_White_Slow_sd.append(np.std(White_Slow))
+for i in range(1,11):
     
-plt.plot()
+    SE_Sine_slow = results.loc[(results['Signal ID'] == 'Sine') & (results['Speed ID'] == 'Slow') , f'Mean Spatial error trail {i}'].to_numpy()
+    SE_Sine_fast = results.loc[(results['Signal ID'] == 'Sine') & (results['Speed ID'] == 'Fast') , f'Mean Spatial error trail {i}'].to_numpy()
+    SE_Sine = results.loc[(results['Signal ID'] == 'Sine'), f'Mean Spatial error trail {i}'].to_numpy()
+    SE_Sine_average_slow.append(float(np.mean(SE_Sine_slow)))
+    SE_Sine_average_fast.append(float(np.mean(SE_Sine_fast)))
+    SE_Sine_average.append(float(np.mean(SE_Sine)))
+    SE_Sine_sd_slow.append(float(np.std(SE_Sine_slow)))
+    SE_Sine_sd_fast.append(float(np.std(SE_Sine_fast)))
+    SE_Sine_sd.append(float(np.std(SE_Sine)))
+    
+    SE_Pink_slow = results.loc[(results['Signal ID'] == 'Pink') & (results['Speed ID'] == 'Slow') , f'Mean Spatial error trail {i}'].to_numpy()
+    SE_Pink_fast = results.loc[(results['Signal ID'] == 'Pink') & (results['Speed ID'] == 'Fast') , f'Mean Spatial error trail {i}'].to_numpy()
+    SE_Pink = results.loc[(results['Signal ID'] == 'Pink'), f'Mean Spatial error trail {i}'].to_numpy()
+    SE_Pink_average_slow.append(float(np.mean(SE_Pink_slow)))
+    SE_Pink_average_fast.append(float(np.mean(SE_Pink_fast)))
+    SE_Pink_average.append(float(np.mean(SE_Pink)))
+    SE_Pink_sd_slow.append(float(np.std(SE_Pink_slow)))
+    SE_Pink_sd_fast.append(float(np.std(SE_Pink_fast)))
+    SE_Pink_sd.append(float(np.std(SE_Pink)))
+    
+    SE_White_slow = results.loc[(results['Signal ID'] == 'White') & (results['Speed ID'] == 'Slow') , f'Mean Spatial error trail {i}'].to_numpy()
+    SE_White_fast = results.loc[(results['Signal ID'] == 'White') & (results['Speed ID'] == 'Fast') , f'Mean Spatial error trail {i}'].to_numpy()
+    SE_White = results.loc[(results['Signal ID'] == 'White'), f'Mean Spatial error trail {i}'].to_numpy()
+    SE_White_average_slow.append(float(np.mean(SE_White_slow)))
+    SE_White_average_fast.append(float(np.mean(SE_White_fast)))
+    SE_White_average.append(float(np.mean(SE_White)))
+    SE_White_sd_slow.append(float(np.std(SE_White_slow)))
+    SE_White_sd_fast.append(float(np.std(SE_White_fast)))
+    SE_White_sd.append(float(np.std(SE_White)))
 
+    SE_slow = results.loc[(results['Speed ID'] == 'Slow') , f'Mean Spatial error trail {i}'].to_numpy()
+    SE_slow_average.append(float(np.mean(SE_White_slow)))
+    SE_slow_sd.append(float(np.std(SE_White_slow)))
+    SE_fast = results.loc[(results['Speed ID'] == 'Fast') , f'Mean Spatial error trail {i}'].to_numpy()
+    SE_fast_average.append(float(np.mean(SE_White_fast)))
+    SE_fast_sd.append(float(np.std(SE_White_fast)))
+
+
+    
+
+
+Sets = range(1,11)
+# Sine
+# plt.plot(Sets, SE_Sine_average, label='Sine', c='#4F4F4F')
+# plt.plot(Sets, SE_Pink_average, label='Pink', c='#FFC0CB')
+# plt.plot(Sets, SE_White_average, label='White', c='#D3D3D3')
+# plt.fill_between(
+#     Sets,
+#     np.array(SE_Sine_average) - np.array(SE_Sine_sd),
+#     np.array(SE_Sine_average) + np.array(SE_Sine_sd),
+#     color='#4F4F4F',
+#     alpha=0.2
+# )
+# plt.fill_between(
+#     Sets,
+#     np.array(SE_Pink_average) - np.array(SE_Pink_sd),
+#     np.array(SE_Pink_average) + np.array(SE_Pink_sd),
+#     color='#FFC0CB',
+#     alpha=0.2
+# )
+# plt.fill_between(
+#     Sets,
+#     np.array(SE_White_average) - np.array(SE_White_sd),
+#     np.array(SE_White_average) + np.array(SE_White_sd),
+#     color='#D3D3D3',
+#     alpha=0.2
+# )
+
+
+
+# plt.plot(Sets, SE_Sine_average_slow, label='Sine_slow', c='#4F4F4F', ls='--')
+# plt.plot(Sets, SE_Pink_average_slow, label='Pink_slow', c='#FFC0CB', ls='--')
+# plt.plot(Sets, SE_White_average_slow, label='White_slow', c='#D3D3D3', ls='--')
+# plt.fill_between(
+#     Sets,
+#     np.array(SE_Sine_average_slow) - np.array(SE_Sine_sd_slow),
+#     np.array(SE_Sine_average_slow) + np.array(SE_Sine_sd_slow),
+#     color='#4F4F4F',
+#     alpha=0.2
+# )
+# plt.fill_between(
+#     Sets,
+#     np.array(SE_Pink_average_slow) - np.array(SE_Pink_sd_slow),
+#     np.array(SE_Pink_average_slow) + np.array(SE_Pink_sd_slow),
+#     color='#FFC0CB',
+#     alpha=0.2
+# )
+# plt.fill_between(
+#     Sets,
+#     np.array(SE_White_average_slow) - np.array(SE_White_sd_slow),
+#     np.array(SE_White_average_slow) + np.array(SE_White_sd_slow),
+#     color='#D3D3D3',
+#     alpha=0.2
+# )
+
+
+
+# plt.fill_between(
+#     Sets,
+#     np.array(SE_Sine_average_fast) - np.array(SE_Sine_sd_fast),
+#     np.array(SE_Sine_average_fast) + np.array(SE_Sine_sd_fast),
+#     color='#4F4F4F',
+#     alpha=0.2
+# )
+# plt.fill_between(
+#     Sets,
+#     np.array(SE_Pink_average_fast) - np.array(SE_Pink_sd_fast),
+#     np.array(SE_Pink_average_fast) + np.array(SE_Pink_sd_fast),
+#     color='#FFC0CB',
+#     alpha=0.2
+# )
+# plt.fill_between(
+#     Sets,
+#     np.array(SE_White_average_fast) - np.array(SE_White_sd_fast),
+#     np.array(SE_White_average_fast) + np.array(SE_White_sd_fast),
+#     color='#D3D3D3',
+#     alpha=0.2
+# )
+plt.plot(Sets, SE_Sine_average_fast, label='Sine_fast', c='#4F4F4F', ls=':')
+plt.plot(Sets, SE_Pink_average_fast, label='Pink_fast', c='#FFC0CB', ls=':')
+plt.plot(Sets, SE_White_average_fast, label='White_fast', c='#D3D3D3', ls=':')
+
+plt.xticks(Sets)
+plt.legend()
+plt.show()
+
+plt.plot(Sets, SE_slow_average, label='slow', c='red')
+plt.fill_between(
+    Sets,
+    np.array(SE_slow_average) - np.array(SE_slow_sd),
+    np.array(SE_slow_average) + np.array(SE_slow_sd),
+    color='red',
+    alpha=0.2
+)
+plt.plot(Sets, SE_fast_average, label='fast', c='blue')
+plt.fill_between(
+    Sets,
+    np.array(SE_fast_average) - np.array(SE_fast_sd),
+    np.array(SE_fast_average) + np.array(SE_fast_sd),
+    color='blue',
+    alpha=0.2
+)
+plt.legend()
+plt.xticks(Sets)
+plt.show()
+
+
+
+
+plt.fill_between(
+    Sets,
+    np.array(SE_Sine_average_slow),
+    np.array(SE_Sine_average_fast),
+    color='#4F4F4F',
+    alpha=0.2
+)
+plt.fill_between(
+    Sets,
+    np.array(SE_Pink_average_slow),
+    np.array(SE_Pink_average_fast),
+    color='#FFC0CB',
+    alpha=0.2
+)
+plt.fill_between(
+    Sets,
+    np.array(SE_White_average_slow),
+    np.array(SE_White_average_fast),
+    color='#D3D3D3',
+    alpha=0.2
+)
+plt.plot(Sets, SE_Sine_average_slow, label='Sine Slow', c='#4F4F4F', ls='--')
+plt.plot(Sets, SE_Sine_average_fast, label='Sine Fast', c='#4F4F4F', ls=':')
+plt.plot(Sets, SE_Pink_average_slow, label='Pink Slow', c='#FFC0CB', ls='--')
+plt.plot(Sets, SE_Pink_average_fast, label='Pink Fast', c='#FFC0CB', ls=':')
+plt.plot(Sets, SE_White_average_slow, label='White Slow', c='#D3D3D3', ls='--')
+plt.plot(Sets, SE_White_average_fast, label='White Fast', c='#D3D3D3', ls=':')
+
+plt.plot(Sets, SE_Sine_average, label='Sine', c='#4F4F4F', lw=3)
+plt.plot(Sets, SE_Pink_average, label='Pink', c='#FFC0CB', lw=3)
+plt.plot(Sets, SE_White_average, label='White', c='#D3D3D3', lw=3)
+plt.legend()
+plt.xticks(Sets)
+plt.xlabel('Set')
+plt.ylabel('Average Spatial Error')
+
+plt.show()
