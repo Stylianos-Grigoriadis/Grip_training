@@ -305,21 +305,21 @@ plt.legend()
 plt.show()
 
 plt.plot(Sets, SE_slow_average, label='slow', c='red')
-plt.fill_between(
-    Sets,
-    np.array(SE_slow_average) - np.array(SE_slow_sd),
-    np.array(SE_slow_average) + np.array(SE_slow_sd),
-    color='red',
-    alpha=0.2
-)
+# plt.fill_between(
+#     Sets,
+#     np.array(SE_slow_average) - np.array(SE_slow_sd),
+#     np.array(SE_slow_average) + np.array(SE_slow_sd),
+#     color='red',
+#     alpha=0.2
+# )
 plt.plot(Sets, SE_fast_average, label='fast', c='blue')
-plt.fill_between(
-    Sets,
-    np.array(SE_fast_average) - np.array(SE_fast_sd),
-    np.array(SE_fast_average) + np.array(SE_fast_sd),
-    color='blue',
-    alpha=0.2
-)
+# plt.fill_between(
+#     Sets,
+#     np.array(SE_fast_average) - np.array(SE_fast_sd),
+#     np.array(SE_fast_average) + np.array(SE_fast_sd),
+#     color='blue',
+#     alpha=0.2
+# )
 plt.legend()
 plt.xticks(Sets)
 plt.show()
@@ -332,7 +332,7 @@ plt.fill_between(
     np.array(SE_Sine_average_slow),
     np.array(SE_Sine_average_fast),
     color='#4F4F4F',
-    alpha=0.2
+    alpha=0.6
 )
 plt.fill_between(
     Sets,

@@ -157,7 +157,6 @@ def read_kinvent(path):
             df_set_9,
             df_set_10)
 
-
 def sine_signal_generator(Number_of_data_points, frequency, upper_lim, lower_lim):
 
     x = np.arange(0, Number_of_data_points)
