@@ -407,6 +407,90 @@ def asymptotes(df):
             'adaptation_time' : adaptation_index*time_for_each_target}
     return dict
 
+def adaptation_time_using_sd_right_before_perturbation(df, perturbation_index, sd_factor, first_values, consecutive_values, values_for_sd, name, plot=False):
+    """
+    This function returns the time after the perturbation which was needed to adapt to the perturbation
+    Parameters
+    Input
+            df                  :   The Dataframe
+            perturbation_index  :   The index where the perturbation occurred
+            sd_factor           :   This will be multiplied with the sd of the error before the perturbation
+                                    and if the error after the is less than the mean + sd*sd_factor and more than
+                                    the mean - sd*sd_factor, the algorithm will consider that the adaptation of the
+                                    perturbation occurred
+            first_values        :   At first the error will be too much so to calculate the mean and sd before the perturbation
+                                    right, we erase some values from the beginning
+            consecutive_values  :   This is how many values the algorithm needs to consider so that it decides that the adaptation occurred.
+            total targets       :   The total number of targets
+            Plot                :   Plot the spatial error and the time of adaptation (default value False)
+
+    Output
+            time_of_adaptation  :   The time it took the df['Performance'] to steadily reach df['Target']. This
+                                    number corresponds to the first value of time at which for the next X consecutive_values
+                                    the spatial error was lower than the average +- (sd * sd_factor)
+    """
+    # First synchronize the Time and ClosestSampleTime columns and create a new df with
+    # only the synchronized values
+    df = synchronization_of_Time_and_ClosestSampleTime_Anestis(df)
+
+    # Calculate the spatial error and the average and sd of the spatial error
+    # after the first_values
+    spatial_er = spatial_error(df)
+
+    # The following line calculate the lowest sd for 'values_for_sd' in overlapping window and
+    # the lowest sd is the sd used for further analysis
+    list_for_mean_and_sd = spatial_er[first_values:perturbation_index]
+    list_of_sd = []
+    list_of_means = []
+    for i in range(len(list_for_mean_and_sd) - values_for_sd):
+        average = np.mean(list_for_mean_and_sd[i:i+values_for_sd])
+        sd = np.std(list_for_mean_and_sd[i:i+values_for_sd])
+        list_of_means.append(average)
+        list_of_sd.append(sd)
+    min_sd = min(list_of_sd)
+    min_sd_index = list_of_sd.index(min_sd)
+    average_at_min_sd = list_of_means[min_sd_index]
+    plt.plot(list_of_sd)
+    plt.show()
+
+    # Create an array with consecutive_values equal number
+    consecutive_values_list = np.arange(0,consecutive_values,1)
+
+    # Iterate the spatial error after the perturbation_index to calculate the time of adaptation
+    for i in range(len(spatial_er) - consecutive_values+1):
+        if i >= perturbation_index:
+
+            if (all(spatial_er[i + j] < average_at_min_sd + min_sd * sd_factor for j in consecutive_values_list) and
+                all(spatial_er[i + j] > average_at_min_sd - min_sd * sd_factor for j in consecutive_values_list)
+            ):
+                time_of_adaptation = df['Time'][i] - df['Time'][perturbation_index]
+                break
+
+    if plot == True:
+        try:
+            time_of_adaptation
+            plt.plot(df['Time'], spatial_er, label='Spatial Error')
+            plt.axhline(y=average_at_min_sd, c='k', label = 'Average')
+            plt.axhline(y=average_at_min_sd + min_sd*sd_factor, c='k', ls=":", label=f'{sd_factor}*std')
+            plt.axhline(y=average_at_min_sd - min_sd*sd_factor, c='k', ls=":")
+            plt.axvline(x=df['Time'][perturbation_index] + time_of_adaptation, lw=3, c='red', label='Adaptation instance')
+            plt.axvline(x=df['Time'][perturbation_index], linestyle='--', c='gray', label='Perturbation instance')
+
+            plt.legend()
+            plt.ylabel('Force difference (kg)')
+            plt.xlabel('Time (sec)')
+            plt.title(f'{name}\ntime for adaptation: {round(time_of_adaptation,3)} sec')
+            plt.show()
+        except NameError:
+            print(f"No adaptation was evident for {name}")
+
+    try:
+        time_of_adaptation
+        return time_of_adaptation
+    except:
+        time_of_adaptation = None
+        return time_of_adaptation
+
 def adaptation_time_using_sd(df, sd_factor, consecutive_values, name, mean_spatial_error_isometric_trials, sd_spatial_error_isometric_trials, plot=False):
     """
     This function returns the time after the perturbation which was needed to adapt to the perturbation
@@ -818,3 +902,4 @@ def perturbation_single_trial_with_random_change(Number_of_data_points, starting
     signal[random_index:] = signal[random_index:] + shift_amount
 
     return signal
+
