@@ -437,9 +437,10 @@ def adaptation_time_using_sd_right_before_perturbation(df, perturbation_index, s
     # after the first_values
     spatial_er = spatial_error(df)
 
+
     # The following line calculate the lowest sd for 'values_for_sd' in overlapping window and
     # the lowest sd is the sd used for further analysis
-    list_for_mean_and_sd = spatial_er[first_values:perturbation_index]
+    list_for_mean_and_sd = spatial_er[perturbation_index:]
     list_of_sd = []
     list_of_means = []
     for i in range(len(list_for_mean_and_sd) - values_for_sd):
@@ -450,8 +451,22 @@ def adaptation_time_using_sd_right_before_perturbation(df, perturbation_index, s
     min_sd = min(list_of_sd)
     min_sd_index = list_of_sd.index(min_sd)
     average_at_min_sd = list_of_means[min_sd_index]
-    plt.plot(list_of_sd)
-    plt.show()
+
+    if plot == True:
+        fig, axs = plt.subplots(2, 1, figsize=(8, 6), sharex=False)
+        fig.suptitle(f"{name}", fontsize=14)
+
+        axs[0].plot(spatial_er)
+        axs[0].set_title(f'Spatial Error')
+        axs[1].plot(list_of_sd, label='SD')
+        axs[1].plot(list_of_means, label='Average')
+        axs[1].axvline(x=min_sd_index, color="red", linestyle="--", label="Lowest SD")
+        axs[1].set_title(f'Standard Deviation')
+        axs[1].legend(loc="best")
+
+        plt.tight_layout()
+        plt.show()
+
 
     # Create an array with consecutive_values equal number
     consecutive_values_list = np.arange(0,consecutive_values,1)
@@ -460,8 +475,8 @@ def adaptation_time_using_sd_right_before_perturbation(df, perturbation_index, s
     for i in range(len(spatial_er) - consecutive_values+1):
         if i >= perturbation_index:
 
-            if (all(spatial_er[i + j] < average_at_min_sd + min_sd * sd_factor for j in consecutive_values_list) and
-                all(spatial_er[i + j] > average_at_min_sd - min_sd * sd_factor for j in consecutive_values_list)
+            if (all(spatial_er[i + j] < average_at_min_sd + min_sd * sd_factor for j in consecutive_values_list) #and
+                # all(spatial_er[i + j] > average_at_min_sd - min_sd * sd_factor for j in consecutive_values_list)
             ):
                 time_of_adaptation = df['Time'][i] - df['Time'][perturbation_index]
                 break
@@ -472,7 +487,7 @@ def adaptation_time_using_sd_right_before_perturbation(df, perturbation_index, s
             plt.plot(df['Time'], spatial_er, label='Spatial Error')
             plt.axhline(y=average_at_min_sd, c='k', label = 'Average')
             plt.axhline(y=average_at_min_sd + min_sd*sd_factor, c='k', ls=":", label=f'{sd_factor}*std')
-            plt.axhline(y=average_at_min_sd - min_sd*sd_factor, c='k', ls=":")
+            # plt.axhline(y=average_at_min_sd - min_sd*sd_factor, c='k', ls=":")
             plt.axvline(x=df['Time'][perturbation_index] + time_of_adaptation, lw=3, c='red', label='Adaptation instance')
             plt.axvline(x=df['Time'][perturbation_index], linestyle='--', c='gray', label='Perturbation instance')
 
@@ -483,6 +498,17 @@ def adaptation_time_using_sd_right_before_perturbation(df, perturbation_index, s
             plt.show()
         except NameError:
             print(f"No adaptation was evident for {name}")
+            plt.plot(df['Time'], spatial_er, label='Spatial Error')
+            plt.axhline(y=average_at_min_sd, c='k', label='Average')
+            plt.axhline(y=average_at_min_sd + min_sd * sd_factor, c='k', ls=":", label=f'{sd_factor}*std')
+            # plt.axhline(y=average_at_min_sd - min_sd * sd_factor, c='k', ls=":")
+            plt.axvline(x=df['Time'][perturbation_index], linestyle='--', c='gray', label='Perturbation instance')
+
+            plt.legend()
+            plt.ylabel('Force difference (kg)')
+            plt.xlabel('Time (sec)')
+            plt.title(f'{name}\nNo adaptation')
+            plt.show()
 
     try:
         time_of_adaptation
@@ -491,7 +517,7 @@ def adaptation_time_using_sd_right_before_perturbation(df, perturbation_index, s
         time_of_adaptation = None
         return time_of_adaptation
 
-def adaptation_time_using_sd(df, sd_factor, consecutive_values, name, mean_spatial_error_isometric_trials, sd_spatial_error_isometric_trials, plot=False):
+def adaptation_time_using_sd_from_isometric_trials(df, sd_factor, consecutive_values, name, mean_spatial_error_isometric_trials, sd_spatial_error_isometric_trials, plot=False):
     """
     This function returns the time after the perturbation which was needed to adapt to the perturbation
     Parameters
@@ -515,7 +541,8 @@ def adaptation_time_using_sd(df, sd_factor, consecutive_values, name, mean_spati
     # First synchronize the Time and ClosestSampleTime columns and create a new df with
     # only the synchronized values
     df = synchronization_of_Time_and_ClosestSampleTime_Anestis(df)
-    # print(df['Target'])
+
+
 
     perturbation_index = df[df['Target'] != df['Target'].shift(1)].index[1]
     # print(df.columns)
@@ -529,8 +556,8 @@ def adaptation_time_using_sd(df, sd_factor, consecutive_values, name, mean_spati
     # plt.plot(spatial_er)
     # plt.show()
 
-    mean = mean_spatial_error_isometric_trials
-    sd_before_perturbation = sd_spatial_error_isometric_trials
+    mean_isometric_trial = mean_spatial_error_isometric_trials
+    sd_isometric_trial = sd_spatial_error_isometric_trials
 
     # Create an array with consecutive_values equal number
     consecutive_values_list = np.arange(0,consecutive_values,1)
@@ -539,8 +566,8 @@ def adaptation_time_using_sd(df, sd_factor, consecutive_values, name, mean_spati
     for i in range(len(spatial_er) - consecutive_values+1):
         if i >= perturbation_index:
 
-            if (all(spatial_er[i + j] < mean + sd_before_perturbation * sd_factor for j in consecutive_values_list) and
-                all(spatial_er[i + j] > mean - sd_before_perturbation * sd_factor for j in consecutive_values_list)
+            if (all(spatial_er[i + j] < mean_isometric_trial + sd_isometric_trial * sd_factor for j in consecutive_values_list) #and
+                # all(spatial_er[i + j] > mean_isometric_trial - sd_isometric_trial * sd_factor for j in consecutive_values_list)
             ):
                 time_of_adaptation = df['Time'][i] - df['Time'][perturbation_index]
                 break
@@ -549,22 +576,34 @@ def adaptation_time_using_sd(df, sd_factor, consecutive_values, name, mean_spati
         try:
             time_of_adaptation
             plt.plot(df['Time'], spatial_er, label='Spatial Error')
-            plt.axhline(y=mean, c='k', label = 'Average')
-            plt.axhline(y=mean + sd_before_perturbation*sd_factor, c='k', ls=":", label='std')
-            plt.axhline(y=mean - sd_before_perturbation*sd_factor, c='k', ls=":")
-            plt.axvline(x=df['Time'][perturbation_index] + time_of_adaptation, lw=3, c='red', label='Adaptation instance')
+            plt.axhline(y=mean_isometric_trial, c='k', label='Average')
+            plt.axhline(y=mean_isometric_trial + sd_isometric_trial * sd_factor, c='k', ls=":", label=f'{sd_factor}*std')
+            # plt.axhline(y=average_at_min_sd - min_sd*sd_factor, c='k', ls=":")
+            plt.axvline(x=df['Time'][perturbation_index] + time_of_adaptation, lw=3, c='red',
+                        label='Adaptation instance')
             plt.axvline(x=df['Time'][perturbation_index], linestyle='--', c='gray', label='Perturbation instance')
 
             plt.legend()
             plt.ylabel('Force difference (kg)')
             plt.xlabel('Time (sec)')
-            plt.title(f'{name} Spatial Error\ntime to adapt: {round(time_of_adaptation,3)} sec')
+            plt.title(f'{name}\ntime for adaptation: {round(time_of_adaptation, 3)} sec')
             plt.show()
         except NameError:
             print(f"No adaptation was evident for {name}")
+            plt.plot(df['Time'], spatial_er, label='Spatial Error')
+            plt.axhline(y=mean_isometric_trial, c='k', label='Average')
+            plt.axhline(y=mean_isometric_trial + sd_isometric_trial * sd_factor, c='k', ls=":", label=f'{sd_factor}*std')
+            # plt.axhline(y=average_at_min_sd - min_sd * sd_factor, c='k', ls=":")
+            plt.axvline(x=df['Time'][perturbation_index], linestyle='--', c='gray', label='Perturbation instance')
+
+            plt.legend()
+            plt.ylabel('Force difference (kg)')
+            plt.xlabel('Time (sec)')
+            plt.title(f'{name}\nNo adaptation')
+            plt.show()
 
     try:
-        return time_of_adaptation
+        return round(time_of_adaptation, 2)
     except NameError:
         print(f"No adaptation was evident for {name}")
 

@@ -149,33 +149,45 @@ for file in files:
     Perturbation_after_up_2 = pd.read_csv(r'pertr_up_2.csv', skiprows=2)
     Perturbation_after_up_3 = pd.read_csv(r'pertr_up_3.csv', skiprows=2)
 
-    # plt.plot(Perturbation_after_down_1['ClosestSampleTime'], Perturbation_after_down_1['Target'], label='Targets')
-    # plt.plot(Perturbation_after_down_1['Time'], Perturbation_after_down_1['Performance'], label='Player')
-    # plt.legend()
-    # plt.show()
+    # Filtering at 20 Hz after residual analysis
+    Perturbation_before_down_1['Performance'] = lib.Butterworth(75, 20, Perturbation_before_down_1['Performance'])
+    Perturbation_before_down_2['Performance'] = lib.Butterworth(75, 20, Perturbation_before_down_2['Performance'])
+    Perturbation_before_down_3['Performance'] = lib.Butterworth(75, 20, Perturbation_before_down_3['Performance'])
+    Perturbation_before_up_1['Performance'] = lib.Butterworth(75, 20, Perturbation_before_up_1['Performance'])
+    Perturbation_before_up_2['Performance'] = lib.Butterworth(75, 20, Perturbation_before_up_2['Performance'])
+    Perturbation_before_up_3['Performance'] = lib.Butterworth(75, 20, Perturbation_before_up_3['Performance'])
 
-    time_to_adapt_before_down_1 = lb.adaptation_time_using_sd(Perturbation_before_down_1, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=False)
-    time_to_adapt_before_down_2 = lb.adaptation_time_using_sd(Perturbation_before_down_2, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=False)
-    time_to_adapt_before_down_3 = lb.adaptation_time_using_sd(Perturbation_before_down_3, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=False)
-    time_to_adapt_before_up_1 = lb.adaptation_time_using_sd(Perturbation_before_up_1, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=False)
-    time_to_adapt_before_up_2 = lb.adaptation_time_using_sd(Perturbation_before_up_2, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=False)
-    time_to_adapt_before_up_3 = lb.adaptation_time_using_sd(Perturbation_before_up_3, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=False)
-    time_to_adapt_after_down_1 = lb.adaptation_time_using_sd(Perturbation_after_down_1, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=False)
-    time_to_adapt_after_down_2 = lb.adaptation_time_using_sd(Perturbation_after_down_2, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=False)
-    time_to_adapt_after_down_3 = lb.adaptation_time_using_sd(Perturbation_after_down_3, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=False)
-    time_to_adapt_after_up_1 = lb.adaptation_time_using_sd(Perturbation_after_up_1, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=False)
-    time_to_adapt_after_up_2 = lb.adaptation_time_using_sd(Perturbation_after_up_2, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=False)
-    time_to_adapt_after_up_3 = lb.adaptation_time_using_sd(Perturbation_after_up_3, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=False)
+    Perturbation_after_down_1['Performance'] = lib.Butterworth(75, 20, Perturbation_after_down_1['Performance'])
+    Perturbation_after_down_2['Performance'] = lib.Butterworth(75, 20, Perturbation_after_down_2['Performance'])
+    Perturbation_after_down_3['Performance'] = lib.Butterworth(75, 20, Perturbation_after_down_3['Performance'])
+    Perturbation_after_up_1['Performance'] = lib.Butterworth(75, 20, Perturbation_after_up_1['Performance'])
+    Perturbation_after_up_2['Performance'] = lib.Butterworth(75, 20, Perturbation_after_up_2['Performance'])
+    Perturbation_after_up_3['Performance'] = lib.Butterworth(75, 20, Perturbation_after_up_3['Performance'])
+
+
+
+    time_to_adapt_before_down_1 = lb.adaptation_time_using_sd_from_isometric_trials(Perturbation_before_down_1, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=False)
+    time_to_adapt_before_down_2 = lb.adaptation_time_using_sd_from_isometric_trials(Perturbation_before_down_2, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=False)
+    time_to_adapt_before_down_3 = lb.adaptation_time_using_sd_from_isometric_trials(Perturbation_before_down_3, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=False)
+    time_to_adapt_before_up_1 = lb.adaptation_time_using_sd_from_isometric_trials(Perturbation_before_up_1, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=False)
+    time_to_adapt_before_up_2 = lb.adaptation_time_using_sd_from_isometric_trials(Perturbation_before_up_2, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=False)
+    time_to_adapt_before_up_3 = lb.adaptation_time_using_sd_from_isometric_trials(Perturbation_before_up_3, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=False)
+    time_to_adapt_after_down_1 = lb.adaptation_time_using_sd_from_isometric_trials(Perturbation_after_down_1, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=False)
+    time_to_adapt_after_down_2 = lb.adaptation_time_using_sd_from_isometric_trials(Perturbation_after_down_2, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=False)
+    time_to_adapt_after_down_3 = lb.adaptation_time_using_sd_from_isometric_trials(Perturbation_after_down_3, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=False)
+    time_to_adapt_after_up_1 = lb.adaptation_time_using_sd_from_isometric_trials(Perturbation_after_up_1, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=False)
+    time_to_adapt_after_up_2 = lb.adaptation_time_using_sd_from_isometric_trials(Perturbation_after_up_2, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=False)
+    time_to_adapt_after_up_3 = lb.adaptation_time_using_sd_from_isometric_trials(Perturbation_after_up_3, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=False)
 
 
     def safe_mean(*args):
         valid = [x for x in args if x is not None]
-        return np.mean(valid) if valid else None
+        return round(np.mean(valid),2) if valid else None
 
 
     def safe_min(*args):
         valid = [x for x in args if x is not None]
-        return np.min(valid) if valid else None
+        return round(np.min(valid),2) if valid else None
 
 
     average_time_to_adapt_before_down = safe_mean(time_to_adapt_before_down_1, time_to_adapt_before_down_2, time_to_adapt_before_down_3)
@@ -223,33 +235,33 @@ for file in files:
 
 dist = {'ID'        : list_ID,
         'Group ID'  : list_ID_team,
+        'Average Time to adapt before down': list_average_time_to_adapt_before_down,
+        'Average Time to adapt before up': list_average_time_to_adapt_before_up,
+        'Average Time to adapt after down': list_average_time_to_adapt_after_down,
+        'Average Time to adapt after up': list_average_time_to_adapt_after_up,
+        'Min Time to adapt before down': list_min_time_to_adapt_before_down,
+        'Min Time to adapt before up': list_min_time_to_adapt_before_up,
+        'Min Time to adapt after down': list_min_time_to_adapt_after_down,
+        'Min Time to adapt after up': list_min_time_to_adapt_after_up,
         'Time_to_adapt_before_down_1'  : list_time_to_adapt_before_down_1,
         'Time_to_adapt_before_down_2'  : list_time_to_adapt_before_down_2,
         'Time_to_adapt_before_down_3'  : list_time_to_adapt_before_down_3,
-        'Average Time to adapt before down': list_average_time_to_adapt_before_down,
-        'Min Time to adapt before down': list_min_time_to_adapt_before_down,
         'Time_to_adapt_before_up_1'  : list_time_to_adapt_before_up_1,
         'Time_to_adapt_before_up_2'  : list_time_to_adapt_before_up_2,
         'Time_to_adapt_before_up_3'  : list_time_to_adapt_before_up_3,
-        'Average Time to adapt before up': list_average_time_to_adapt_before_up,
-        'Min Time to adapt before up': list_min_time_to_adapt_before_up,
         'Time_to_adapt_after_down_1'  : list_time_to_adapt_after_down_1,
         'Time_to_adapt_after_down_2'  : list_time_to_adapt_after_down_2,
         'Time_to_adapt_after_down_3'  : list_time_to_adapt_after_down_3,
-        'Average Time to adapt after down': list_average_time_to_adapt_after_down,
-        'Min Time to adapt after down': list_min_time_to_adapt_after_down,
         'Time_to_adapt_after_up_1'  : list_time_to_adapt_after_up_1,
         'Time_to_adapt_after_up_2'  : list_time_to_adapt_after_up_2,
-        'Time_to_adapt_after_up_3'  : list_time_to_adapt_after_up_3,
-        'Average Time to adapt after up': list_average_time_to_adapt_after_up,
-        'Min Time to adapt after up': list_min_time_to_adapt_after_up,
+        'Time_to_adapt_after_up_3'  : list_time_to_adapt_after_up_3
         }
 
 results = pd.DataFrame(dist)
 print(results)
-# directory_to_save = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Pilot study 4\Results'
-# os.chdir(directory_to_save)
-# results.to_excel('Perturbation_results_2_sd.xlsx')
+directory_to_save = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Pilot study 4\Results\Perturbation results'
+os.chdir(directory_to_save)
+results.to_excel('Perturbation_results_2_sd_isometric_max_threshold.xlsx')
 
 # Plot of Minimum adaptation times
 df_long = results.melt(id_vars=['Group ID'],

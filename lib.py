@@ -139,7 +139,6 @@ def Butterworth(fs, fc, var):
             var:    data series
     """
 
-
     b, a = signal.butter(N=2, Wn=fc, btype='low', fs=fs)
     return signal.filtfilt(b, a, var)
 
@@ -245,45 +244,15 @@ def derivative(array,fs):
 def Pink_noise_generator():
     pass
 
-def pink_noise_generator2(number_of_sets,targets_per_set,RM,time_per_set,percentage_of_mean,max_perc,min_perc,H=1):
-    """
-    Generation of pink noise signal
-    Inputs:
-            number_of_sets:     Total number of sets
-            targets_per_set:    Total targets for each set
-            RM:                 Max Force assessment
-            time_per_set =      Total time of each set
-            std:                Standard Deviation of generated time series
-            H =                 Hurst exponent, the resulted signal will have Hurst exponent ± 0.02, default H = 1
-            percentage_of_mean: This is the percentage of 1Rm which will be the mean value for our signal
-     Outputs:
-            signal:             A list with a pink noise signal
-            Time:               A list with the Time
-    """
-    beta=1
+def residual_analysis(signal, sampling_freq, list_cutoff_freq):
+    residuals_list = []
+    signal = np.array(signal)
+    for i in range(len(list_cutoff_freq)):
+        filtered_signal = Butterworth(sampling_freq,list_cutoff_freq[i],signal)
+        filtered_signal = np.array(filtered_signal)
+        sum_squares = np.sum((signal - filtered_signal)**2)
+        residual = np.sqrt(sum_squares/len(signal))
+        residuals_list.append(residual)
 
-    total_number_targets=number_of_sets*targets_per_set
-    found_time_series = False
-    i=0
-    std = (10*RM)/100
-    while not found_time_series:
-        signal = cn.powerlaw_psd_gaussian(beta, total_number_targets)
-        mean = (percentage_of_mean*RM)/100
-        print("mean")
-        print(mean)
-        signal = [i + mean for i in signal]
-        signal = [i * std for i in signal]
-        mean_post = np.mean(signal)
-        signal = [i + (mean - mean_post) for i in signal]
-        DFA_a = DFA(signal)
-        # the mean value is 70% of 1RM therefore we want our signal to be between 50% and 90% of 1RM
-        max = (mean * max_perc) / 70
-        min = (mean * min_perc) / 70
-        i += 1
-        if DFA_a > (H - 0.02) and DFA_a < (H + 0.02) and np.max(signal)<max and np.min(signal)>min:
-            print(f"Found a pink signal with the right characteristics after {i} efforts")
-            found_time_series = True
-    total_time = number_of_sets * time_per_set
-    step_for_time = total_time / (number_of_sets * targets_per_set)
-    Time = np.arange(0, total_time, step_for_time)
-    return signal,Time
+    plt.plot(list_cutoff_freq, residuals_list)
+    plt.show()
