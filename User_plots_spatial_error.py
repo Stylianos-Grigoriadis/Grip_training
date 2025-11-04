@@ -296,15 +296,15 @@ Sets = range(1,11)
 #     color='#D3D3D3',
 #     alpha=0.2
 # )
-plt.plot(Sets, SE_Sine_average_fast, label='Sine_fast', c='#4F4F4F', ls=':')
-plt.plot(Sets, SE_Pink_average_fast, label='Pink_fast', c='#FFC0CB', ls=':')
-plt.plot(Sets, SE_White_average_fast, label='White_fast', c='#D3D3D3', ls=':')
-
-plt.xticks(Sets)
-plt.legend()
-plt.show()
-
-plt.plot(Sets, SE_slow_average, label='slow', c='red')
+# plt.plot(Sets, SE_Sine_average_fast, label='Sine_fast', c='#4F4F4F', ls=':')
+# plt.plot(Sets, SE_Pink_average_fast, label='Pink_fast', c='#FFC0CB', ls=':')
+# plt.plot(Sets, SE_White_average_fast, label='White_fast', c='#D3D3D3', ls=':')
+#
+# plt.xticks(Sets)
+# plt.legend()
+# plt.show()
+#
+# plt.plot(Sets, SE_slow_average, label='slow', c='red')
 # plt.fill_between(
 #     Sets,
 #     np.array(SE_slow_average) - np.array(SE_slow_sd),
@@ -312,55 +312,68 @@ plt.plot(Sets, SE_slow_average, label='slow', c='red')
 #     color='red',
 #     alpha=0.2
 # )
-plt.plot(Sets, SE_fast_average, label='fast', c='blue')
-# plt.fill_between(
-#     Sets,
-#     np.array(SE_fast_average) - np.array(SE_fast_sd),
-#     np.array(SE_fast_average) + np.array(SE_fast_sd),
-#     color='blue',
-#     alpha=0.2
-# )
-plt.legend()
-plt.xticks(Sets)
-plt.show()
+# plt.plot(Sets, SE_fast_average, label='fast', c='blue')
+# # plt.fill_between(
+# #     Sets,
+# #     np.array(SE_fast_average) - np.array(SE_fast_sd),
+# #     np.array(SE_fast_average) + np.array(SE_fast_sd),
+# #     color='blue',
+# #     alpha=0.2
+# # )
+# plt.legend()
+# plt.xticks(Sets)
+# plt.show()
 
 
-
-
-plt.fill_between(
+# color_background = '#E8E8E8'
+#
+# fig, ax = plt.subplots(figsize=(8, 5), facecolor=color_background)  # dark grey figure
+# ax.set_facecolor(color_background)  # dark grey plot background
+fig, ax = plt.subplots(figsize=(8, 5))  # dark grey figure
+white_color = 'slategray'
+pink_color = 'lightpink'
+sine_color = 'black'
+ax.fill_between(
     Sets,
     np.array(SE_Sine_average_slow),
     np.array(SE_Sine_average_fast),
-    color='#4F4F4F',
+    color=sine_color,
     alpha=0.6
 )
-plt.fill_between(
+ax.fill_between(
     Sets,
     np.array(SE_Pink_average_slow),
     np.array(SE_Pink_average_fast),
-    color='#FFC0CB',
-    alpha=0.2
+    color=pink_color,
+    alpha=0.25
 )
-plt.fill_between(
+ax.fill_between(
     Sets,
     np.array(SE_White_average_slow),
     np.array(SE_White_average_fast),
-    color='#D3D3D3',
+    color=white_color,
     alpha=0.2
 )
-plt.plot(Sets, SE_Sine_average_slow, label='Sine Slow', c='#4F4F4F', ls='--')
-plt.plot(Sets, SE_Sine_average_fast, label='Sine Fast', c='#4F4F4F', ls=':')
-plt.plot(Sets, SE_Pink_average_slow, label='Pink Slow', c='#FFC0CB', ls='--')
-plt.plot(Sets, SE_Pink_average_fast, label='Pink Fast', c='#FFC0CB', ls=':')
-plt.plot(Sets, SE_White_average_slow, label='White Slow', c='#D3D3D3', ls='--')
-plt.plot(Sets, SE_White_average_fast, label='White Fast', c='#D3D3D3', ls=':')
 
-plt.plot(Sets, SE_Sine_average, label='Sine', c='#4F4F4F', lw=3)
-plt.plot(Sets, SE_Pink_average, label='Pink', c='#FFC0CB', lw=3)
-plt.plot(Sets, SE_White_average, label='White', c='#D3D3D3', lw=3)
-plt.legend()
-plt.xticks(Sets)
-plt.xlabel('Set')
-plt.ylabel('Average Spatial Error')
+ax.plot(Sets, SE_Sine_average_slow, label='Sine Slow', c=sine_color, ls='--', lw=3)
+ax.plot(Sets, SE_Sine_average_fast, label='Sine Fast', c=sine_color, ls=':', lw=3)
+ax.plot(Sets, SE_Pink_average_slow, label='Pink Slow', c=pink_color, ls='--', lw=3)
+ax.plot(Sets, SE_Pink_average_fast, label='Pink Fast', c=pink_color, ls=':', lw=3)
+# ax.plot(Sets, SE_White_average_slow, c='k', ls='--', lw=3)
+# ax.plot(Sets, SE_White_average_fast, c='k', ls=':', lw=3)
+ax.plot(Sets, SE_White_average_slow, label='White Slow', c=white_color, ls='--', lw=3)
+ax.plot(Sets, SE_White_average_fast, label='White Fast', c=white_color, ls=':', lw=3)
+
+ax.plot(Sets, SE_Sine_average, label='Sine', c=sine_color, lw=3)
+ax.plot(Sets, SE_Pink_average, label='Pink', c=pink_color, lw=3)
+ax.plot(Sets, SE_White_average, label='White', c=white_color, lw=3)
+
+ax.legend()
+ax.set_xticks(Sets)
+ax.set_xlabel('Set')
+ax.set_ylabel('Average Spatial Error')
+# ax.spines['bottom'].set_color('white')
+# ax.spines['left'].set_color('white')
 
 plt.show()
+
