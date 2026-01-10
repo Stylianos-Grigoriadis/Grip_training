@@ -129,8 +129,9 @@ for file in files:
     plt.xlabel("Cutoff Frequency (Hz)")
     plt.ylabel("RMS Residual Error")
     plt.grid(True)
+    plt.ylim(-0.05, 0.85)
 
-    save_dir = r"C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Pilot study 4\Results\Residual analysis"
+    save_dir = r"C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Pilot study 4\Results\Residual analysis\Isometric trials"
     save_path = os.path.join(save_dir, f"{ID}_rms_plot.png")
     plt.savefig(save_path, dpi=300, bbox_inches='tight')
 
