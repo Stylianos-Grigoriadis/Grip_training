@@ -4,24 +4,20 @@ import itertools
 import matplotlib.pyplot as plt
 import os
 import numpy as np
-from scipy.stats import linregress
 from Lib_grip import spatial_error
 import glob
 import lib
 
-# def variable_error(spatial_error, avg_spatial_error, trials):
-#     variable_error = np.sqrt(np.sum((spatial_error - avg_spatial_error) ** 2) / (trials - 1))
-#     # variable_error = np.array(variable_error)
-#     return variable_error
 
-#def variable_error(spatial_error):
-    # mean_error = np.mean(spatial_error)
-    # trials = len(spatial_error)
-    # ve = np.sqrt(np.sum((spatial_error - mean_error) ** 2) / (trials - 1))
-    # return ve
+pd.set_option('display.max_rows', None)
 
 
-directory_path = r'C:\Users\USER\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\Grip training\Pilot study 4\Data'
+
+Stylianos = True
+if Stylianos == True:
+    directory_path = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Data\Valid data\Force data'
+else:
+    directory_path = r'C:\Users\USER\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\Grip training\Data\Valid data\Force data'
 
 files = glob.glob(os.path.join(directory_path, "*"))
 
@@ -51,15 +47,29 @@ list_variable_error_10 = []
 
 list_ID = []
 list_ID_team = []
+list_signal = []
+list_speed = []
 
 for file in files:
     os.chdir(file)
     ID = os.path.basename(file)
-    list_ID.append(ID)
     ID_team = ID.split(".")
-    #print(ID_team)
+    signal = ID.split('_')[0]
+    speed_code = ID.split('_')[1].split('.')[0]
+    speed_map = {
+        '65': 'Slow',
+        '100': 'Fast'
+    }
+    speed = speed_map[speed_code]
+
+    list_ID.append(ID)
     list_ID_team.append(ID_team[0])
-    #print(ID) # We keep this so that we know which participant is assessed during the run of the code
+    list_signal.append(signal)
+    list_speed.append(speed)
+    print(ID) # We keep this so that we know which participant is assessed during the run of the code
+    print(ID_team[0])
+    print(signal)
+    print(speed)
 
     # Trial analysis for calculation of mean and sd of spatial error
     file_training_trials = file + r'\Training_trials'
@@ -123,17 +133,30 @@ for file in files:
     synch_df9 = lb.synchronization_of_Time_and_ClosestSampleTime_Anestis(df9)
     synch_df10 = lb.synchronization_of_Time_and_ClosestSampleTime_Anestis(df10)
 
+    # After visual inspection we decided that after 3 seconds the force output stabilizes
+    time_threshold = 3
+    synch_df1_after_threshold = synch_df1[synch_df1['Time']>time_threshold].reset_index(drop=True).copy()
+    synch_df2_after_threshold = synch_df2[synch_df2['Time']>time_threshold].reset_index(drop=True).copy()
+    synch_df3_after_threshold = synch_df3[synch_df3['Time']>time_threshold].reset_index(drop=True).copy()
+    synch_df4_after_threshold = synch_df4[synch_df4['Time']>time_threshold].reset_index(drop=True).copy()
+    synch_df5_after_threshold = synch_df5[synch_df5['Time']>time_threshold].reset_index(drop=True).copy()
+    synch_df6_after_threshold = synch_df6[synch_df6['Time']>time_threshold].reset_index(drop=True).copy()
+    synch_df7_after_threshold = synch_df7[synch_df7['Time']>time_threshold].reset_index(drop=True).copy()
+    synch_df8_after_threshold = synch_df8[synch_df8['Time']>time_threshold].reset_index(drop=True).copy()
+    synch_df9_after_threshold = synch_df9[synch_df9['Time']>time_threshold].reset_index(drop=True).copy()
+    synch_df10_after_threshold = synch_df10[synch_df10['Time']>time_threshold].reset_index(drop=True).copy()
+
     # Calculation of Spatial Error for each trial
-    spatial_errors_1 = spatial_error(synch_df1)
-    spatial_errors_2 = spatial_error(synch_df2)
-    spatial_errors_3 = spatial_error(synch_df3)
-    spatial_errors_4 = spatial_error(synch_df4)
-    spatial_errors_5 = spatial_error(synch_df5)
-    spatial_errors_6 = spatial_error(synch_df6)
-    spatial_errors_7 = spatial_error(synch_df7)
-    spatial_errors_8 = spatial_error(synch_df8)
-    spatial_errors_9 = spatial_error(synch_df9)
-    spatial_errors_10 = spatial_error(synch_df10)
+    spatial_errors_1 = spatial_error(synch_df1_after_threshold)
+    spatial_errors_2 = spatial_error(synch_df2_after_threshold)
+    spatial_errors_3 = spatial_error(synch_df3_after_threshold)
+    spatial_errors_4 = spatial_error(synch_df4_after_threshold)
+    spatial_errors_5 = spatial_error(synch_df5_after_threshold)
+    spatial_errors_6 = spatial_error(synch_df6_after_threshold)
+    spatial_errors_7 = spatial_error(synch_df7_after_threshold)
+    spatial_errors_8 = spatial_error(synch_df8_after_threshold)
+    spatial_errors_9 = spatial_error(synch_df9_after_threshold)
+    spatial_errors_10 = spatial_error(synch_df10_after_threshold)
 
     # Calculation of Mean Spatial Error for each trial
     avg_spatial_error_1 = np.mean(spatial_errors_1)
@@ -187,6 +210,8 @@ for file in files:
 dist = {
        'ID'        : list_ID,
        'Group ID'  : list_ID_team,
+       'Signal'    : list_signal,
+       'Speed'     : list_speed,
        'Mean Spatial error trail 1': list_avg_spatial_error_1,
        'Mean Spatial error trail 2': list_avg_spatial_error_2,
        'Mean Spatial error trail 3': list_avg_spatial_error_3,
@@ -209,24 +234,12 @@ dist = {
        'Variable Error trial  10': list_variable_error_10
        }
 
-# print(list_variable_error_1)
-# print(len(list_variable_error_1))
-
-
-# # Comparison of Performance and Targets over time
-# plt.plot(synch_df1["Target"], color='g', label='Targets')
-# plt.plot(synch_df1["Performance"], color='r', label='Performance')
-# plt.legend()
-# plt.show()
-#
-# # Comparison of Spatial Error and Variable Error over performance time
-# plt.plot(list_variable_error_1, color='r', label='Variable Error')
-# plt.plot(spatial_errors_1, color='b', label='Average Spatial Error')
-# plt.legend()
-# plt.show()
 
 df_results = pd.DataFrame(dist)
-directory_to_save = r'C:\Users\USER\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\Grip training\Pilot study 4\Results'
+if Stylianos == True:
+    directory_to_save = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Results'
+else:
+    directory_to_save = r'C:\Users\USER\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\Grip training\Results'
 
 os.chdir(directory_to_save)
-df_results.to_excel('Mean_spatial_error_&_Variable_error_results_with_15_low_pass_filter.xlsx')
+df_results.to_excel('Training_trials_results.xlsx')

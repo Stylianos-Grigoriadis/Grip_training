@@ -14,12 +14,12 @@ plt.rcParams['font.size'] = 16
 
 stylianos = True
 if stylianos == True:
-    directory_path = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Pilot study 4\Results'
+    directory_path = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Results'
 else:
-    directory_path = r'C:\Users\USER\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\Grip training\Pilot study 4\Results'
+    directory_path = r'C:\Users\USER\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\Grip training\Results'
 
 os.chdir(directory_path)
-results = pd.read_excel('Mean_spatial_error_results_with_15_low_pass_filter.xlsx')
+results = pd.read_excel('Training_trials_results.xlsx')
 
 
 ################### Plot for Set*Signal ###################
@@ -178,9 +178,9 @@ SE_fast_sd = []
 
 for i in range(1,11):
     
-    SE_Sine_slow = results.loc[(results['Signal ID'] == 'Sine') & (results['Speed ID'] == 'Slow') , f'Mean Spatial error trail {i}'].to_numpy()
-    SE_Sine_fast = results.loc[(results['Signal ID'] == 'Sine') & (results['Speed ID'] == 'Fast') , f'Mean Spatial error trail {i}'].to_numpy()
-    SE_Sine = results.loc[(results['Signal ID'] == 'Sine'), f'Mean Spatial error trail {i}'].to_numpy()
+    SE_Sine_slow = results.loc[(results['Signal'] == 'Sine') & (results['Speed'] == 'Slow') , f'Mean Spatial error trail {i}'].to_numpy()
+    SE_Sine_fast = results.loc[(results['Signal'] == 'Sine') & (results['Speed'] == 'Fast') , f'Mean Spatial error trail {i}'].to_numpy()
+    SE_Sine = results.loc[(results['Signal'] == 'Sine'), f'Mean Spatial error trail {i}'].to_numpy()
     SE_Sine_average_slow.append(float(np.mean(SE_Sine_slow)))
     SE_Sine_average_fast.append(float(np.mean(SE_Sine_fast)))
     SE_Sine_average.append(float(np.mean(SE_Sine)))
@@ -188,9 +188,9 @@ for i in range(1,11):
     SE_Sine_sd_fast.append(float(np.std(SE_Sine_fast)))
     SE_Sine_sd.append(float(np.std(SE_Sine)))
     
-    SE_Pink_slow = results.loc[(results['Signal ID'] == 'Pink') & (results['Speed ID'] == 'Slow') , f'Mean Spatial error trail {i}'].to_numpy()
-    SE_Pink_fast = results.loc[(results['Signal ID'] == 'Pink') & (results['Speed ID'] == 'Fast') , f'Mean Spatial error trail {i}'].to_numpy()
-    SE_Pink = results.loc[(results['Signal ID'] == 'Pink'), f'Mean Spatial error trail {i}'].to_numpy()
+    SE_Pink_slow = results.loc[(results['Signal'] == 'Pink') & (results['Speed'] == 'Slow') , f'Mean Spatial error trail {i}'].to_numpy()
+    SE_Pink_fast = results.loc[(results['Signal'] == 'Pink') & (results['Speed'] == 'Fast') , f'Mean Spatial error trail {i}'].to_numpy()
+    SE_Pink = results.loc[(results['Signal'] == 'Pink'), f'Mean Spatial error trail {i}'].to_numpy()
     SE_Pink_average_slow.append(float(np.mean(SE_Pink_slow)))
     SE_Pink_average_fast.append(float(np.mean(SE_Pink_fast)))
     SE_Pink_average.append(float(np.mean(SE_Pink)))
@@ -198,9 +198,9 @@ for i in range(1,11):
     SE_Pink_sd_fast.append(float(np.std(SE_Pink_fast)))
     SE_Pink_sd.append(float(np.std(SE_Pink)))
     
-    SE_White_slow = results.loc[(results['Signal ID'] == 'White') & (results['Speed ID'] == 'Slow') , f'Mean Spatial error trail {i}'].to_numpy()
-    SE_White_fast = results.loc[(results['Signal ID'] == 'White') & (results['Speed ID'] == 'Fast') , f'Mean Spatial error trail {i}'].to_numpy()
-    SE_White = results.loc[(results['Signal ID'] == 'White'), f'Mean Spatial error trail {i}'].to_numpy()
+    SE_White_slow = results.loc[(results['Signal'] == 'White') & (results['Speed'] == 'Slow') , f'Mean Spatial error trail {i}'].to_numpy()
+    SE_White_fast = results.loc[(results['Signal'] == 'White') & (results['Speed'] == 'Fast') , f'Mean Spatial error trail {i}'].to_numpy()
+    SE_White = results.loc[(results['Signal'] == 'White'), f'Mean Spatial error trail {i}'].to_numpy()
     SE_White_average_slow.append(float(np.mean(SE_White_slow)))
     SE_White_average_fast.append(float(np.mean(SE_White_fast)))
     SE_White_average.append(float(np.mean(SE_White)))
@@ -208,10 +208,10 @@ for i in range(1,11):
     SE_White_sd_fast.append(float(np.std(SE_White_fast)))
     SE_White_sd.append(float(np.std(SE_White)))
 
-    SE_slow = results.loc[(results['Speed ID'] == 'Slow') , f'Mean Spatial error trail {i}'].to_numpy()
+    SE_slow = results.loc[(results['Speed'] == 'Slow') , f'Mean Spatial error trail {i}'].to_numpy()
     SE_slow_average.append(float(np.mean(SE_White_slow)))
     SE_slow_sd.append(float(np.std(SE_White_slow)))
-    SE_fast = results.loc[(results['Speed ID'] == 'Fast') , f'Mean Spatial error trail {i}'].to_numpy()
+    SE_fast = results.loc[(results['Speed'] == 'Fast') , f'Mean Spatial error trail {i}'].to_numpy()
     SE_fast_average.append(float(np.mean(SE_White_fast)))
     SE_fast_sd.append(float(np.std(SE_White_fast)))
 
@@ -221,108 +221,108 @@ for i in range(1,11):
 
 Sets = range(1,11)
 # Sine
-# plt.plot(Sets, SE_Sine_average, label='Sine', c='#4F4F4F')
-# plt.plot(Sets, SE_Pink_average, label='Pink', c='#FFC0CB')
-# plt.plot(Sets, SE_White_average, label='White', c='#D3D3D3')
-# plt.fill_between(
-#     Sets,
-#     np.array(SE_Sine_average) - np.array(SE_Sine_sd),
-#     np.array(SE_Sine_average) + np.array(SE_Sine_sd),
-#     color='#4F4F4F',
-#     alpha=0.2
-# )
-# plt.fill_between(
-#     Sets,
-#     np.array(SE_Pink_average) - np.array(SE_Pink_sd),
-#     np.array(SE_Pink_average) + np.array(SE_Pink_sd),
-#     color='#FFC0CB',
-#     alpha=0.2
-# )
-# plt.fill_between(
-#     Sets,
-#     np.array(SE_White_average) - np.array(SE_White_sd),
-#     np.array(SE_White_average) + np.array(SE_White_sd),
-#     color='#D3D3D3',
-#     alpha=0.2
-# )
+plt.plot(Sets, SE_Sine_average, label='Sine', c='#4F4F4F')
+plt.plot(Sets, SE_Pink_average, label='Pink', c='#FFC0CB')
+plt.plot(Sets, SE_White_average, label='White', c='#D3D3D3')
+plt.fill_between(
+    Sets,
+    np.array(SE_Sine_average) - np.array(SE_Sine_sd),
+    np.array(SE_Sine_average) + np.array(SE_Sine_sd),
+    color='#4F4F4F',
+    alpha=0.2
+)
+plt.fill_between(
+    Sets,
+    np.array(SE_Pink_average) - np.array(SE_Pink_sd),
+    np.array(SE_Pink_average) + np.array(SE_Pink_sd),
+    color='#FFC0CB',
+    alpha=0.2
+)
+plt.fill_between(
+    Sets,
+    np.array(SE_White_average) - np.array(SE_White_sd),
+    np.array(SE_White_average) + np.array(SE_White_sd),
+    color='#D3D3D3',
+    alpha=0.2
+)
 
 
 
-# plt.plot(Sets, SE_Sine_average_slow, label='Sine_slow', c='#4F4F4F', ls='--')
-# plt.plot(Sets, SE_Pink_average_slow, label='Pink_slow', c='#FFC0CB', ls='--')
-# plt.plot(Sets, SE_White_average_slow, label='White_slow', c='#D3D3D3', ls='--')
-# plt.fill_between(
-#     Sets,
-#     np.array(SE_Sine_average_slow) - np.array(SE_Sine_sd_slow),
-#     np.array(SE_Sine_average_slow) + np.array(SE_Sine_sd_slow),
-#     color='#4F4F4F',
-#     alpha=0.2
-# )
-# plt.fill_between(
-#     Sets,
-#     np.array(SE_Pink_average_slow) - np.array(SE_Pink_sd_slow),
-#     np.array(SE_Pink_average_slow) + np.array(SE_Pink_sd_slow),
-#     color='#FFC0CB',
-#     alpha=0.2
-# )
-# plt.fill_between(
-#     Sets,
-#     np.array(SE_White_average_slow) - np.array(SE_White_sd_slow),
-#     np.array(SE_White_average_slow) + np.array(SE_White_sd_slow),
-#     color='#D3D3D3',
-#     alpha=0.2
-# )
+plt.plot(Sets, SE_Sine_average_slow, label='Sine_slow', c='#4F4F4F', ls='--')
+plt.plot(Sets, SE_Pink_average_slow, label='Pink_slow', c='#FFC0CB', ls='--')
+plt.plot(Sets, SE_White_average_slow, label='White_slow', c='#D3D3D3', ls='--')
+plt.fill_between(
+    Sets,
+    np.array(SE_Sine_average_slow) - np.array(SE_Sine_sd_slow),
+    np.array(SE_Sine_average_slow) + np.array(SE_Sine_sd_slow),
+    color='#4F4F4F',
+    alpha=0.2
+)
+plt.fill_between(
+    Sets,
+    np.array(SE_Pink_average_slow) - np.array(SE_Pink_sd_slow),
+    np.array(SE_Pink_average_slow) + np.array(SE_Pink_sd_slow),
+    color='#FFC0CB',
+    alpha=0.2
+)
+plt.fill_between(
+    Sets,
+    np.array(SE_White_average_slow) - np.array(SE_White_sd_slow),
+    np.array(SE_White_average_slow) + np.array(SE_White_sd_slow),
+    color='#D3D3D3',
+    alpha=0.2
+)
 
 
 
-# plt.fill_between(
-#     Sets,
-#     np.array(SE_Sine_average_fast) - np.array(SE_Sine_sd_fast),
-#     np.array(SE_Sine_average_fast) + np.array(SE_Sine_sd_fast),
-#     color='#4F4F4F',
-#     alpha=0.2
-# )
-# plt.fill_between(
-#     Sets,
-#     np.array(SE_Pink_average_fast) - np.array(SE_Pink_sd_fast),
-#     np.array(SE_Pink_average_fast) + np.array(SE_Pink_sd_fast),
-#     color='#FFC0CB',
-#     alpha=0.2
-# )
-# plt.fill_between(
-#     Sets,
-#     np.array(SE_White_average_fast) - np.array(SE_White_sd_fast),
-#     np.array(SE_White_average_fast) + np.array(SE_White_sd_fast),
-#     color='#D3D3D3',
-#     alpha=0.2
-# )
-# plt.plot(Sets, SE_Sine_average_fast, label='Sine_fast', c='#4F4F4F', ls=':')
-# plt.plot(Sets, SE_Pink_average_fast, label='Pink_fast', c='#FFC0CB', ls=':')
-# plt.plot(Sets, SE_White_average_fast, label='White_fast', c='#D3D3D3', ls=':')
-#
-# plt.xticks(Sets)
-# plt.legend()
-# plt.show()
-#
-# plt.plot(Sets, SE_slow_average, label='slow', c='red')
-# plt.fill_between(
-#     Sets,
-#     np.array(SE_slow_average) - np.array(SE_slow_sd),
-#     np.array(SE_slow_average) + np.array(SE_slow_sd),
-#     color='red',
-#     alpha=0.2
-# )
-# plt.plot(Sets, SE_fast_average, label='fast', c='blue')
-# # plt.fill_between(
-# #     Sets,
-# #     np.array(SE_fast_average) - np.array(SE_fast_sd),
-# #     np.array(SE_fast_average) + np.array(SE_fast_sd),
-# #     color='blue',
-# #     alpha=0.2
-# # )
-# plt.legend()
-# plt.xticks(Sets)
-# plt.show()
+plt.fill_between(
+    Sets,
+    np.array(SE_Sine_average_fast) - np.array(SE_Sine_sd_fast),
+    np.array(SE_Sine_average_fast) + np.array(SE_Sine_sd_fast),
+    color='#4F4F4F',
+    alpha=0.2
+)
+plt.fill_between(
+    Sets,
+    np.array(SE_Pink_average_fast) - np.array(SE_Pink_sd_fast),
+    np.array(SE_Pink_average_fast) + np.array(SE_Pink_sd_fast),
+    color='#FFC0CB',
+    alpha=0.2
+)
+plt.fill_between(
+    Sets,
+    np.array(SE_White_average_fast) - np.array(SE_White_sd_fast),
+    np.array(SE_White_average_fast) + np.array(SE_White_sd_fast),
+    color='#D3D3D3',
+    alpha=0.2
+)
+plt.plot(Sets, SE_Sine_average_fast, label='Sine_fast', c='#4F4F4F', ls=':')
+plt.plot(Sets, SE_Pink_average_fast, label='Pink_fast', c='#FFC0CB', ls=':')
+plt.plot(Sets, SE_White_average_fast, label='White_fast', c='#D3D3D3', ls=':')
+
+plt.xticks(Sets)
+plt.legend()
+plt.show()
+
+plt.plot(Sets, SE_slow_average, label='slow', c='red')
+plt.fill_between(
+    Sets,
+    np.array(SE_slow_average) - np.array(SE_slow_sd),
+    np.array(SE_slow_average) + np.array(SE_slow_sd),
+    color='red',
+    alpha=0.2
+)
+plt.plot(Sets, SE_fast_average, label='fast', c='blue')
+plt.fill_between(
+    Sets,
+    np.array(SE_fast_average) - np.array(SE_fast_sd),
+    np.array(SE_fast_average) + np.array(SE_fast_sd),
+    color='blue',
+    alpha=0.2
+)
+plt.legend()
+plt.xticks(Sets)
+plt.show()
 
 
 # color_background = '#E8E8E8'
@@ -333,36 +333,36 @@ fig, ax = plt.subplots(figsize=(8, 5))  # dark grey figure
 white_color = 'lightgrey'
 pink_color = '#FF69B4'
 sine_color = 'black'
-# ax.fill_between(
-#     Sets,
-#     np.array(SE_Sine_average_slow),
-#     np.array(SE_Sine_average_fast),
-#     color=sine_color,
-#     alpha=0.6
-# )
-# ax.fill_between(
-#     Sets,
-#     np.array(SE_Pink_average_slow),
-#     np.array(SE_Pink_average_fast),
-#     color=pink_color,
-#     alpha=0.25
-# )
-# ax.fill_between(
-#     Sets,
-#     np.array(SE_White_average_slow),
-#     np.array(SE_White_average_fast),
-#     color=white_color,
-#     alpha=0.2
-# )
-#
-# ax.plot(Sets, SE_Sine_average_slow, label='Sine Slow', c=sine_color, ls='--', lw=3)
-# ax.plot(Sets, SE_Sine_average_fast, label='Sine Fast', c=sine_color, lw=3)
-# ax.plot(Sets, SE_Pink_average_slow, label='Pink Slow', c=pink_color, ls='--', lw=3)
-# ax.plot(Sets, SE_Pink_average_fast, label='Pink Fast', c=pink_color, lw=3)
-# # ax.plot(Sets, SE_White_average_slow, c='k', ls='--', lw=3)
-# # ax.plot(Sets, SE_White_average_fast, c='k', ls=':', lw=3)
-# ax.plot(Sets, SE_White_average_slow, label='White Slow', c=white_color, ls='--', lw=3)
-# ax.plot(Sets, SE_White_average_fast, label='White Fast', c=white_color, lw=3)
+ax.fill_between(
+    Sets,
+    np.array(SE_Sine_average_slow),
+    np.array(SE_Sine_average_fast),
+    color=sine_color,
+    alpha=0.6
+)
+ax.fill_between(
+    Sets,
+    np.array(SE_Pink_average_slow),
+    np.array(SE_Pink_average_fast),
+    color=pink_color,
+    alpha=0.25
+)
+ax.fill_between(
+    Sets,
+    np.array(SE_White_average_slow),
+    np.array(SE_White_average_fast),
+    color=white_color,
+    alpha=0.2
+)
+
+ax.plot(Sets, SE_Sine_average_slow, label='Sine Slow', c=sine_color, ls='--', lw=3)
+ax.plot(Sets, SE_Sine_average_fast, label='Sine Fast', c=sine_color, lw=3)
+ax.plot(Sets, SE_Pink_average_slow, label='Pink Slow', c=pink_color, ls='--', lw=3)
+ax.plot(Sets, SE_Pink_average_fast, label='Pink Fast', c=pink_color, lw=3)
+# ax.plot(Sets, SE_White_average_slow, c='k', ls='--', lw=3)
+# ax.plot(Sets, SE_White_average_fast, c='k', ls=':', lw=3)
+ax.plot(Sets, SE_White_average_slow, label='White Slow', c=white_color, ls='--', lw=3)
+ax.plot(Sets, SE_White_average_fast, label='White Fast', c=white_color, lw=3)
 
 ax.plot(Sets, SE_Sine_average, label='Sine', c=sine_color, lw=3)
 ax.plot(Sets, SE_Pink_average, label='Pink', c=pink_color, lw=3)
@@ -372,8 +372,8 @@ ax.legend()
 ax.set_xticks(Sets)
 ax.set_xlabel('Set')
 ax.set_ylabel('Average Spatial Error')
-# ax.spines['bottom'].set_color('white')
-# ax.spines['left'].set_color('white')
+ax.spines['bottom'].set_color('white')
+ax.spines['left'].set_color('white')
 
 plt.show()
 

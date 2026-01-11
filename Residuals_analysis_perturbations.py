@@ -17,9 +17,9 @@ def RMS(original, filtered):
 
 stylianos = True
 if stylianos == True:
-    directory_path = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Pilot study 4\Data'
+    directory_path = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Data\Valid data\Force data'
 else:
-    directory_path = r'C:\Users\USER\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\Grip training\Pilot study 4\Data'
+    directory_path = r'C:\Users\USER\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\Grip training\Data\Valid data\Force data'
 
 files = glob.glob(os.path.join(directory_path, "*"))
 
@@ -146,7 +146,7 @@ for file in files:
     plt.ylabel("RMS Residual Error")
     plt.grid(True)
     plt.ylim(-0.05, 0.85)
-    save_dir = r"C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Pilot study 4\Results\Residual analysis\Perturbation"
+    save_dir = r"C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Results\Residual analysis\Perturbation"
     save_path = os.path.join(save_dir, f"{ID}_rms_plot.png")
     plt.savefig(save_path, dpi=300, bbox_inches='tight')
     # plt.show()
