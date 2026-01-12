@@ -1,51 +1,25 @@
-import Lib_grip as lb
-import pandas as pd
-import itertools
-import matplotlib.pyplot as plt
 import os
 import numpy as np
-from Lib_grip import spatial_error
-import glob
-import lib
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
 
-def plot_error_boxplots(df, error_type='spatial', group_by='all'):
+
+def plot_error_boxplots(
+    df,
+    error_type='spatial',
+    group_by='all',
+    plot_type='box',
+    show_points=True
+):
     """
-    Creates grouped box plots of performance error metrics across experimental sets.
-
-    The function visualizes either Spatial Error or Variable Error across multiple
-    sets (e.g., trials 1–10) using box plots. The x-axis represents the set number,
-    while the y-axis represents the selected error metric. Data are grouped
-    according to the experimental conditions specified by the `group_by` argument.
-
-    Parameters
-    ----------
-    df : pandas.DataFrame
-        Input dataset containing columns for Signal, Speed, and error values
-        stored in a wide format (one column per set).
-
-    error_type : {'spatial', 'variable'}, optional
-        Specifies the dependent variable to be plotted.
-        - 'spatial'  : Mean Spatial Error
-        - 'variable' : Variable Error
-
-    group_by : {'all', 'speed', 'signal'}, optional
-        Defines how box plots are grouped:
-        - 'all'    : Six groups (Signal × Speed combinations)
-        - 'speed'  : Two groups (Fast vs Slow)
-        - 'signal' : Three groups (Pink, Sine, White)
-
-    Returns
-    -------
-    None
-        Displays the box plot figure.
+    Creates grouped box or violin plots with jittered raw data points.
     """
 
     error_type = error_type.lower()
     group_by = group_by.lower()
+    plot_type = plot_type.lower()
 
     # -------------------------------
     # Select dependent variable
@@ -108,27 +82,76 @@ def plot_error_boxplots(df, error_type='spatial', group_by='all'):
     # Plot
     # -------------------------------
     plt.figure(figsize=(16, 6))
-    sns.boxplot(
-        data=df_long,
-        x='Set',
-        y=y_label,
-        hue='Group',
-        hue_order=hue_order,
-        order=sorted(df_long['Set'].unique()),
-        width=0.8,
-        fliersize=2
+
+    if plot_type == 'box':
+        sns.boxplot(
+            data=df_long,
+            x='Set',
+            y=y_label,
+            hue='Group',
+            hue_order=hue_order,
+            order=sorted(df_long['Set'].unique()),
+            width=0.8,
+            fliersize=0  # hide default outliers (we plot raw points instead)
+        )
+
+    elif plot_type == 'violin':
+        sns.violinplot(
+            data=df_long,
+            x='Set',
+            y=y_label,
+            hue='Group',
+            hue_order=hue_order,
+            order=sorted(df_long['Set'].unique()),
+            cut=0,
+            scale='width',
+            inner='quartile',
+            linewidth=1,
+            inner_kws={'linewidth': 3}
+        )
+
+    else:
+        raise ValueError("plot_type must be 'box' or 'violin'")
+
+    # -------------------------------
+    # Overlay jittered datapoints
+    # -------------------------------
+    if show_points:
+        sns.stripplot(
+            data=df_long,
+            x='Set',
+            y=y_label,
+            hue='Group',
+            hue_order=hue_order,
+            order=sorted(df_long['Set'].unique()),
+            dodge=True,
+            jitter=0.2,
+            alpha=0.6,
+            size=4,
+            edgecolor='black',
+            linewidth=0.8
+        )
+
+    # -------------------------------
+    # Legend handling (avoid duplicates)
+    # -------------------------------
+    handles, labels = plt.gca().get_legend_handles_labels()
+    n_groups = len(hue_order)
+    plt.legend(
+        handles[:n_groups],
+        labels[:n_groups],
+        title=group_by.capitalize(),
+        bbox_to_anchor=(1.02, 1),
+        loc='upper left'
     )
 
     plt.xlabel('Set')
     plt.ylabel(y_label)
     plt.title(title)
-    plt.legend(title=group_by.capitalize(), bbox_to_anchor=(1.02, 1), loc='upper left')
     plt.tight_layout()
     plt.show()
 
-import numpy as np
-import pandas as pd
-import plotly.express as px
+
 
 def plot_error_means_plotly(df, error_type='spatial', group_by='all', dodge=0.12):
     """
@@ -243,12 +266,12 @@ print(results)
 
 
 
-# plot_error_boxplots(results, error_type='spatial', group_by='all')
-# plot_error_boxplots(results, error_type='spatial', group_by='speed')
-# plot_error_boxplots(results, error_type='spatial', group_by='signal')
-# plot_error_boxplots(results, error_type='variable', group_by='all')
-# plot_error_boxplots(results, error_type='variable', group_by='speed')
-# plot_error_boxplots(results, error_type='variable', group_by='signal')
+plot_error_boxplots(results, error_type='spatial', group_by='all', plot_type='box')
+plot_error_boxplots(results, error_type='spatial', group_by='speed', plot_type='box')
+plot_error_boxplots(results, error_type='spatial', group_by='signal', plot_type='box')
+# plot_error_boxplots(results, error_type='variable', group_by='all', plot_type='box')
+# plot_error_boxplots(results, error_type='variable', group_by='speed', plot_type='box')
+# plot_error_boxplots(results, error_type='variable', group_by='signal', plot_type='box')
 
 plot_error_means_plotly(results, error_type='spatial', group_by='all')
 plot_error_means_plotly(results, error_type='spatial', group_by='signal')

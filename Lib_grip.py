@@ -13,6 +13,11 @@ from scipy import stats
 import itertools
 from itertools import chain
 from scipy.stats import pearsonr
+from scipy.optimize import curve_fit
+from scipy.optimize import curve_fit
+
+
+
 
 
 def Ent_Ap(data, dim, r):
@@ -284,19 +289,26 @@ def synchronization_of_Time_and_ClosestSampleTime_Anestis(df):
         if df['ClosestSampleTime'][i] < 0:
             df.loc[i, "ClosestSampleTime"] = None
             df.loc[i, "Target"] = None
+    # The duplicated values of ClosestSampleTime are replaced as None so that we exclude them later
+    dup_mask = df['ClosestSampleTime'].duplicated(keep='first')
+
+    df.loc[dup_mask, ['ClosestSampleTime', 'Target']] = None
 
     time_index = []
     for i in range(len(df)):
         # Calculate the difference of the element i of the column ClosestSampleTime with every value of the column Time
-        closest_index = (df['Time'] - df['ClosestSampleTime'].iloc[i]).abs()
-        # Drop the None values of the closest_index so that in the next step the .empty attribute if it has only None values it would show False
-        closest_index = closest_index.dropna()
+        # Here we added a non NaN so that we dont look over the NaN rows
+        if not pd.isna(df['ClosestSampleTime'].iloc[i]):
 
-        if not closest_index.empty:
-            # Find the index of the minimum difference
-            closest_index = closest_index.idxmin()
-            # Keep only the index of minimum difference
-            time_index.append(closest_index)
+            closest_index = (df['Time'] - df['ClosestSampleTime'].iloc[i]).abs()
+            # Drop the None values of the closest_index so that in the next step the .empty attribute if it has only None values it would show False
+            closest_index = closest_index.dropna()
+
+            if not closest_index.empty:
+                # Find the index of the minimum difference
+                closest_index = closest_index.idxmin()
+                # Keep only the index of minimum difference
+                time_index.append(closest_index)
     # Create all other columns
     time = df.loc[time_index, 'Time'].to_numpy()
     performance = df.loc[time_index, 'Performance'].to_numpy()
@@ -365,47 +377,61 @@ def read_my_txt_file(path):
 
     return signal
 
-def asymptotes(df):
-    index_where_perturbation_occured = 99
-    time = 10
-    error = spatial_error(df['Performance'], df['Target'])
-    mean = np.mean(error[int(index_where_perturbation_occured/2):index_where_perturbation_occured-1])
-    sd = np.std(error[int(index_where_perturbation_occured/2):index_where_perturbation_occured-1])
-    error = error[index_where_perturbation_occured:]
-    print(len(df['Time']))
-    time_for_each_target = time/len(df['Time'])
-    print(time_for_each_target)
+def asymptotes(df, asymptote_fraction=0.99, plot=True):
+    df = synchronization_of_Time_and_ClosestSampleTime_Anestis(df)
 
-    index = np.array([i for i in range(len(error))])
-    def f(x, a, b, c):
-        return a * (b ** x) + c
+    perturbation_index = df[df['Target'] != df['Target'].shift(1)].index[1]
+    # print(df.columns)
 
-    popt, _ = curve_fit(f, index, error, bounds=((0, 0, -np.inf), (np.inf, 1, np.inf)), maxfev=30000)
-    a, b, c = popt
-    print(f'y = {a} * {b}**x + {c}')
-    x_line = np.arange(0, len(index), 1)
-    y_line = f(x_line, a, b, c)
+    # Calculate the spatial error
 
-    plt.plot(x_line, y_line, '--', color='green', label='fit')
-    plt.axhline(y=c, c='k', label='Asymptote')
-    sd_factor = 1
-    c = mean
-    plt.axhline(y=c, c='red', label='Mean error before perturbation')
-    plt.axhline(y=c + sd_factor * sd, c='red', ls=":", label="sd error before perturbation")
-    plt.axhline(y=c - sd_factor * sd, c='red', ls=":")
-    plt.scatter(index,error)
-    plt.legend()
-    plt.show()
-    for i in range(len(error)-5):
-        if c - sd_factor * sd < error[i] < c + sd_factor * sd and c - sd_factor * sd < error[i+1] < c + sd_factor * sd and c - sd_factor * sd < error[i+sd_factor] < c + sd_factor * sd and c - sd_factor * sd < error[i+3] < c + sd_factor * sd and c - sd_factor * sd < error[i+4] < c + sd_factor * sd:
-            print(i)
-            adaptation_index = i
-            break
-    print(f'adaptation index was {adaptation_index}')
-    print(f'adaptation time was {adaptation_index*time_for_each_target}')
-    dict = {'adaptation_index' : adaptation_index,
-            'adaptation_time' : adaptation_index*time_for_each_target}
-    return dict
+    spatial_er = spatial_error(df)
+    x = df['Time'].to_numpy()
+    start_idx = perturbation_index
+    x_fit = (df['Time'].iloc[start_idx:] - df['Time'].iloc[start_idx]).to_numpy()
+    y_fit = spatial_er[start_idx:]
+
+    def exp_decay(t, A, k, C):
+        return A * np.exp(-k * t) + C
+
+    C0 = np.mean(y_fit[-max(5, len(y_fit) // 10):])
+    A0 = y_fit[0] - C0
+    k0 = 1 / (x_fit[-1] + 1e-6)
+
+    # Fit
+    popt, _ = curve_fit(exp_decay, x_fit, y_fit, p0=[A0, k0, C0])
+    A, k, C = popt
+
+    t_asymptote = -np.log(1 - asymptote_fraction) / k
+    results = {
+        "A": A,
+        "k": k,
+        "asymptote_value": C,
+        "t_asymptote": t_asymptote,
+        "total_time": x[start_idx] + t_asymptote
+    }
+    if plot:
+        t_plot = np.linspace(0, x_fit.max(), 500)
+        y_plot = exp_decay(t_plot, A, k, C)
+
+        plt.figure(figsize=(7, 4))
+        plt.scatter(x, spatial_er, s=15, alpha=0.6, label="Data")
+        plt.plot(t_plot + x[start_idx], y_plot, 'r', lw=2, label="Exp fit")
+        plt.axvline(x[start_idx], color='r', lw=2)
+        plt.axhline(C, color='k', ls='--', label="Asymptote")
+        plt.axvline(
+            x[start_idx] + t_asymptote,
+            color='k',
+            ls=':',
+            label=f"Asymptote reached ({t_asymptote:.2f} s)"
+        )
+        plt.legend()
+        plt.tight_layout()
+        plt.show()
+
+    return results
+
+
 
 def adaptation_time_using_sd_right_before_perturbation(df, perturbation_index, sd_factor, first_values, consecutive_values, values_for_sd, name, plot=False):
     """
@@ -517,7 +543,7 @@ def adaptation_time_using_sd_right_before_perturbation(df, perturbation_index, s
         time_of_adaptation = None
         return time_of_adaptation
 
-def adaptation_time_using_sd_from_isometric_trials(df, sd_factor, consecutive_values, name, mean_spatial_error_isometric_trials, sd_spatial_error_isometric_trials, plot=False):
+def adaptation_time_using_sd_from_isometric_trials(df, sd_factor, time_window, name, mean_spatial_error_isometric_trials, sd_spatial_error_isometric_trials, asymptote_fraction=0.99, plot=False):
     """
     This function returns the time after the perturbation which was needed to adapt to the perturbation
     Parameters
@@ -527,7 +553,7 @@ def adaptation_time_using_sd_from_isometric_trials(df, sd_factor, consecutive_va
                                                         and if the error after the is less than the mean + sd*sd_factor and more than
                                                         the mean - sd*sd_factor, the algorithm will consider that the adaptation of the
                                                         perturbation occurred
-            consecutive_values                      :   This is how many values the algorithm needs to consider so that it decides that the adaptation occurred.
+            time_window                             :   This is how much time the algorithm needs to consider so that it decides that the adaptation occurred.
             name                                    :   The name of the participant and/or the trial
             mean_spatial_error_isometric_trials     :   The average of spatial error which has been previously calculated by isometric trials
             sd_spatial_error_isometric_trials       :   The sd of spatial error which has been previously calculated by isometric trials
@@ -542,59 +568,213 @@ def adaptation_time_using_sd_from_isometric_trials(df, sd_factor, consecutive_va
     # only the synchronized values
     df = synchronization_of_Time_and_ClosestSampleTime_Anestis(df)
 
-
-
     perturbation_index = df[df['Target'] != df['Target'].shift(1)].index[1]
     # print(df.columns)
-    print(f'Perturbation index = {perturbation_index}')
-    # plt.plot(df['Target'])
-    # plt.show()
 
-    # Calculate the spatial error and the average and sd of the spatial error
-    # after the first_values
+    # Calculate the spatial error
     spatial_er = spatial_error(df)
-    # plt.plot(spatial_er)
+    # time = np.linspace(0, len(spatial_er), len(spatial_er))
+    # plt.scatter(time, spatial_er)
     # plt.show()
-
+    ############################################################################
+    # Calculation of time_of_adaptation using the sd method
     mean_isometric_trial = mean_spatial_error_isometric_trials
     sd_isometric_trial = sd_spatial_error_isometric_trials
 
     # Create an array with consecutive_values equal number
-    consecutive_values_list = np.arange(0,consecutive_values,1)
+    target_time = df['Time'].iloc[-1] - time_window
+
+    idx = (df['Time'] - target_time).abs().idxmin()
+    pos_idx = df.index.get_loc(idx)
+    last_pos = len(df) - 1
+    last_index_of_iteration = last_pos - pos_idx
 
     # Iterate the spatial error after the perturbation_index to calculate the time of adaptation
-    for i in range(len(spatial_er) - consecutive_values+1):
+    for i in range(len(spatial_er) - last_index_of_iteration):
         if i >= perturbation_index:
+            start_time_window_position = i
+            end_time_window = df['Time'].iloc[start_time_window_position] + time_window
 
-            if (all(spatial_er[i + j] < mean_isometric_trial + sd_isometric_trial * sd_factor for j in consecutive_values_list) #and
-                # all(spatial_er[i + j] > mean_isometric_trial - sd_isometric_trial * sd_factor for j in consecutive_values_list)
-            ):
-                time_of_adaptation = df['Time'][i] - df['Time'][perturbation_index]
+            end_idx_label = (df['Time'] - end_time_window).abs().idxmin()
+
+            end_time_window_position = df.index.get_loc(end_idx_label)
+
+            consecutive_values = end_time_window_position - start_time_window_position
+
+            consecutive_values_list = np.arange(0, consecutive_values, 1)
+            if all(spatial_er[i + j] < mean_isometric_trial + (sd_isometric_trial * sd_factor) for j in consecutive_values_list):
+                time_of_adaptation_sd = df['Time'].iloc[i] - df['Time'].iloc[perturbation_index]
+                time_until_spatial_error_is_lower_than_theshold = df['Time'].iloc[end_time_window_position]
                 break
 
-    if plot == True:
+    ############################################################################
+    # Calculation of time_of_adaptation using the asymptote method
+
+    x = df['Time'].to_numpy()
+    start_idx = perturbation_index
+    x_fit = (df['Time'].iloc[start_idx:] - df['Time'].iloc[start_idx]).to_numpy()
+    y_fit = spatial_er[start_idx:]
+
+    def exp_decay(t, A, k, C):
+        return A * np.exp(-k * t) + C
+
+    C0 = np.mean(y_fit[-max(5, len(y_fit) // 10):])
+    A0 = y_fit[0] - C0
+    k0 = 1 / (x_fit[-1] + 1e-6)
+
+    # Fit
+    try:
+        popt, _ = curve_fit(exp_decay, x_fit, y_fit, p0=[A0, k0, C0])
+        A, k, C = popt
+        t_asymptote = -np.log(1 - asymptote_fraction) / k
+        time_to_adapt_asymptote = t_asymptote
+    except RuntimeError:
+        time_to_adapt_asymptote = None
+    ############################################################################
+    # Plot both methods
+    if plot == 'both':
+
+        plt.figure(figsize=(8, 5))
+        plt.plot(df['Time'], spatial_er, label='Spatial Error')
+        plt.scatter(df['Time'], spatial_er, lw=0.5)
+
+        # ----- COMMON -----
+        plt.axhline(y=mean_isometric_trial, c='k', label='Average')
+        plt.axhline(
+            y=mean_isometric_trial + sd_isometric_trial * sd_factor,
+            c='k',
+            ls=":",
+            label=f'{sd_factor}*std'
+        )
+
+        plt.axvline(
+            x=df['Time'].iloc[perturbation_index],
+            linestyle='--',
+            c='gray',
+            label='Perturbation instance'
+        )
+
+        # ----- ASYMPTOTE METHOD (only if exists) -----
+        if time_to_adapt_asymptote is not None:
+            t_plot = np.linspace(0, x_fit.max(), 500)
+            y_plot = exp_decay(t_plot, A, k, C)
+
+            plt.plot(
+                t_plot + df['Time'].iloc[perturbation_index],
+                y_plot,
+                'b',
+                lw=2,
+                label='Exponential fit'
+            )
+
+            plt.axhline(
+                C,
+                color='b',
+                ls='--',
+                label='Asymptote'
+            )
+
+            plt.axvline(
+                df['Time'].iloc[perturbation_index] + time_to_adapt_asymptote,
+                color='b',
+                ls=':',
+                lw=2,
+                label=f'Asymptote reached ({time_to_adapt_asymptote:.2f} s)'
+            )
+
+        # ----- SD METHOD (only if exists) -----
         try:
-            time_of_adaptation
+            time_of_adaptation_sd
+
+            plt.axvline(
+                x=df['Time'].iloc[perturbation_index] + time_of_adaptation_sd,
+                lw=3,
+                c='red',
+                label='Adaptation instance (SD)'
+            )
+
+            plt.axvspan(
+                df['Time'].iloc[perturbation_index] + time_of_adaptation_sd,
+                time_until_spatial_error_is_lower_than_theshold,
+                color='gray',
+                alpha=0.3,
+                label='SD check window'
+            )
+
+            title_sd = f'SD adaptation: {round(time_of_adaptation_sd, 3)} s'
+        except NameError:
+            title_sd = 'SD adaptation: not detected'
+
+        title_asymp = (
+            f'Asymptote adaptation: {round(time_to_adapt_asymptote, 3)} s'
+            if time_to_adapt_asymptote is not None
+            else 'Asymptote adaptation: not detected'
+        )
+
+        plt.legend()
+        plt.ylabel('Force difference (kg)')
+        plt.xlabel('Time (sec)')
+        plt.title(f'{name}\n{title_sd} | {title_asymp}')
+        plt.tight_layout()
+        plt.show()
+
+    if plot == 'sd method':
+        try:
+            time_of_adaptation_sd
             plt.plot(df['Time'], spatial_er, label='Spatial Error')
+            plt.scatter(df['Time'], spatial_er, lw=0.5)
+
             plt.axhline(y=mean_isometric_trial, c='k', label='Average')
-            plt.axhline(y=mean_isometric_trial + sd_isometric_trial * sd_factor, c='k', ls=":", label=f'{sd_factor}*std')
-            # plt.axhline(y=average_at_min_sd - min_sd*sd_factor, c='k', ls=":")
-            plt.axvline(x=df['Time'][perturbation_index] + time_of_adaptation, lw=3, c='red',
-                        label='Adaptation instance')
-            plt.axvline(x=df['Time'][perturbation_index], linestyle='--', c='gray', label='Perturbation instance')
+            plt.axhline(
+                y=mean_isometric_trial + sd_isometric_trial * sd_factor,
+                c='k',
+                ls=":",
+                label=f'{sd_factor}*std'
+            )
+
+            plt.axvline(
+                x=df['Time'][perturbation_index] + time_of_adaptation_sd,
+                lw=3,
+                c='red',
+                label='Adaptation instance'
+            )
+
+            plt.axvspan(
+                df['Time'][perturbation_index] + time_of_adaptation_sd,
+                time_until_spatial_error_is_lower_than_theshold,
+                color='gray',
+                alpha=0.3,
+                label='Check Window'
+            )
+
+            plt.axvline(
+                x=df['Time'][perturbation_index],
+                linestyle='--',
+                c='gray',
+                label='Perturbation instance'
+            )
 
             plt.legend()
             plt.ylabel('Force difference (kg)')
             plt.xlabel('Time (sec)')
-            plt.title(f'{name}\ntime for adaptation: {round(time_of_adaptation, 3)} sec')
+            plt.title(f'{name}\ntime for adaptation: {round(time_of_adaptation_sd, 3)} sec')
             plt.show()
+
         except NameError:
-            print(f"No adaptation was evident for {name}")
             plt.plot(df['Time'], spatial_er, label='Spatial Error')
             plt.axhline(y=mean_isometric_trial, c='k', label='Average')
-            plt.axhline(y=mean_isometric_trial + sd_isometric_trial * sd_factor, c='k', ls=":", label=f'{sd_factor}*std')
-            # plt.axhline(y=average_at_min_sd - min_sd * sd_factor, c='k', ls=":")
-            plt.axvline(x=df['Time'][perturbation_index], linestyle='--', c='gray', label='Perturbation instance')
+            plt.axhline(
+                y=mean_isometric_trial + sd_isometric_trial * sd_factor,
+                c='k',
+                ls=":",
+                label=f'{sd_factor}*std'
+            )
+            plt.axvline(
+                x=df['Time'][perturbation_index],
+                linestyle='--',
+                c='gray',
+                label='Perturbation instance'
+            )
 
             plt.legend()
             plt.ylabel('Force difference (kg)')
@@ -602,10 +782,41 @@ def adaptation_time_using_sd_from_isometric_trials(df, sd_factor, consecutive_va
             plt.title(f'{name}\nNo adaptation')
             plt.show()
 
+    if plot == 'asymptote method' and time_to_adapt_asymptote is not None:
+        t_plot = np.linspace(0, x_fit.max(), 500)
+        y_plot = exp_decay(t_plot, A, k, C)
+
+        plt.figure(figsize=(7, 4))
+        plt.scatter(x, spatial_er, s=15, alpha=0.6, label="Data")
+        plt.plot(t_plot + x[start_idx], y_plot, 'r', lw=2, label="Exp fit")
+        plt.axvline(x[start_idx], color='r', lw=2)
+        plt.axhline(C, color='k', ls='--', label="Asymptote")
+        plt.axvline(
+            x[start_idx] + time_to_adapt_asymptote,
+            color='k',
+            ls=':',
+            label=f"Asymptote reached ({time_to_adapt_asymptote:.2f} s)"
+        )
+        plt.legend()
+        plt.tight_layout()
+        plt.show()
+
+    # =========================
+    # RETURN VALUES
+    # =========================
+
     try:
-        return round(time_of_adaptation, 2)
+        sd_val = round(time_of_adaptation_sd, 2)
     except NameError:
-        print(f"No adaptation was evident for {name}")
+        sd_val = None
+
+    asymp_val = (
+        round(time_to_adapt_asymptote, 2)
+        if time_to_adapt_asymptote is not None
+        else None
+    )
+
+    return sd_val, asymp_val
 
 def single_perturbation_generator(baseline, perturbation, data_num):
     baseline_array = np.full(int(data_num/2), baseline)

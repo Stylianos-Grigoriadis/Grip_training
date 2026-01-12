@@ -10,58 +10,104 @@ import lib
 import seaborn as sns
 
 
+pd.set_option('display.max_rows', None)
 
-directory_path = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Pilot study 4\Data'
+
+Stylianos = True
+if Stylianos == True:
+    directory_path = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Data\Valid data\Force data'
+else:
+    directory_path = r'C:\Users\USER\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\Grip training\Data\Valid data\Force data'
 files = glob.glob(os.path.join(directory_path, "*"))
-information_excel = pd.read_excel(r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Pilot study 4\Participants.xlsx')
+information_excel = pd.read_excel(r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Data\Participants.xlsx')
 
-list_time_to_adapt_before_down_1 = []
-list_time_to_adapt_before_down_2 = []
-list_time_to_adapt_before_down_3 = []
-list_time_to_adapt_before_up_1 = []
-list_time_to_adapt_before_up_2 = []
-list_time_to_adapt_before_up_3 = []
-list_time_to_adapt_after_down_1 = []
-list_time_to_adapt_after_down_2 = []
-list_time_to_adapt_after_down_3 = []
-list_time_to_adapt_after_up_1 = []
-list_time_to_adapt_after_up_2 = []
-list_time_to_adapt_after_up_3 = []
-list_average_time_to_adapt_before_down = []
-list_average_time_to_adapt_before_up = []
-list_average_time_to_adapt_after_down = []
-list_average_time_to_adapt_after_up = []
-list_min_time_to_adapt_before_down = []
-list_min_time_to_adapt_before_up = []
-list_min_time_to_adapt_after_down = []
-list_min_time_to_adapt_after_up = []
+list_time_to_adapt_before_down_1_sd = []
+list_time_to_adapt_before_down_2_sd = []
+list_time_to_adapt_before_down_3_sd = []
+list_time_to_adapt_before_up_1_sd = []
+list_time_to_adapt_before_up_2_sd = []
+list_time_to_adapt_before_up_3_sd = []
+list_time_to_adapt_after_down_1_sd = []
+list_time_to_adapt_after_down_2_sd = []
+list_time_to_adapt_after_down_3_sd = []
+list_time_to_adapt_after_up_1_sd = []
+list_time_to_adapt_after_up_2_sd = []
+list_time_to_adapt_after_up_3_sd = []
+list_average_time_to_adapt_before_down_sd = []
+list_average_time_to_adapt_before_up_sd = []
+list_average_time_to_adapt_after_down_sd = []
+list_average_time_to_adapt_after_up_sd = []
+list_min_time_to_adapt_before_down_sd = []
+list_min_time_to_adapt_before_up_sd = []
+list_min_time_to_adapt_after_down_sd = []
+list_min_time_to_adapt_after_up_sd = []
+list_difference_time_to_adapt_before_after_down_1_sd = []
+list_difference_time_to_adapt_before_after_down_2_sd = []
+list_difference_time_to_adapt_before_after_down_3_sd = []
+list_difference_time_to_adapt_before_after_up_1_sd = []
+list_difference_time_to_adapt_before_after_up_2_sd = []
+list_difference_time_to_adapt_before_after_up_3_sd = []
+list_difference_min_time_to_adapt_before_after_up_sd = []
+list_difference_min_time_to_adapt_before_after_down_sd = []
+list_difference_average_time_to_adapt_before_after_up_sd = []
+list_difference_average_time_to_adapt_before_after_down_sd = []
 
+list_time_to_adapt_before_down_1_asymp = []
+list_time_to_adapt_before_down_2_asymp = []
+list_time_to_adapt_before_down_3_asymp = []
+list_time_to_adapt_before_up_1_asymp = []
+list_time_to_adapt_before_up_2_asymp = []
+list_time_to_adapt_before_up_3_asymp = []
+list_time_to_adapt_after_down_1_asymp = []
+list_time_to_adapt_after_down_2_asymp = []
+list_time_to_adapt_after_down_3_asymp = []
+list_time_to_adapt_after_up_1_asymp = []
+list_time_to_adapt_after_up_2_asymp = []
+list_time_to_adapt_after_up_3_asymp = []
+list_average_time_to_adapt_before_down_asymp = []
+list_average_time_to_adapt_before_up_asymp = []
+list_average_time_to_adapt_after_down_asymp = []
+list_average_time_to_adapt_after_up_asymp = []
+list_min_time_to_adapt_before_down_asymp = []
+list_min_time_to_adapt_before_up_asymp = []
+list_min_time_to_adapt_after_down_asymp = []
+list_min_time_to_adapt_after_up_asymp = []
+list_difference_time_to_adapt_before_after_down_1_asymp = []
+list_difference_time_to_adapt_before_after_down_2_asymp = []
+list_difference_time_to_adapt_before_after_down_3_asymp = []
+list_difference_time_to_adapt_before_after_up_1_asymp = []
+list_difference_time_to_adapt_before_after_up_2_asymp = []
+list_difference_time_to_adapt_before_after_up_3_asymp = []
+list_difference_min_time_to_adapt_before_after_up_asymp = []
+list_difference_min_time_to_adapt_before_after_down_asymp = []
+list_difference_average_time_to_adapt_before_after_up_asymp = []
+list_difference_average_time_to_adapt_before_after_down_asymp = []
 
 
 list_ID = []
 list_ID_team = []
+list_signal = []
+list_speed = []
 
-sd_factor = 2
-consecutive_values = 37
-
+sd_factor = 3
+time_window = 1
+asymptote_fraction = 0.99
 for file in files:
     os.chdir(file)
     ID = os.path.basename(file)
+    ID_team = ID.split(".")
+    signal = ID.split('_')[0]
+    speed_code = ID.split('_')[1].split('.')[0]
+    speed_map = {
+        '65': 'Slow',
+        '100': 'Fast'
+    }
+    speed = speed_map[speed_code]
+
     list_ID.append(ID)
-    # ID_team = ID[:-2]
-    if "Pink_100" in ID:
-        ID_team = "Pink_100"
-    elif "Pink_65" in ID:
-        ID_team = "Pink_65"
-    elif "White_100" in ID:
-        ID_team = "White_100"
-    elif "White_65" in ID:
-        ID_team = "White_65"
-    elif "Sine_100" in ID:
-        ID_team = "Sine_100"
-    elif "Sine_65" in ID:
-        ID_team = "Sine_65"
-    list_ID_team.append(ID_team)
+    list_ID_team.append(ID_team[0])
+    list_signal.append(signal)
+    list_speed.append(speed)
 
     print(ID)
 
@@ -85,41 +131,112 @@ for file in files:
     Perturbation_after_up_2 = pd.read_csv(r'pertr_up_2.csv', skiprows=2)
     Perturbation_after_up_3 = pd.read_csv(r'pertr_up_3.csv', skiprows=2)
 
-    # plt.plot(Perturbation_after_down_1['ClosestSampleTime'], Perturbation_after_down_1['Target'], label='Targets')
-    # plt.plot(Perturbation_after_down_1['Time'], Perturbation_after_down_1['Performance'], label='Player')
-    # plt.legend()
-    # plt.show()
-    perturbation_index_down = 243
-    perturbation_index_up = 288
+    # Read isometric trials
+    file_isometric = file + r'\Isometric_trials'
+    os.chdir(file_isometric)
+    isometric_10 = pd.read_csv(r'Isometric_trial_10.csv', skiprows=2)
+    isometric_50 = pd.read_csv(r'Isometric_trial_50.csv', skiprows=2)
+
+    # Filtering
+    Performance_perturbation_before_down_1 = Perturbation_before_down_1['Performance'].to_numpy()
+    Performance_perturbation_before_down_2 = Perturbation_before_down_2['Performance'].to_numpy()
+    Performance_perturbation_before_down_3 = Perturbation_before_down_3['Performance'].to_numpy()
+    Performance_perturbation_before_up_1 = Perturbation_before_up_1['Performance'].to_numpy()
+    Performance_perturbation_before_up_2 = Perturbation_before_up_2['Performance'].to_numpy()
+    Performance_perturbation_before_up_3 = Perturbation_before_up_3['Performance'].to_numpy()
+    Performance_perturbation_after_down_1 = Perturbation_after_down_1['Performance'].to_numpy()
+    Performance_perturbation_after_down_2 = Perturbation_after_down_2['Performance'].to_numpy()
+    Performance_perturbation_after_down_3 = Perturbation_after_down_3['Performance'].to_numpy()
+    Performance_perturbation_after_up_1 = Perturbation_after_up_1['Performance'].to_numpy()
+    Performance_perturbation_after_up_2 = Perturbation_after_up_2['Performance'].to_numpy()
+    Performance_perturbation_after_up_3 = Perturbation_after_up_3['Performance'].to_numpy()
+    Performance_isometric_10 = isometric_10['Performance'].to_numpy()
+    Performance_isometric_50 = isometric_50['Performance'].to_numpy()
+
+    low_pass_filter_frequency = 15
+    Performance_perturbation_before_down_1_filtered = lib.Butterworth(75, low_pass_filter_frequency, Performance_perturbation_before_down_1)
+    Performance_perturbation_before_down_2_filtered = lib.Butterworth(75, low_pass_filter_frequency, Performance_perturbation_before_down_2)
+    Performance_perturbation_before_down_3_filtered = lib.Butterworth(75, low_pass_filter_frequency, Performance_perturbation_before_down_3)
+    Performance_perturbation_before_up_1_filtered = lib.Butterworth(75, low_pass_filter_frequency, Performance_perturbation_before_up_1)
+    Performance_perturbation_before_up_2_filtered = lib.Butterworth(75, low_pass_filter_frequency, Performance_perturbation_before_up_2)
+    Performance_perturbation_before_up_3_filtered = lib.Butterworth(75, low_pass_filter_frequency, Performance_perturbation_before_up_3)
+    Performance_perturbation_after_down_1_filtered = lib.Butterworth(75, low_pass_filter_frequency, Performance_perturbation_after_down_1)
+    Performance_perturbation_after_down_2_filtered = lib.Butterworth(75, low_pass_filter_frequency, Performance_perturbation_after_down_2)
+    Performance_perturbation_after_down_3_filtered = lib.Butterworth(75, low_pass_filter_frequency, Performance_perturbation_after_down_3)
+    Performance_perturbation_after_up_1_filtered = lib.Butterworth(75, low_pass_filter_frequency, Performance_perturbation_after_up_1)
+    Performance_perturbation_after_up_2_filtered = lib.Butterworth(75, low_pass_filter_frequency, Performance_perturbation_after_up_2)
+    Performance_perturbation_after_up_3_filtered = lib.Butterworth(75, low_pass_filter_frequency, Performance_perturbation_after_up_3)
+    Performance_isometric_10_filtered = lib.Butterworth(75, low_pass_filter_frequency, Performance_isometric_10)
+    Performance_isometric_50_filtered = lib.Butterworth(75, low_pass_filter_frequency, Performance_isometric_50)
+
+    Perturbation_before_down_1['Performance'] = Performance_perturbation_before_down_1_filtered
+    Perturbation_before_down_2['Performance'] = Performance_perturbation_before_down_2_filtered
+    Perturbation_before_down_3['Performance'] = Performance_perturbation_before_down_3_filtered
+    Perturbation_before_up_1['Performance'] = Performance_perturbation_before_up_1_filtered
+    Perturbation_before_up_2['Performance'] = Performance_perturbation_before_up_2_filtered
+    Perturbation_before_up_3['Performance'] = Performance_perturbation_before_up_3_filtered
+    Perturbation_after_down_1['Performance'] = Performance_perturbation_after_down_1_filtered
+    Perturbation_after_down_2['Performance'] = Performance_perturbation_after_down_2_filtered
+    Perturbation_after_down_3['Performance'] = Performance_perturbation_after_down_3_filtered
+    Perturbation_after_up_1['Performance'] = Performance_perturbation_after_up_1_filtered
+    Perturbation_after_up_2['Performance'] = Performance_perturbation_after_up_2_filtered
+    Perturbation_after_up_3['Performance'] = Performance_perturbation_after_up_3_filtered
+    isometric_10['Performance'] = Performance_isometric_10_filtered
+    isometric_50['Performance'] = Performance_isometric_50_filtered
+
+
+
+    # Calculate average and sd of isometric trials for adaptation calculation
+    # After visual inspection we decided that after 3 seconds the force output stabilizes
+    synch_isometric_10 = lb.synchronization_of_Time_and_ClosestSampleTime_Anestis(isometric_10)
+    synch_isometric_50 = lb.synchronization_of_Time_and_ClosestSampleTime_Anestis(isometric_50)
+
+
+    time_threshold = 3
+    isometric_10_after_threshold = synch_isometric_10[synch_isometric_10['Time'] > time_threshold].reset_index(drop=True).copy()
+    isometric_50_after_threshold = synch_isometric_50[synch_isometric_50['Time'] > time_threshold].reset_index(drop=True).copy()
+    spatial_errors_10 = lb.spatial_error(isometric_10_after_threshold)
+    spatial_errors_50 = lb.spatial_error(isometric_50_after_threshold)
+    mean_spatial_error_10 = np.mean(spatial_errors_10)
+    mean_spatial_error_50 = np.mean(spatial_errors_50)
+    sd_spatial_error_10 = np.std(spatial_errors_10)
+    sd_spatial_error_50 = np.std(spatial_errors_50)
+
+
+
     first_values = 100
     values_for_sd = 100
 
-    time_to_adapt_before_down_1 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_before_down_1,perturbation_index_down, sd_factor, first_values, consecutive_values, values_for_sd, 'before_down_1', plot=False)
-    time_to_adapt_before_down_2 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_before_down_2,perturbation_index_down, sd_factor, first_values, consecutive_values, values_for_sd, 'before_down_2', plot=False)
-    time_to_adapt_before_down_3 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_before_down_3,perturbation_index_down, sd_factor, first_values, consecutive_values, values_for_sd, 'before_down_3', plot=False)
-    time_to_adapt_before_up_1 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_before_up_1,perturbation_index_up, sd_factor, first_values, consecutive_values, values_for_sd, 'before_up_1', plot=False)
-    time_to_adapt_before_up_2 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_before_up_2,perturbation_index_up, sd_factor, first_values, consecutive_values, values_for_sd, 'before_up_2', plot=False)
-    time_to_adapt_before_up_3 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_before_up_3,perturbation_index_up, sd_factor, first_values, consecutive_values, values_for_sd, 'before_up_3', plot=False)
-    time_to_adapt_after_down_1 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_after_down_1,perturbation_index_down, sd_factor, first_values, consecutive_values, values_for_sd, 'after_down_1', plot=False)
-    time_to_adapt_after_down_2 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_after_down_2,perturbation_index_down, sd_factor, first_values, consecutive_values, values_for_sd, 'after_down_2', plot=False)
-    time_to_adapt_after_down_3 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_after_down_3,perturbation_index_down, sd_factor, first_values, consecutive_values, values_for_sd, 'after_down_3', plot=False)
-    time_to_adapt_after_up_1 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_after_up_1,perturbation_index_up, sd_factor, first_values, consecutive_values, values_for_sd, 'after_up_1', plot=False)
-    time_to_adapt_after_up_2 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_after_up_2,perturbation_index_up, sd_factor, first_values, consecutive_values, values_for_sd, 'after_up_2', plot=False)
-    time_to_adapt_after_up_3 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_after_up_3,perturbation_index_up, sd_factor, first_values, consecutive_values, values_for_sd, 'after_up_3', plot=False)
+    # time_to_adapt_before_down_1 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_before_down_1, perturbation_index_down, sd_factor, first_values, consecutive_values, values_for_sd, 'before_down_1', plot=False)
+    # time_to_adapt_before_down_2 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_before_down_2, perturbation_index_down, sd_factor, first_values, consecutive_values, values_for_sd, 'before_down_2', plot=False)
+    # time_to_adapt_before_down_3 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_before_down_3, perturbation_index_down, sd_factor, first_values, consecutive_values, values_for_sd, 'before_down_3', plot=False)
+    # time_to_adapt_before_up_1 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_before_up_1, perturbation_index_up, sd_factor, first_values, consecutive_values, values_for_sd, 'before_up_1', plot=False)
+    # time_to_adapt_before_up_2 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_before_up_2, perturbation_index_up, sd_factor, first_values, consecutive_values, values_for_sd, 'before_up_2', plot=False)
+    # time_to_adapt_before_up_3 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_before_up_3, perturbation_index_up, sd_factor, first_values, consecutive_values, values_for_sd, 'before_up_3', plot=False)
+    # time_to_adapt_after_down_1 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_after_down_1, perturbation_index_down, sd_factor, first_values, consecutive_values, values_for_sd, 'after_down_1', plot=False)
+    # time_to_adapt_after_down_2 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_after_down_2, perturbation_index_down, sd_factor, first_values, consecutive_values, values_for_sd, 'after_down_2', plot=False)
+    # time_to_adapt_after_down_3 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_after_down_3, perturbation_index_down, sd_factor, first_values, consecutive_values, values_for_sd, 'after_down_3', plot=False)
+    # time_to_adapt_after_up_1 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_after_up_1, perturbation_index_up, sd_factor, first_values, consecutive_values, values_for_sd, 'after_up_1', plot=False)
+    # time_to_adapt_after_up_2 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_after_up_2, perturbation_index_up, sd_factor, first_values, consecutive_values, values_for_sd, 'after_up_2', plot=False)
+    # time_to_adapt_after_up_3 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_after_up_3, perturbation_index_up, sd_factor, first_values, consecutive_values, values_for_sd, 'after_up_3', plot=False)
 
     # Calculation of adaptation using sd from isometric trials
-    # time_to_adapt_before_down_1 = lb.adaptation_time_using_sd(Perturbation_before_down_1, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=False)
-    # time_to_adapt_before_down_2 = lb.adaptation_time_using_sd(Perturbation_before_down_2, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=False)
-    # time_to_adapt_before_down_3 = lb.adaptation_time_using_sd(Perturbation_before_down_3, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=False)
-    # time_to_adapt_before_up_1 = lb.adaptation_time_using_sd(Perturbation_before_up_1, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=False)
-    # time_to_adapt_before_up_2 = lb.adaptation_time_using_sd(Perturbation_before_up_2, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=False)
-    # time_to_adapt_before_up_3 = lb.adaptation_time_using_sd(Perturbation_before_up_3, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=False)
-    # time_to_adapt_after_down_1 = lb.adaptation_time_using_sd(Perturbation_after_down_1, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=False)
-    # time_to_adapt_after_down_2 = lb.adaptation_time_using_sd(Perturbation_after_down_2, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=False)
-    # time_to_adapt_after_down_3 = lb.adaptation_time_using_sd(Perturbation_after_down_3, sd_factor, consecutive_values, ID, mean_spatial_error_10, sd_spatial_error_10, plot=False)
-    # time_to_adapt_after_up_1 = lb.adaptation_time_using_sd(Perturbation_after_up_1, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=False)
-    # time_to_adapt_after_up_2 = lb.adaptation_time_using_sd(Perturbation_after_up_2, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=False)
-    # time_to_adapt_after_up_3 = lb.adaptation_time_using_sd(Perturbation_after_up_3, sd_factor, consecutive_values, ID, mean_spatial_error_50, sd_spatial_error_50, plot=False)
+    print("Perturbation down before")
+    time_to_adapt_before_down_1_sd, time_to_adapt_before_down_1_asymp = lb.adaptation_time_using_sd_from_isometric_trials(Perturbation_before_down_1, sd_factor, time_window, ID, mean_spatial_error_10, sd_spatial_error_10, asymptote_fraction=asymptote_fraction, plot='None')
+    time_to_adapt_before_down_2_sd, time_to_adapt_before_down_2_asymp = lb.adaptation_time_using_sd_from_isometric_trials(Perturbation_before_down_2, sd_factor, time_window, ID, mean_spatial_error_10, sd_spatial_error_10, asymptote_fraction=asymptote_fraction, plot='None')
+    time_to_adapt_before_down_3_sd, time_to_adapt_before_down_3_asymp = lb.adaptation_time_using_sd_from_isometric_trials(Perturbation_before_down_3, sd_factor, time_window, ID, mean_spatial_error_10, sd_spatial_error_10, asymptote_fraction=asymptote_fraction, plot='None')
+    print("Perturbation up before")
+    time_to_adapt_before_up_1_sd, time_to_adapt_before_up_1_asymp = lb.adaptation_time_using_sd_from_isometric_trials(Perturbation_before_up_1, sd_factor, time_window, ID, mean_spatial_error_50, sd_spatial_error_50, asymptote_fraction=asymptote_fraction, plot='None')
+    time_to_adapt_before_up_2_sd, time_to_adapt_before_up_2_asymp = lb.adaptation_time_using_sd_from_isometric_trials(Perturbation_before_up_2, sd_factor, time_window, ID, mean_spatial_error_50, sd_spatial_error_50, asymptote_fraction=asymptote_fraction, plot='None')
+    time_to_adapt_before_up_3_sd, time_to_adapt_before_up_3_asymp = lb.adaptation_time_using_sd_from_isometric_trials(Perturbation_before_up_3, sd_factor, time_window, ID, mean_spatial_error_50, sd_spatial_error_50, asymptote_fraction=asymptote_fraction, plot='None')
+    print("Perturbation down after")
+    time_to_adapt_after_down_1_sd, time_to_adapt_after_down_1_asymp = lb.adaptation_time_using_sd_from_isometric_trials(Perturbation_after_down_1, sd_factor, time_window, ID, mean_spatial_error_10, sd_spatial_error_10, asymptote_fraction=asymptote_fraction, plot='None')
+    time_to_adapt_after_down_2_sd, time_to_adapt_after_down_2_asymp = lb.adaptation_time_using_sd_from_isometric_trials(Perturbation_after_down_2, sd_factor, time_window, ID, mean_spatial_error_10, sd_spatial_error_10, asymptote_fraction=asymptote_fraction, plot='None')
+    time_to_adapt_after_down_3_sd, time_to_adapt_after_down_3_asymp = lb.adaptation_time_using_sd_from_isometric_trials(Perturbation_after_down_3, sd_factor, time_window, ID, mean_spatial_error_10, sd_spatial_error_10, asymptote_fraction=asymptote_fraction, plot='None')
+    print("Perturbation up after")
+    time_to_adapt_after_up_1_sd, time_to_adapt_after_up_1_asymp = lb.adaptation_time_using_sd_from_isometric_trials(Perturbation_after_up_1, sd_factor, time_window, ID, mean_spatial_error_50, sd_spatial_error_50, asymptote_fraction=asymptote_fraction, plot='None')
+    time_to_adapt_after_up_2_sd, time_to_adapt_after_up_2_asymp = lb.adaptation_time_using_sd_from_isometric_trials(Perturbation_after_up_2, sd_factor, time_window, ID, mean_spatial_error_50, sd_spatial_error_50, asymptote_fraction=asymptote_fraction, plot='None')
+    time_to_adapt_after_up_3_sd, time_to_adapt_after_up_3_asymp = lb.adaptation_time_using_sd_from_isometric_trials(Perturbation_after_up_3, sd_factor, time_window, ID, mean_spatial_error_50, sd_spatial_error_50, asymptote_fraction=asymptote_fraction, plot='None')
 
 
     def safe_mean(*args):
@@ -132,185 +249,195 @@ for file in files:
         return np.min(valid) if valid else None
 
 
-    average_time_to_adapt_before_down = safe_mean(time_to_adapt_before_down_1, time_to_adapt_before_down_2, time_to_adapt_before_down_3)
-    average_time_to_adapt_before_up = safe_mean(time_to_adapt_before_up_1, time_to_adapt_before_up_2, time_to_adapt_before_up_3)
-    average_time_to_adapt_after_down = safe_mean(time_to_adapt_after_down_1, time_to_adapt_after_down_2, time_to_adapt_after_down_3)
-    average_time_to_adapt_after_up = safe_mean(time_to_adapt_after_up_1, time_to_adapt_after_up_2, time_to_adapt_after_up_3)
-    min_time_to_adapt_before_down = safe_min(time_to_adapt_before_down_1, time_to_adapt_before_down_2, time_to_adapt_before_down_3)
-    min_time_to_adapt_before_up = safe_min(time_to_adapt_before_up_1, time_to_adapt_before_up_2, time_to_adapt_before_up_3)
-    min_time_to_adapt_after_down = safe_min(time_to_adapt_after_down_1, time_to_adapt_after_down_2, time_to_adapt_after_down_3)
-    min_time_to_adapt_after_up = safe_min(time_to_adapt_after_up_1, time_to_adapt_after_up_2, time_to_adapt_after_up_3)
+    def safe_difference(*args):
+        if any(x is None for x in args):
+            return None
+        return args[0] - args[1]
 
 
-    list_time_to_adapt_before_down_1.append(time_to_adapt_before_down_1)
-    list_time_to_adapt_before_down_2.append(time_to_adapt_before_down_2)
-    list_time_to_adapt_before_down_3.append(time_to_adapt_before_down_3)
-    list_time_to_adapt_before_up_1.append(time_to_adapt_before_up_1)
-    list_time_to_adapt_before_up_2.append(time_to_adapt_before_up_2)
-    list_time_to_adapt_before_up_3.append(time_to_adapt_before_up_3)
-    list_time_to_adapt_after_down_1.append(time_to_adapt_after_down_1)
-    list_time_to_adapt_after_down_2.append(time_to_adapt_after_down_2)
-    list_time_to_adapt_after_down_3.append(time_to_adapt_after_down_3)
-    list_time_to_adapt_after_up_1.append(time_to_adapt_after_up_1)
-    list_time_to_adapt_after_up_2.append(time_to_adapt_after_up_2)
-    list_time_to_adapt_after_up_3.append(time_to_adapt_after_up_3)
-    list_average_time_to_adapt_before_down.append(average_time_to_adapt_before_down)
-    list_average_time_to_adapt_before_up.append(average_time_to_adapt_before_up)
-    list_average_time_to_adapt_after_down.append(average_time_to_adapt_after_down)
-    list_average_time_to_adapt_after_up.append(average_time_to_adapt_after_up)
-    list_min_time_to_adapt_before_down.append(min_time_to_adapt_before_down)
-    list_min_time_to_adapt_before_up.append(min_time_to_adapt_before_up)
-    list_min_time_to_adapt_after_down.append(min_time_to_adapt_after_down)
-    list_min_time_to_adapt_after_up.append(min_time_to_adapt_after_up)
-    print(average_time_to_adapt_before_down)
-    print(average_time_to_adapt_before_up)
-    print(average_time_to_adapt_after_down)
-    print(average_time_to_adapt_after_up)
-    print(min_time_to_adapt_before_down)
-    print(min_time_to_adapt_before_up)
-    print(min_time_to_adapt_after_down)
-    print(min_time_to_adapt_after_up)
+    average_time_to_adapt_before_down_sd = safe_mean(time_to_adapt_before_down_1_sd, time_to_adapt_before_down_2_sd, time_to_adapt_before_down_3_sd)
+    average_time_to_adapt_before_up_sd = safe_mean(time_to_adapt_before_up_1_sd, time_to_adapt_before_up_2_sd, time_to_adapt_before_up_3_sd)
+    average_time_to_adapt_after_down_sd = safe_mean(time_to_adapt_after_down_1_sd, time_to_adapt_after_down_2_sd, time_to_adapt_after_down_3_sd)
+    average_time_to_adapt_after_up_sd = safe_mean(time_to_adapt_after_up_1_sd, time_to_adapt_after_up_2_sd, time_to_adapt_after_up_3_sd)
+    min_time_to_adapt_before_down_sd = safe_min(time_to_adapt_before_down_1_sd, time_to_adapt_before_down_2_sd, time_to_adapt_before_down_3_sd)
+    min_time_to_adapt_before_up_sd = safe_min(time_to_adapt_before_up_1_sd, time_to_adapt_before_up_2_sd, time_to_adapt_before_up_3_sd)
+    min_time_to_adapt_after_down_sd = safe_min(time_to_adapt_after_down_1_sd, time_to_adapt_after_down_2_sd, time_to_adapt_after_down_3_sd)
+    min_time_to_adapt_after_up_sd = safe_min(time_to_adapt_after_up_1_sd, time_to_adapt_after_up_2_sd, time_to_adapt_after_up_3_sd)
+    difference_time_to_adapt_before_after_down_1_sd = safe_difference(time_to_adapt_after_down_1_sd, time_to_adapt_before_down_1_sd)
+    difference_time_to_adapt_before_after_down_2_sd = safe_difference(time_to_adapt_after_down_2_sd, time_to_adapt_before_down_2_sd)
+    difference_time_to_adapt_before_after_down_3_sd = safe_difference(time_to_adapt_after_down_3_sd, time_to_adapt_before_down_3_sd)
+    difference_time_to_adapt_before_after_up_1_sd = safe_difference(time_to_adapt_after_up_1_sd, time_to_adapt_before_up_1_sd)
+    difference_time_to_adapt_before_after_up_2_sd = safe_difference(time_to_adapt_after_up_2_sd, time_to_adapt_before_up_2_sd)
+    difference_time_to_adapt_before_after_up_3_sd = safe_difference(time_to_adapt_after_up_3_sd, time_to_adapt_before_up_3_sd)
+    difference_min_time_to_adapt_before_after_up_sd = safe_difference(min_time_to_adapt_after_up_sd, min_time_to_adapt_before_up_sd)
+    difference_min_time_to_adapt_before_after_down_sd = safe_difference(min_time_to_adapt_after_down_sd, min_time_to_adapt_before_down_sd)
+    difference_average_time_to_adapt_before_after_up_sd = safe_difference(average_time_to_adapt_after_up_sd, average_time_to_adapt_before_up_sd)
+    difference_average_time_to_adapt_before_after_down_sd = safe_difference(average_time_to_adapt_after_down_sd, average_time_to_adapt_before_down_sd)
 
-    print(list_ID_team)
+    average_time_to_adapt_before_down_asymp = safe_mean(time_to_adapt_before_down_1_asymp, time_to_adapt_before_down_2_asymp, time_to_adapt_before_down_3_asymp)
+    average_time_to_adapt_before_up_asymp = safe_mean(time_to_adapt_before_up_1_asymp, time_to_adapt_before_up_2_asymp, time_to_adapt_before_up_3_asymp)
+    average_time_to_adapt_after_down_asymp = safe_mean(time_to_adapt_after_down_1_asymp, time_to_adapt_after_down_2_asymp, time_to_adapt_after_down_3_asymp)
+    average_time_to_adapt_after_up_asymp = safe_mean(time_to_adapt_after_up_1_asymp, time_to_adapt_after_up_2_asymp, time_to_adapt_after_up_3_asymp)
+    min_time_to_adapt_before_down_asymp = safe_min(time_to_adapt_before_down_1_asymp, time_to_adapt_before_down_2_asymp, time_to_adapt_before_down_3_asymp)
+    min_time_to_adapt_before_up_asymp = safe_min(time_to_adapt_before_up_1_asymp, time_to_adapt_before_up_2_asymp, time_to_adapt_before_up_3_asymp)
+    min_time_to_adapt_after_down_asymp = safe_min(time_to_adapt_after_down_1_asymp, time_to_adapt_after_down_2_asymp, time_to_adapt_after_down_3_asymp)
+    min_time_to_adapt_after_up_asymp = safe_min(time_to_adapt_after_up_1_asymp, time_to_adapt_after_up_2_asymp, time_to_adapt_after_up_3_asymp)
+    difference_time_to_adapt_before_after_down_1_asymp = safe_difference(time_to_adapt_after_down_1_asymp, time_to_adapt_before_down_1_asymp)
+    difference_time_to_adapt_before_after_down_2_asymp = safe_difference(time_to_adapt_after_down_2_asymp, time_to_adapt_before_down_2_asymp)
+    difference_time_to_adapt_before_after_down_3_asymp = safe_difference(time_to_adapt_after_down_3_asymp, time_to_adapt_before_down_3_asymp)
+    difference_time_to_adapt_before_after_up_1_asymp = safe_difference(time_to_adapt_after_up_1_asymp, time_to_adapt_before_up_1_asymp)
+    difference_time_to_adapt_before_after_up_2_asymp = safe_difference(time_to_adapt_after_up_2_asymp, time_to_adapt_before_up_2_asymp)
+    difference_time_to_adapt_before_after_up_3_asymp = safe_difference(time_to_adapt_after_up_3_asymp, time_to_adapt_before_up_3_asymp)
+    difference_min_time_to_adapt_before_after_up_asymp = safe_difference(min_time_to_adapt_after_up_asymp, min_time_to_adapt_before_up_asymp)
+    difference_min_time_to_adapt_before_after_down_asymp = safe_difference(min_time_to_adapt_after_down_asymp, min_time_to_adapt_before_down_asymp)
+    difference_average_time_to_adapt_before_after_up_asymp = safe_difference(average_time_to_adapt_after_up_asymp, average_time_to_adapt_before_up_asymp)
+    difference_average_time_to_adapt_before_after_down_asymp = safe_difference(average_time_to_adapt_after_down_asymp, average_time_to_adapt_before_down_asymp)
 
 
+    list_time_to_adapt_before_down_1_sd.append(time_to_adapt_before_down_1_sd)
+    list_time_to_adapt_before_down_2_sd.append(time_to_adapt_before_down_2_sd)
+    list_time_to_adapt_before_down_3_sd.append(time_to_adapt_before_down_3_sd)
+    list_time_to_adapt_before_up_1_sd.append(time_to_adapt_before_up_1_sd)
+    list_time_to_adapt_before_up_2_sd.append(time_to_adapt_before_up_2_sd)
+    list_time_to_adapt_before_up_3_sd.append(time_to_adapt_before_up_3_sd)
+    list_time_to_adapt_after_down_1_sd.append(time_to_adapt_after_down_1_sd)
+    list_time_to_adapt_after_down_2_sd.append(time_to_adapt_after_down_2_sd)
+    list_time_to_adapt_after_down_3_sd.append(time_to_adapt_after_down_3_sd)
+    list_time_to_adapt_after_up_1_sd.append(time_to_adapt_after_up_1_sd)
+    list_time_to_adapt_after_up_2_sd.append(time_to_adapt_after_up_2_sd)
+    list_time_to_adapt_after_up_3_sd.append(time_to_adapt_after_up_3_sd)
+    list_average_time_to_adapt_before_down_sd.append(average_time_to_adapt_before_down_sd)
+    list_average_time_to_adapt_before_up_sd.append(average_time_to_adapt_before_up_sd)
+    list_average_time_to_adapt_after_down_sd.append(average_time_to_adapt_after_down_sd)
+    list_average_time_to_adapt_after_up_sd.append(average_time_to_adapt_after_up_sd)
+    list_min_time_to_adapt_before_down_sd.append(min_time_to_adapt_before_down_sd)
+    list_min_time_to_adapt_before_up_sd.append(min_time_to_adapt_before_up_sd)
+    list_min_time_to_adapt_after_down_sd.append(min_time_to_adapt_after_down_sd)
+    list_min_time_to_adapt_after_up_sd.append(min_time_to_adapt_after_up_sd)
+    list_difference_time_to_adapt_before_after_down_1_sd.append(difference_time_to_adapt_before_after_down_1_sd)
+    list_difference_time_to_adapt_before_after_down_2_sd.append(difference_time_to_adapt_before_after_down_2_sd)
+    list_difference_time_to_adapt_before_after_down_3_sd.append(difference_time_to_adapt_before_after_down_3_sd)
+    list_difference_time_to_adapt_before_after_up_1_sd.append(difference_time_to_adapt_before_after_up_1_sd)
+    list_difference_time_to_adapt_before_after_up_2_sd.append(difference_time_to_adapt_before_after_up_2_sd)
+    list_difference_time_to_adapt_before_after_up_3_sd.append(difference_time_to_adapt_before_after_up_3_sd)
+    list_difference_min_time_to_adapt_before_after_up_sd.append(difference_min_time_to_adapt_before_after_up_sd)
+    list_difference_min_time_to_adapt_before_after_down_sd.append(difference_min_time_to_adapt_before_after_down_sd)
+    list_difference_average_time_to_adapt_before_after_up_sd.append(difference_average_time_to_adapt_before_after_up_sd)
+    list_difference_average_time_to_adapt_before_after_down_sd.append(difference_average_time_to_adapt_before_after_down_sd)
 
-dist = {'ID'        : list_ID,
+    list_time_to_adapt_before_down_1_asymp.append(time_to_adapt_before_down_1_asymp)
+    list_time_to_adapt_before_down_2_asymp.append(time_to_adapt_before_down_2_asymp)
+    list_time_to_adapt_before_down_3_asymp.append(time_to_adapt_before_down_3_asymp)
+    list_time_to_adapt_before_up_1_asymp.append(time_to_adapt_before_up_1_asymp)
+    list_time_to_adapt_before_up_2_asymp.append(time_to_adapt_before_up_2_asymp)
+    list_time_to_adapt_before_up_3_asymp.append(time_to_adapt_before_up_3_asymp)
+    list_time_to_adapt_after_down_1_asymp.append(time_to_adapt_after_down_1_asymp)
+    list_time_to_adapt_after_down_2_asymp.append(time_to_adapt_after_down_2_asymp)
+    list_time_to_adapt_after_down_3_asymp.append(time_to_adapt_after_down_3_asymp)
+    list_time_to_adapt_after_up_1_asymp.append(time_to_adapt_after_up_1_asymp)
+    list_time_to_adapt_after_up_2_asymp.append(time_to_adapt_after_up_2_asymp)
+    list_time_to_adapt_after_up_3_asymp.append(time_to_adapt_after_up_3_asymp)
+    list_average_time_to_adapt_before_down_asymp.append(average_time_to_adapt_before_down_asymp)
+    list_average_time_to_adapt_before_up_asymp.append(average_time_to_adapt_before_up_asymp)
+    list_average_time_to_adapt_after_down_asymp.append(average_time_to_adapt_after_down_asymp)
+    list_average_time_to_adapt_after_up_asymp.append(average_time_to_adapt_after_up_asymp)
+    list_min_time_to_adapt_before_down_asymp.append(min_time_to_adapt_before_down_asymp)
+    list_min_time_to_adapt_before_up_asymp.append(min_time_to_adapt_before_up_asymp)
+    list_min_time_to_adapt_after_down_asymp.append(min_time_to_adapt_after_down_asymp)
+    list_min_time_to_adapt_after_up_asymp.append(min_time_to_adapt_after_up_asymp)
+    list_difference_time_to_adapt_before_after_down_1_asymp.append(difference_time_to_adapt_before_after_down_1_asymp)
+    list_difference_time_to_adapt_before_after_down_2_asymp.append(difference_time_to_adapt_before_after_down_2_asymp)
+    list_difference_time_to_adapt_before_after_down_3_asymp.append(difference_time_to_adapt_before_after_down_3_asymp)
+    list_difference_time_to_adapt_before_after_up_1_asymp.append(difference_time_to_adapt_before_after_up_1_asymp)
+    list_difference_time_to_adapt_before_after_up_2_asymp.append(difference_time_to_adapt_before_after_up_2_asymp)
+    list_difference_time_to_adapt_before_after_up_3_asymp.append(difference_time_to_adapt_before_after_up_3_asymp)
+    list_difference_min_time_to_adapt_before_after_up_asymp.append(difference_min_time_to_adapt_before_after_up_asymp)
+    list_difference_min_time_to_adapt_before_after_down_asymp.append(difference_min_time_to_adapt_before_after_down_asymp)
+    list_difference_average_time_to_adapt_before_after_up_asymp.append(difference_average_time_to_adapt_before_after_up_asymp)
+    list_difference_average_time_to_adapt_before_after_down_asymp.append(difference_average_time_to_adapt_before_after_down_asymp)
+
+
+dist_sd = {'ID'        : list_ID,
         'Group ID'  : list_ID_team,
-        'Time_to_adapt_before_down_1'  : list_time_to_adapt_before_down_1,
-        'Time_to_adapt_before_down_2'  : list_time_to_adapt_before_down_2,
-        'Time_to_adapt_before_down_3'  : list_time_to_adapt_before_down_3,
-        'Average Time to adapt before down': list_average_time_to_adapt_before_down,
-        'Min Time to adapt before down': list_min_time_to_adapt_before_down,
-        'Time_to_adapt_before_up_1'  : list_time_to_adapt_before_up_1,
-        'Time_to_adapt_before_up_2'  : list_time_to_adapt_before_up_2,
-        'Time_to_adapt_before_up_3'  : list_time_to_adapt_before_up_3,
-        'Average Time to adapt before up': list_average_time_to_adapt_before_up,
-        'Min Time to adapt before up': list_min_time_to_adapt_before_up,
-        'Time_to_adapt_after_down_1'  : list_time_to_adapt_after_down_1,
-        'Time_to_adapt_after_down_2'  : list_time_to_adapt_after_down_2,
-        'Time_to_adapt_after_down_3'  : list_time_to_adapt_after_down_3,
-        'Average Time to adapt after down': list_average_time_to_adapt_after_down,
-        'Min Time to adapt after down': list_min_time_to_adapt_after_down,
-        'Time_to_adapt_after_up_1'  : list_time_to_adapt_after_up_1,
-        'Time_to_adapt_after_up_2'  : list_time_to_adapt_after_up_2,
-        'Time_to_adapt_after_up_3'  : list_time_to_adapt_after_up_3,
-        'Average Time to adapt after up': list_average_time_to_adapt_after_up,
-        'Min Time to adapt after up': list_min_time_to_adapt_after_up,
+        'Signal'    : list_signal,
+        'Speed'     : list_speed,
+        'Time_to_adapt_before_down_1'  : list_time_to_adapt_before_down_1_sd,
+        'Time_to_adapt_before_down_2'  : list_time_to_adapt_before_down_2_sd,
+        'Time_to_adapt_before_down_3'  : list_time_to_adapt_before_down_3_sd,
+        'Average Time to adapt before down': list_average_time_to_adapt_before_down_sd,
+        'Min Time to adapt before down': list_min_time_to_adapt_before_down_sd,
+        'Time_to_adapt_before_up_1'  : list_time_to_adapt_before_up_1_sd,
+        'Time_to_adapt_before_up_2'  : list_time_to_adapt_before_up_2_sd,
+        'Time_to_adapt_before_up_3'  : list_time_to_adapt_before_up_3_sd,
+        'Average Time to adapt before up': list_average_time_to_adapt_before_up_sd,
+        'Min Time to adapt before up': list_min_time_to_adapt_before_up_sd,
+        'Time_to_adapt_after_down_1'  : list_time_to_adapt_after_down_1_sd,
+        'Time_to_adapt_after_down_2'  : list_time_to_adapt_after_down_2_sd,
+        'Time_to_adapt_after_down_3'  : list_time_to_adapt_after_down_3_sd,
+        'Average Time to adapt after down': list_average_time_to_adapt_after_down_sd,
+        'Min Time to adapt after down': list_min_time_to_adapt_after_down_sd,
+        'Time_to_adapt_after_up_1'  : list_time_to_adapt_after_up_1_sd,
+        'Time_to_adapt_after_up_2'  : list_time_to_adapt_after_up_2_sd,
+        'Time_to_adapt_after_up_3'  : list_time_to_adapt_after_up_3_sd,
+        'Average Time to adapt after up': list_average_time_to_adapt_after_up_sd,
+        'Min Time to adapt after up': list_min_time_to_adapt_after_up_sd,
+        'Difference time to adapt before after down 1': list_difference_time_to_adapt_before_after_down_1_sd,
+        'Difference time to adapt before after down 2': list_difference_time_to_adapt_before_after_down_2_sd,
+        'Difference time to adapt before after down 3': list_difference_time_to_adapt_before_after_down_3_sd,
+        'Difference time to adapt before after up 1': list_difference_time_to_adapt_before_after_up_1_sd,
+        'Difference time to adapt before after up 2': list_difference_time_to_adapt_before_after_up_2_sd,
+        'Difference time to adapt before after up 3': list_difference_time_to_adapt_before_after_up_3_sd,
+        'Difference min time to adapt before after up': list_difference_min_time_to_adapt_before_after_up_sd,
+        'Difference min time to adapt before after down': list_difference_min_time_to_adapt_before_after_down_sd,
+        'Difference average time to adapt before after up': list_difference_average_time_to_adapt_before_after_up_sd,
+        'Difference average time to adapt before after down': list_difference_average_time_to_adapt_before_after_down_sd,
         }
 
-results = pd.DataFrame(dist)
-print(results)
-directory_to_save = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Pilot study 4\Results\Perturbation results'
+dist_asymp = {'ID'        : list_ID,
+        'Group ID'  : list_ID_team,
+        'Signal'    : list_signal,
+        'Speed'     : list_speed,
+        'Time_to_adapt_before_down_1'  : list_time_to_adapt_before_down_1_asymp,
+        'Time_to_adapt_before_down_2'  : list_time_to_adapt_before_down_2_asymp,
+        'Time_to_adapt_before_down_3'  : list_time_to_adapt_before_down_3_asymp,
+        'Average Time to adapt before down': list_average_time_to_adapt_before_down_asymp,
+        'Min Time to adapt before down': list_min_time_to_adapt_before_down_asymp,
+        'Time_to_adapt_before_up_1'  : list_time_to_adapt_before_up_1_asymp,
+        'Time_to_adapt_before_up_2'  : list_time_to_adapt_before_up_2_asymp,
+        'Time_to_adapt_before_up_3'  : list_time_to_adapt_before_up_3_asymp,
+        'Average Time to adapt before up': list_average_time_to_adapt_before_up_asymp,
+        'Min Time to adapt before up': list_min_time_to_adapt_before_up_asymp,
+        'Time_to_adapt_after_down_1'  : list_time_to_adapt_after_down_1_asymp,
+        'Time_to_adapt_after_down_2'  : list_time_to_adapt_after_down_2_asymp,
+        'Time_to_adapt_after_down_3'  : list_time_to_adapt_after_down_3_asymp,
+        'Average Time to adapt after down': list_average_time_to_adapt_after_down_asymp,
+        'Min Time to adapt after down': list_min_time_to_adapt_after_down_asymp,
+        'Time_to_adapt_after_up_1'  : list_time_to_adapt_after_up_1_asymp,
+        'Time_to_adapt_after_up_2'  : list_time_to_adapt_after_up_2_asymp,
+        'Time_to_adapt_after_up_3'  : list_time_to_adapt_after_up_3_asymp,
+        'Average Time to adapt after up': list_average_time_to_adapt_after_up_asymp,
+        'Min Time to adapt after up': list_min_time_to_adapt_after_up_asymp,
+        'Difference time to adapt before after down 1': list_difference_time_to_adapt_before_after_down_1_asymp,
+        'Difference time to adapt before after down 2': list_difference_time_to_adapt_before_after_down_2_asymp,
+        'Difference time to adapt before after down 3': list_difference_time_to_adapt_before_after_down_3_asymp,
+        'Difference time to adapt before after up 1': list_difference_time_to_adapt_before_after_up_1_asymp,
+        'Difference time to adapt before after up 2': list_difference_time_to_adapt_before_after_up_2_asymp,
+        'Difference time to adapt before after up 3': list_difference_time_to_adapt_before_after_up_3_asymp,
+        'Difference min time to adapt before after up': list_difference_min_time_to_adapt_before_after_up_asymp,
+        'Difference min time to adapt before after down': list_difference_min_time_to_adapt_before_after_down_asymp,
+        'Difference average time to adapt before after up': list_difference_average_time_to_adapt_before_after_up_asymp,
+        'Difference average time to adapt before after down': list_difference_average_time_to_adapt_before_after_down_asymp,
+        }
+
+results_sd = pd.DataFrame(dist_sd)
+results_asymp = pd.DataFrame(dist_asymp)
+
+
+if Stylianos == True:
+    directory_to_save = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Results\Perturbation results'
+else:
+    directory_to_save = r'C:\Users\USER\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\Grip training\Results\Perturbation results'
+
 os.chdir(directory_to_save)
-results.to_excel('Perturbation_results_2_sd_after_max_threshold.xlsx')
-
-# Plot of Minimum adaptation times
-df_long = results.melt(id_vars=['Group ID'],
-                  value_vars=['Min Time to adapt before down', 'Min Time to adapt after down',
-                              'Min Time to adapt before up', 'Min Time to adapt after up'],
-                  var_name='Set', value_name='Min Time to adapt')  # Ensure correct name
-
-
-
-# Rename set names for readability
-df_long['Set'] = df_long['Set'].str.replace('Average Spatial error set ', 'Set ')
-print(df_long['Group ID'].unique())
-
-df_long['ID'] = pd.Categorical(df_long['Group ID'], categories=["Sine_100", "Pink_100", "White_100", "Sine_65", "Pink_65", "White_65"], ordered=True)
-print(df_long['Group ID'].unique())
-
-# Custom color palette
-custom_palette = {
-    "Sine_100": "#4F4F4F",    # Dark gray (first)
-    "Pink_100": "#FFC0CB",      # Soft pink (second)
-    "White_100": "#D3D3D3",      # Light gray (third)
-    "Sine_65": "#4F4F4F",  # Dark gray (first)
-    "Pink_65": "#FFC0CB",  # Soft pink (second)
-    "White_65": "#D3D3D3",  # Light gray (third)
-    }
-
-# Create the boxplot with the correct order
-plt.figure(figsize=(12, 6))
-bar = sns.boxplot(x='Set', y='Min Time to adapt', hue='Group ID', data=df_long, palette=custom_palette, showfliers=True)
-
-hatches = ['', '', '', '',
-           '////', '////', '////', '////',
-           '', '', '', '',
-           '////', '////', '////', '////',
-           '', '', '', '',
-           '////', '////', '////', '////',
-           '', '////', '', '////', '', '////',
-           ]
-
-for i, thisbar in enumerate(bar.patches):
-    print(i)
-    # Set a different hatch for each bar
-    thisbar.set_hatch(hatches[i])
-
-
-# Customize plot
-custom_labels = ['Before Down', 'After Down', 'Before Up', 'After Up']
-plt.xticks(ticks=[0, 1, 2, 3], labels=custom_labels)
-plt.title('Time to Adapt')
-plt.ylabel('Minimum Time to Adapt')
-plt.xlabel('')
-plt.legend()
-
-# Show plot
-plt.tight_layout()
-plt.show()
-
-# Plot of Average adaptation times
-df_long = results.melt(id_vars=['Group ID'],
-                  value_vars=['Average Time to adapt before down', 'Average Time to adapt after down',
-                              'Average Time to adapt before up', 'Average Time to adapt after up'],
-                  var_name='Set', value_name='Average Time to adapt')  # Ensure correct name
-
-
-
-# Rename set names for readability
-df_long['Set'] = df_long['Set'].str.replace('Average Spatial error set ', 'Set ')
-
-df_long['ID'] = pd.Categorical(df_long['Group ID'], categories=["Sine_100", "Pink_100", "White_100", "Sine_65", "Pink_65", "White_65"], ordered=True)
-
-# Custom color palette
-custom_palette = {
-    "Sine_100": "#4F4F4F",    # Dark gray (first)
-    "Pink_100": "#FFC0CB",      # Soft pink (second)
-    "White_100": "#D3D3D3",      # Light gray (third)
-    "Sine_65": "#4F4F4F",  # Dark gray (first)
-    "Pink_65": "#FFC0CB",  # Soft pink (second)
-    "White_65": "#D3D3D3",  # Light gray (third)
-    }
-
-# Create the boxplot with the correct order
-plt.figure(figsize=(12, 6))
-bar = sns.boxplot(x='Set', y='Average Time to adapt', hue='Group ID', data=df_long, palette=custom_palette, showfliers=True)
-
-hatches = ['', '', '', '',
-           '////', '////', '////', '////',
-           '', '', '', '',
-           '////', '////', '////', '////',
-           '', '', '', '',
-           '////', '////', '////', '////',
-           '', '////', '', '////', '', '////',
-           ]
-
-for i, thisbar in enumerate(bar.patches):
-    print(i)
-    # Set a different hatch for each bar
-    thisbar.set_hatch(hatches[i])
-
-
-# Customize plot
-custom_labels = ['Before Down', 'After Down', 'Before Up', 'After Up']
-plt.xticks(ticks=[0, 1, 2, 3], labels=custom_labels)
-plt.title('Time to Adapt')
-plt.ylabel('Average Time to Adapt')
-plt.xlabel('')
-plt.legend()
-
-# Show plot
-plt.tight_layout()
-plt.show()
+results_sd.to_excel(f'Sd Method Perturbation_results_{sd_factor}_sd_after_max_threshold.xlsx')
+results_asymp.to_excel(f'Asymptote Method Perturbation results {asymptote_fraction}.xlsx')

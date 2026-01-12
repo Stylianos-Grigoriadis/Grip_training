@@ -66,10 +66,10 @@ for file in files:
     list_ID_team.append(ID_team[0])
     list_signal.append(signal)
     list_speed.append(speed)
-    print(ID) # We keep this so that we know which participant is assessed during the run of the code
-    print(ID_team[0])
-    print(signal)
-    print(speed)
+    # print(ID) # We keep this so that we know which participant is assessed during the run of the code
+    # print(ID_team[0])
+    # print(signal)
+    # print(speed)
 
     # Trial analysis for calculation of mean and sd of spatial error
     file_training_trials = file + r'\Training_trials'
@@ -85,6 +85,7 @@ for file in files:
     df8 = pd.read_csv(r'Trial_8.csv', skiprows=2)
     df9 = pd.read_csv(r'Trial_9.csv', skiprows=2)
     df10 = pd.read_csv(r'Trial_10.csv', skiprows=2)
+
 
     # Filtering process
     Performance_1 = df1['Performance']
@@ -121,6 +122,7 @@ for file in files:
     df9['Performance'] = Performance_9_filtered
     df10['Performance'] = Performance_10_filtered
 
+
     # Synchronise training trials
     synch_df1 = lb.synchronization_of_Time_and_ClosestSampleTime_Anestis(df1)
     synch_df2 = lb.synchronization_of_Time_and_ClosestSampleTime_Anestis(df2)
@@ -135,16 +137,16 @@ for file in files:
 
     # After visual inspection we decided that after 3 seconds the force output stabilizes
     time_threshold = 3
-    synch_df1_after_threshold = synch_df1[synch_df1['Time']>time_threshold].reset_index(drop=True).copy()
-    synch_df2_after_threshold = synch_df2[synch_df2['Time']>time_threshold].reset_index(drop=True).copy()
-    synch_df3_after_threshold = synch_df3[synch_df3['Time']>time_threshold].reset_index(drop=True).copy()
-    synch_df4_after_threshold = synch_df4[synch_df4['Time']>time_threshold].reset_index(drop=True).copy()
-    synch_df5_after_threshold = synch_df5[synch_df5['Time']>time_threshold].reset_index(drop=True).copy()
-    synch_df6_after_threshold = synch_df6[synch_df6['Time']>time_threshold].reset_index(drop=True).copy()
-    synch_df7_after_threshold = synch_df7[synch_df7['Time']>time_threshold].reset_index(drop=True).copy()
-    synch_df8_after_threshold = synch_df8[synch_df8['Time']>time_threshold].reset_index(drop=True).copy()
-    synch_df9_after_threshold = synch_df9[synch_df9['Time']>time_threshold].reset_index(drop=True).copy()
-    synch_df10_after_threshold = synch_df10[synch_df10['Time']>time_threshold].reset_index(drop=True).copy()
+    synch_df1_after_threshold = synch_df1[synch_df1['Time'] > time_threshold].reset_index(drop=True).copy()
+    synch_df2_after_threshold = synch_df2[synch_df2['Time'] > time_threshold].reset_index(drop=True).copy()
+    synch_df3_after_threshold = synch_df3[synch_df3['Time'] > time_threshold].reset_index(drop=True).copy()
+    synch_df4_after_threshold = synch_df4[synch_df4['Time'] > time_threshold].reset_index(drop=True).copy()
+    synch_df5_after_threshold = synch_df5[synch_df5['Time'] > time_threshold].reset_index(drop=True).copy()
+    synch_df6_after_threshold = synch_df6[synch_df6['Time'] > time_threshold].reset_index(drop=True).copy()
+    synch_df7_after_threshold = synch_df7[synch_df7['Time'] > time_threshold].reset_index(drop=True).copy()
+    synch_df8_after_threshold = synch_df8[synch_df8['Time'] > time_threshold].reset_index(drop=True).copy()
+    synch_df9_after_threshold = synch_df9[synch_df9['Time'] > time_threshold].reset_index(drop=True).copy()
+    synch_df10_after_threshold = synch_df10[synch_df10['Time'] > time_threshold].reset_index(drop=True).copy()
 
     # Calculation of Spatial Error for each trial
     spatial_errors_1 = spatial_error(synch_df1_after_threshold)
@@ -236,10 +238,10 @@ dist = {
 
 
 df_results = pd.DataFrame(dist)
-if Stylianos == True:
-    directory_to_save = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Results'
-else:
-    directory_to_save = r'C:\Users\USER\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\Grip training\Results'
-
-os.chdir(directory_to_save)
-df_results.to_excel('Training_trials_results.xlsx')
+# if Stylianos == True:
+#     directory_to_save = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Results'
+# else:
+#     directory_to_save = r'C:\Users\USER\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\Grip training\Results'
+#
+# os.chdir(directory_to_save)
+# df_results.to_excel('Training_trials_results.xlsx')
