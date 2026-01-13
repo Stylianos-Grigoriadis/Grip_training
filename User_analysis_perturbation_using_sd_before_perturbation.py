@@ -89,9 +89,9 @@ list_ID_team = []
 list_signal = []
 list_speed = []
 
-sd_factor = 3
+sd_factor = 2
 time_window = 1
-asymptote_fraction = 0.99
+asymptote_fraction = 0.95
 for file in files:
     os.chdir(file)
     ID = os.path.basename(file)
@@ -440,4 +440,4 @@ else:
 
 os.chdir(directory_to_save)
 results_sd.to_excel(f'Sd Method Perturbation_results_{sd_factor}_sd_after_max_threshold.xlsx')
-results_asymp.to_excel(f'Asymptote Method Perturbation results {asymptote_fraction}.xlsx')
+# results_asymp.to_excel(f'Asymptote Method Perturbation results {asymptote_fraction}.xlsx')

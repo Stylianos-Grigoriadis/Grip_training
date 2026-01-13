@@ -421,12 +421,146 @@ def plot_difference_time_to_adapt(results, mode='min', box_width=0.08, jitter=0.
     plt.tight_layout()
     plt.show()
 
+def plot_difference_min_time_boxplot(df, box_width=0.15, group_spacing=0.25):
+    """
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        Input dataframe
+    box_width : float
+        Width of each box
+    group_spacing : float
+        Spacing between boxplots within the same tick
+    """
+
+    # -------------------------------------------------
+    # 1. Filter excluded rows
+    # -------------------------------------------------
+    df = df[df['Exclude'] == 0].copy()
+
+    # -------------------------------------------------
+    # 2. Long format
+    # -------------------------------------------------
+    df_long = pd.melt(
+        df,
+        id_vars=['Signal'],
+        value_vars=[
+            'Difference min time to adapt before after up',
+            'Difference min time to adapt before after down'
+        ],
+        var_name='Direction',
+        value_name='Difference'
+    )
+
+    df_long['Direction'] = df_long['Direction'].map({
+        'Difference min time to adapt before after up': 'Up',
+        'Difference min time to adapt before after down': 'Down'
+    })
+
+    # -------------------------------------------------
+    # 3. Plot order & spacing
+    # -------------------------------------------------
+    direction_order = ['Up', 'Down']
+    signal_order = ['Sine', 'Pink', 'White']
+
+    base_positions = np.arange(len(direction_order))
+    group_offsets = np.linspace(
+        -group_spacing,
+        group_spacing,
+        len(signal_order)
+    )
+
+    # -------------------------------------------------
+    # 4. COLOR CONTROL (EDIT ONLY THIS)
+    # -------------------------------------------------
+    signal_colors = {
+        'Sine':  '#4F4F4F',   # blue
+        'Pink':  '#FFC0CB',   # orange/pink
+        'White': '#D3D3D3'    # green
+    }
+
+    # -------------------------------------------------
+    # 5. Plot
+    # -------------------------------------------------
+    fig, ax = plt.subplots(figsize=(9, 6))
+
+    for di, direction in enumerate(direction_order):
+        for si, signal in enumerate(signal_order):
+
+            data = df_long.loc[
+                (df_long['Direction'] == direction) &
+                (df_long['Signal'] == signal),
+                'Difference'
+            ].dropna()
+
+            if data.empty:
+                continue
+
+            pos = base_positions[di] + group_offsets[si]
+
+            bp = ax.boxplot(
+                data,
+                positions=[pos],
+                widths=box_width,
+                patch_artist=True,
+                showfliers=False
+            )
+
+            # Apply color
+            for patch in bp['boxes']:
+                patch.set_facecolor(signal_colors[signal])
+                patch.set_edgecolor('black')
+                patch.set_alpha(0.85)
+
+            for whisker in bp['whiskers']:
+                whisker.set_color('black')
+
+            for cap in bp['caps']:
+                cap.set_color('black')
+
+            for median in bp['medians']:
+                median.set_color('black')
+                median.set_linewidth(2)
+
+    # -------------------------------------------------
+    # 6. Axis formatting
+    # -------------------------------------------------
+    ax.set_xticks(base_positions)
+    ax.set_xticklabels(direction_order)
+    ax.set_xlabel('')
+    ax.set_ylabel('Time to Adapt (Before − After)')
+    ax.set_title('Difference in Minimum Time to Adapt\nBefore vs After')
+    ax.set_ylim(-2.2, 1.5)
+    # ax.set_xlim(0.45, 0.45)
+    ax.grid(axis='y', alpha=0.3)
+
+    # -------------------------------------------------
+    # 7. Custom legend
+    # -------------------------------------------------
+    legend_handles = [
+        plt.Line2D([0], [0], color=color, lw=8, label=signal)
+        for signal, color in signal_colors.items()
+    ]
+
+    ax.legend(
+        handles=legend_handles,
+        title='Group',
+        frameon=True,
+        bbox_to_anchor=(0.5, -0.15),
+        loc='upper center',
+        ncol=3
+    )
+
+
+    plt.tight_layout()
+    plt.show()
+
+
 
 directory = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Results\Perturbation results'
 os.chdir(directory)
-results_sd = pd.read_excel('Perturbation_results_3_sd_after_max_threshold.xlsx')
-results_asymp = pd.read_excel('Asymptote Method Perturbation results 0.99.xlsx')
-
+results_sd = pd.read_excel('Sd Method Perturbation_results_3_sd_after_max_threshold.xlsx')
+results_asymp = pd.read_excel('Asymptote Method Perturbation results 0.95.xlsx')
 print(results_sd.columns)
 print(results_asymp.columns)
 
@@ -436,8 +570,11 @@ print(results_asymp.columns)
 # plot_difference_time_to_adapt(results_sd, mode='min')
 # plot_difference_time_to_adapt(results_sd, mode='avg')
 
-plot_time_to_adapt_seaborn(results_asymp, mode='min')
-plot_time_to_adapt_seaborn(results_asymp, mode='avg')
+# plot_time_to_adapt_seaborn(results_asymp, mode='min')
+# plot_time_to_adapt_seaborn(results_asymp, mode='avg')
+#
+# plot_difference_time_to_adapt(results_asymp, mode='min')
+# plot_difference_time_to_adapt(results_asymp, mode='avg')
 
-plot_difference_time_to_adapt(results_asymp, mode='min')
-plot_difference_time_to_adapt(results_asymp, mode='avg')
+plot_difference_min_time_boxplot(results_sd)
+
