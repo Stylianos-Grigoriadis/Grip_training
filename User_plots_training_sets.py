@@ -151,6 +151,139 @@ def plot_error_boxplots(
     plt.tight_layout()
     plt.show()
 
+def plot_error_boxplots_only_slow(
+    df,
+    error_type='spatial',
+    plot_type='box',
+    show_points=True
+):
+    """
+    Creates grouped box or violin plots with jittered raw data points.
+    Excludes rows where Exclude == 1 and plots only Signal (Pink, Sine, White),
+    collapsing across Speed.
+    """
+
+    error_type = error_type.lower()
+    plot_type = plot_type.lower()
+
+    # -------------------------------
+    # Exclude participants
+    # -------------------------------
+    df = df[df['Exclude'] == 0].copy()
+
+    # -------------------------------
+    # Select dependent variable
+    # -------------------------------
+    if error_type == 'spatial':
+        cols = [c for c in df.columns if 'Mean Spatial error' in c]
+        y_label = 'Spatial Error'
+        title_base = 'Spatial Error'
+
+    elif error_type == 'variable':
+        cols = [c for c in df.columns if 'Variable Error trial' in c]
+        y_label = 'Variable Error'
+        title_base = 'Variable Error'
+
+    else:
+        raise ValueError("error_type must be 'spatial' or 'variable'")
+
+    # -------------------------------
+    # Melt to long format
+    # -------------------------------
+    df_long = df.melt(
+        id_vars=['Signal'],
+        value_vars=cols,
+        var_name='Set',
+        value_name=y_label
+    )
+
+    df_long['Set'] = (
+        df_long['Set']
+        .str.extract(r'(\d+)')
+        .astype(int)
+    )
+
+    # -------------------------------
+    # Keep only desired signals
+    # -------------------------------
+    signal_order = ['Pink', 'Sine', 'White']
+    df_long = df_long[df_long['Signal'].isin(signal_order)]
+
+    title = f'{title_base} across Sets (Signal)'
+
+    # -------------------------------
+    # Plot
+    # -------------------------------
+    plt.figure(figsize=(16, 6))
+
+    if plot_type == 'box':
+        sns.boxplot(
+            data=df_long,
+            x='Set',
+            y=y_label,
+            hue='Signal',
+            hue_order=signal_order,
+            order=sorted(df_long['Set'].unique()),
+            width=0.8,
+            fliersize=0
+        )
+
+    elif plot_type == 'violin':
+        sns.violinplot(
+            data=df_long,
+            x='Set',
+            y=y_label,
+            hue='Signal',
+            hue_order=signal_order,
+            order=sorted(df_long['Set'].unique()),
+            cut=0,
+            scale='width',
+            inner='quartile',
+            linewidth=1,
+            inner_kws={'linewidth': 3}
+        )
+
+    else:
+        raise ValueError("plot_type must be 'box' or 'violin'")
+
+    # -------------------------------
+    # Overlay jittered datapoints
+    # -------------------------------
+    if show_points:
+        sns.stripplot(
+            data=df_long,
+            x='Set',
+            y=y_label,
+            hue='Signal',
+            hue_order=signal_order,
+            order=sorted(df_long['Set'].unique()),
+            dodge=True,
+            jitter=0.2,
+            alpha=0.6,
+            size=4,
+            edgecolor='black',
+            linewidth=0.8
+        )
+
+    # -------------------------------
+    # Legend handling (avoid duplicates)
+    # -------------------------------
+    handles, labels = plt.gca().get_legend_handles_labels()
+    n_groups = len(signal_order)
+
+    plt.legend(
+        handles[:n_groups],
+        labels[:n_groups],
+        title='Signal',
+        bbox_to_anchor=(1.02, 1),
+        loc='upper left'
+    )
+
+    plt.xlabel('Set')
+    plt.ylabel(y_label)
+    plt.title(title)
+    plt.tight_layout()
+    plt.show()
 
 
 def plot_error_means_plotly(df, error_type='spatial', group_by='all', dodge=0.12):
@@ -253,6 +386,381 @@ def plot_error_means_plotly(df, error_type='spatial', group_by='all', dodge=0.12
 
     fig.show()
 
+def plot_error_mean_sd(df, error_type='spatial'):
+    """
+    Plots mean ± 1 SD of error across sets for each Signal (Pink, Sine, White),
+    excluding rows where Exclude == 1 and collapsing across Speed.
+    """
+
+    import numpy as np
+    import matplotlib.pyplot as plt
+
+    error_type = error_type.lower()
+
+    # -------------------------------
+    # Exclude participants
+    # -------------------------------
+    df = df[df['Exclude'] == 0].copy()
+
+    # -------------------------------
+    # Select dependent variable
+    # -------------------------------
+    if error_type == 'spatial':
+        cols = [c for c in df.columns if 'Mean Spatial error' in c]
+        y_label = 'Spatial Error'
+        title = 'Spatial Error across Sets'
+
+    elif error_type == 'variable':
+        cols = [c for c in df.columns if 'Variable Error trial' in c]
+        y_label = 'Variable Error'
+        title = 'Variable Error across Sets'
+
+    else:
+        raise ValueError("error_type must be 'spatial' or 'variable'")
+
+    # -------------------------------
+    # Melt to long format
+    # -------------------------------
+    df_long = df.melt(
+        id_vars=['Signal'],
+        value_vars=cols,
+        var_name='Set',
+        value_name=y_label
+    )
+
+    df_long['Set'] = (
+        df_long['Set']
+        .str.extract(r'(\d+)')
+        .astype(int)
+    )
+
+    # -------------------------------
+    # Keep only desired signals
+    # -------------------------------
+    signal_order = ['Pink', 'Sine', 'White']
+    df_long = df_long[df_long['Signal'].isin(signal_order)]
+
+    # -------------------------------
+    # Compute mean & SD
+    # -------------------------------
+    summary = (
+        df_long
+        .groupby(['Signal', 'Set'])[y_label]
+        .agg(['mean', 'std'])
+        .reset_index()
+    )
+
+    # -------------------------------
+    # Color control (edit here)
+    # -------------------------------
+    signal_colors = {
+        'Pink':  '#E75480',
+        'Sine':  '#4F4F4F',
+        'White': '#BFBFBF'
+    }
+
+    # -------------------------------
+    # Plot
+    # -------------------------------
+    plt.figure(figsize=(14, 6))
+
+    for signal in signal_order:
+        sub = summary[summary['Signal'] == signal]
+        x = sub['Set']
+        y = sub['mean']
+        sd = sub['std']
+
+        plt.plot(
+            x,
+            y,
+            lw=3,
+            color=signal_colors[signal],
+            label=signal
+        )
+
+        plt.fill_between(
+            x,
+            y - sd,
+            y + sd,
+            color=signal_colors[signal],
+            alpha=0.25
+        )
+
+    plt.xlabel('Set')
+    plt.ylabel(y_label)
+    plt.title(title)
+    plt.legend(title='Signal')
+    plt.grid(axis='y', alpha=0.3)
+    plt.tight_layout()
+    plt.show()
+
+def plot_error_mean_sem(df, error_type='spatial'):
+    """
+    Plots mean ± SEM of error across sets for each Signal (Pink, Sine, White),
+    excluding rows where Exclude == 1 and collapsing across Speed.
+
+    SEM is shown as vertical error bars (not shaded areas).
+    """
+
+    import numpy as np
+    import matplotlib.pyplot as plt
+
+    error_type = error_type.lower()
+
+    # -------------------------------
+    # Exclude participants
+    # -------------------------------
+    df = df[df['Exclude'] == 0].copy()
+
+    # -------------------------------
+    # Select dependent variable
+    # -------------------------------
+    if error_type == 'spatial':
+        cols = [c for c in df.columns if 'Mean Spatial error' in c]
+        y_label = 'Spatial Error'
+        title = 'Spatial Error across Sets (Mean ± SEM)'
+
+    elif error_type == 'variable':
+        cols = [c for c in df.columns if 'Variable Error trial' in c]
+        y_label = 'Variable Error'
+        title = 'Variable Error across Sets (Mean ± SEM)'
+
+    else:
+        raise ValueError("error_type must be 'spatial' or 'variable'")
+
+    # -------------------------------
+    # Melt to long format
+    # -------------------------------
+    df_long = df.melt(
+        id_vars=['Signal'],
+        value_vars=cols,
+        var_name='Set',
+        value_name=y_label
+    )
+
+    df_long['Set'] = (
+        df_long['Set']
+        .str.extract(r'(\d+)')
+        .astype(int)
+    )
+
+    # -------------------------------
+    # Keep only desired signals
+    # -------------------------------
+    signal_order = ['Pink', 'Sine', 'White']
+    df_long = df_long[df_long['Signal'].isin(signal_order)]
+
+    # -------------------------------
+    # Compute mean, SD, N, SEM
+    # -------------------------------
+    summary = (
+        df_long
+        .groupby(['Signal', 'Set'])[y_label]
+        .agg(['mean', 'std', 'count'])
+        .reset_index()
+    )
+
+    summary['sem'] = summary['std'] / np.sqrt(summary['count'])
+
+    # -------------------------------
+    # COLOR CONTROL (EDIT / IMPORT THIS)
+    # -------------------------------
+    signal_colors = {
+        'Pink':  '#E75480',
+        'Sine':  '#4F4F4F',
+        'White': '#BFBFBF'
+    }
+
+    # -------------------------------
+    # Plot
+    # -------------------------------
+    plt.figure(figsize=(14, 6))
+
+    for signal in signal_order:
+        sub = summary[summary['Signal'] == signal]
+
+        x = sub['Set']
+        y = sub['mean']
+        sem = sub['sem']
+
+        plt.errorbar(
+            x,
+            y,
+            yerr=sem,
+            fmt='-o',
+            lw=3,
+            capsize=4,
+            markersize=5,
+            color=signal_colors[signal],
+            label=signal
+        )
+
+    # -------------------------------
+    # Axis formatting
+    # -------------------------------
+    plt.xlabel('Set')
+    plt.ylabel(y_label)
+    plt.title(title)
+
+    plt.xticks(np.arange(1, 11))  # Force ticks 1–10
+    plt.grid(axis='y', alpha=0.3)
+
+    plt.legend(title='Signal')
+    plt.tight_layout()
+    plt.show()
+
+def plot_error_mean_sd_with_jitter_and_points(
+    df,
+    error_type='spatial',
+    line_jitter=0.18,
+    point_jitter=0.04,
+    show_points=True
+):
+    """
+    Plots mean ± SD of error across sets for each Signal (Pink, Sine, White),
+    excluding rows where Exclude == 1 and collapsing across Speed.
+
+    - Mean lines use larger fixed x-jitter
+    - Raw datapoints use smaller random x-jitter
+    """
+
+    error_type = error_type.lower()
+
+    # -------------------------------
+    # Exclude participants
+    # -------------------------------
+    df = df[df['Exclude'] == 0].copy()
+
+    # -------------------------------
+    # Select dependent variable
+    # -------------------------------
+    if error_type == 'spatial':
+        cols = [c for c in df.columns if 'Mean Spatial error' in c]
+        y_label = 'Spatial Error'
+        title = 'Spatial Error across Sets (Mean ± SD)'
+
+    elif error_type == 'variable':
+        cols = [c for c in df.columns if 'Variable Error trial' in c]
+        y_label = 'Variable Error'
+        title = 'Variable Error across Sets (Mean ± SD)'
+
+    else:
+        raise ValueError("error_type must be 'spatial' or 'variable'")
+
+    # -------------------------------
+    # Melt to long format
+    # -------------------------------
+    df_long = df.melt(
+        id_vars=['Signal'],
+        value_vars=cols,
+        var_name='Set',
+        value_name=y_label
+    )
+
+    df_long['Set'] = (
+        df_long['Set']
+        .str.extract(r'(\d+)')
+        .astype(int)
+    )
+
+    # -------------------------------
+    # Keep only desired signals
+    # -------------------------------
+    signal_order = ['Pink', 'Sine', 'White']
+    df_long = df_long[df_long['Signal'].isin(signal_order)]
+
+    # -------------------------------
+    # Summary statistics (mean, SD)
+    # -------------------------------
+    summary = (
+        df_long
+        .groupby(['Signal', 'Set'])[y_label]
+        .agg(['mean', 'std'])
+        .reset_index()
+    )
+
+    # -------------------------------
+    # COLOR CONTROL (EDIT / IMPORT)
+    # -------------------------------
+    signal_colors = {
+        'Pink':  '#E75480',
+        'Sine':  '#4F4F4F',
+        'White': '#BFBFBF'
+    }
+
+    # -------------------------------
+    # Jitter offsets for mean lines
+    # -------------------------------
+    line_offsets = {
+        'Pink':  -line_jitter,
+        'Sine':   0.0,
+        'White':  line_jitter
+    }
+
+    # -------------------------------
+    # Plot
+    # -------------------------------
+    plt.figure(figsize=(14, 6))
+
+    # ---- Mean ± SD lines ----
+    for signal in signal_order:
+        sub = summary[summary['Signal'] == signal]
+
+        x = sub['Set'].to_numpy() + line_offsets[signal]
+        y = sub['mean']
+        sd = sub['std']
+
+        plt.errorbar(
+            x,
+            y,
+            yerr=sd,
+            fmt='-o',
+            lw=3,
+            capsize=4,
+            markersize=5,
+            color=signal_colors[signal],
+            label=signal,
+            zorder=3
+        )
+
+    # ---- Raw datapoints ----
+    if show_points:
+        for signal in signal_order:
+            sub = df_long[df_long['Signal'] == signal]
+
+            x = (
+                sub['Set'].to_numpy()
+                + line_offsets[signal]
+                + np.random.uniform(-point_jitter, point_jitter, size=len(sub))
+            )
+
+            plt.scatter(
+                x,
+                sub[y_label],
+                s=18,
+                alpha=0.5,
+                color=signal_colors[signal],
+                edgecolor='black',
+                linewidth=0.4,
+                zorder=2
+            )
+
+    # -------------------------------
+    # Axis formatting
+    # -------------------------------
+    plt.xlabel('Set')
+    plt.ylabel(y_label)
+    plt.title(title)
+    plt.ylim(0.3, 2.6)
+
+    plt.xticks(np.arange(1, 11))
+    plt.grid(axis='y', alpha=0.3)
+
+    plt.legend(title='Signal')
+    plt.tight_layout()
+    plt.show()
+
+
 
 
 Stylianos = True
@@ -262,17 +770,30 @@ else:
     directory = r'C:\Users\USER\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\Grip training\Results'
 os.chdir(directory)
 results = pd.read_excel('Training_trials_results.xlsx')
-print(results)
+print(results.columns)
 
 
 
-plot_error_boxplots(results, error_type='spatial', group_by='all', plot_type='box')
-plot_error_boxplots(results, error_type='spatial', group_by='speed', plot_type='box')
-plot_error_boxplots(results, error_type='spatial', group_by='signal', plot_type='box')
+
+# plot_error_boxplots(results, error_type='spatial', group_by='all', plot_type='box')
+# plot_error_boxplots(results, error_type='spatial', group_by='speed', plot_type='box')
+# plot_error_boxplots(results, error_type='spatial', group_by='signal', plot_type='box')
 # plot_error_boxplots(results, error_type='variable', group_by='all', plot_type='box')
 # plot_error_boxplots(results, error_type='variable', group_by='speed', plot_type='box')
 # plot_error_boxplots(results, error_type='variable', group_by='signal', plot_type='box')
 
-plot_error_means_plotly(results, error_type='spatial', group_by='all')
-plot_error_means_plotly(results, error_type='spatial', group_by='signal')
-plot_error_means_plotly(results, error_type='spatial', group_by='speed')
+# plot_error_means_plotly(results, error_type='spatial', group_by='all')
+# plot_error_means_plotly(results, error_type='spatial', group_by='signal')
+# plot_error_means_plotly(results, error_type='spatial', group_by='speed')
+
+# plot_error_boxplots_only_slow(results, error_type='spatial', plot_type='box')
+# plot_error_boxplots_only_slow(results, error_type='variable', plot_type='box')
+
+# plot_error_mean_sd(results, error_type='spatial')
+# plot_error_mean_sd(results, error_type='variable')
+
+# plot_error_mean_sem(results, error_type='spatial')
+# plot_error_mean_sem(results, error_type='variable')
+
+plot_error_mean_sd_with_jitter_and_points(results, error_type='spatial')
+plot_error_mean_sd_with_jitter_and_points(results, error_type='variable')

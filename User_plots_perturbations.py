@@ -421,7 +421,14 @@ def plot_difference_time_to_adapt(results, mode='min', box_width=0.08, jitter=0.
     plt.tight_layout()
     plt.show()
 
-def plot_difference_min_time_boxplot(df, box_width=0.15, group_spacing=0.25):
+def plot_difference_min_time_boxplot(
+    df,
+    box_width=0.15,
+    group_spacing=0.25,
+    show_jitter=True,
+    jitter_width=0.04,
+    show_ids=False
+):
     """
     Parameters
     ----------
@@ -431,7 +438,17 @@ def plot_difference_min_time_boxplot(df, box_width=0.15, group_spacing=0.25):
         Width of each box
     group_spacing : float
         Spacing between boxplots within the same tick
+    show_jitter : bool
+        Whether to show individual data points with jitter
+    jitter_width : float
+        Horizontal jitter magnitude for data points
+    show_ids : bool
+        Whether to show participant IDs next to each datapoint
     """
+
+    import numpy as np
+    import pandas as pd
+    import matplotlib.pyplot as plt
 
     # -------------------------------------------------
     # 1. Filter excluded rows
@@ -439,11 +456,11 @@ def plot_difference_min_time_boxplot(df, box_width=0.15, group_spacing=0.25):
     df = df[df['Exclude'] == 0].copy()
 
     # -------------------------------------------------
-    # 2. Long format
+    # 2. Long format (keep ID!)
     # -------------------------------------------------
     df_long = pd.melt(
         df,
-        id_vars=['Signal'],
+        id_vars=['Signal', 'ID'],
         value_vars=[
             'Difference min time to adapt before after up',
             'Difference min time to adapt before after down'
@@ -474,9 +491,9 @@ def plot_difference_min_time_boxplot(df, box_width=0.15, group_spacing=0.25):
     # 4. COLOR CONTROL (EDIT ONLY THIS)
     # -------------------------------------------------
     signal_colors = {
-        'Sine':  '#4F4F4F',   # blue
-        'Pink':  '#FFC0CB',   # orange/pink
-        'White': '#D3D3D3'    # green
+        'Sine':  '#4F4F4F',
+        'Pink':  '#FFC0CB',
+        'White': '#D3D3D3'
     }
 
     # -------------------------------------------------
@@ -487,17 +504,19 @@ def plot_difference_min_time_boxplot(df, box_width=0.15, group_spacing=0.25):
     for di, direction in enumerate(direction_order):
         for si, signal in enumerate(signal_order):
 
-            data = df_long.loc[
+            sub_df = df_long.loc[
                 (df_long['Direction'] == direction) &
-                (df_long['Signal'] == signal),
-                'Difference'
-            ].dropna()
+                (df_long['Signal'] == signal)
+            ]
+
+            data = sub_df['Difference'].dropna()
 
             if data.empty:
                 continue
 
             pos = base_positions[di] + group_offsets[si]
 
+            # ---- Boxplot ----
             bp = ax.boxplot(
                 data,
                 positions=[pos],
@@ -506,7 +525,6 @@ def plot_difference_min_time_boxplot(df, box_width=0.15, group_spacing=0.25):
                 showfliers=False
             )
 
-            # Apply color
             for patch in bp['boxes']:
                 patch.set_facecolor(signal_colors[signal])
                 patch.set_edgecolor('black')
@@ -522,16 +540,46 @@ def plot_difference_min_time_boxplot(df, box_width=0.15, group_spacing=0.25):
                 median.set_color('black')
                 median.set_linewidth(2)
 
+            # ---- Jittered points ----
+            if show_jitter:
+                jitter_x = np.random.normal(
+                    loc=pos,
+                    scale=jitter_width,
+                    size=len(data)
+                )
+
+                ax.scatter(
+                    jitter_x,
+                    data,
+                    s=35,
+                    color=signal_colors[signal],
+                    edgecolor='black',
+                    linewidth=0.6,
+                    alpha=0.9,
+                    zorder=3
+                )
+
+                # ---- ID labels ----
+                if show_ids:
+                    for x, y, pid in zip(jitter_x, data, sub_df['ID']):
+                        ax.text(
+                            x + jitter_width * 0.6,
+                            y,
+                            str(pid),
+                            fontsize=7,
+                            alpha=0.7,
+                            ha='left',
+                            va='center'
+                        )
+
     # -------------------------------------------------
     # 6. Axis formatting
     # -------------------------------------------------
     ax.set_xticks(base_positions)
     ax.set_xticklabels(direction_order)
-    ax.set_xlabel('')
     ax.set_ylabel('Time to Adapt (Before − After)')
     ax.set_title('Difference in Minimum Time to Adapt\nBefore vs After')
     ax.set_ylim(-2.2, 1.5)
-    # ax.set_xlim(0.45, 0.45)
     ax.grid(axis='y', alpha=0.3)
 
     # -------------------------------------------------
@@ -551,9 +599,9 @@ def plot_difference_min_time_boxplot(df, box_width=0.15, group_spacing=0.25):
         ncol=3
     )
 
-
     plt.tight_layout()
     plt.show()
+
 
 
 
@@ -564,10 +612,10 @@ results_asymp = pd.read_excel('Asymptote Method Perturbation results 0.95.xlsx')
 print(results_sd.columns)
 print(results_asymp.columns)
 
-# plot_time_to_adapt_seaborn(results_sd, mode='min')
+plot_time_to_adapt_seaborn(results_sd, mode='min')
 # plot_time_to_adapt_seaborn(results_sd, mode='avg')
 
-# plot_difference_time_to_adapt(results_sd, mode='min')
+plot_difference_time_to_adapt(results_sd, mode='min')
 # plot_difference_time_to_adapt(results_sd, mode='avg')
 
 # plot_time_to_adapt_seaborn(results_asymp, mode='min')

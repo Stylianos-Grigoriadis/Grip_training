@@ -89,7 +89,7 @@ list_ID_team = []
 list_signal = []
 list_speed = []
 
-sd_factor = 2
+sd_factor = 3
 time_window = 1
 asymptote_fraction = 0.95
 for file in files:
@@ -201,28 +201,16 @@ for file in files:
     mean_spatial_error_50 = np.mean(spatial_errors_50)
     sd_spatial_error_10 = np.std(spatial_errors_10)
     sd_spatial_error_50 = np.std(spatial_errors_50)
+    print(isometric_10_after_threshold.columns)
+    # plt.plot(isometric_10_after_threshold['Time'], isometric_10_after_threshold['Performance'], label="force output")
+    # plt.plot(isometric_10_after_threshold['ClosestSampleTime'], isometric_10_after_threshold['Target'], label="target")
+    # plt.plot(isometric_10_after_threshold['ClosestSampleTime'],spatial_errors_10, label='Spatial error')
+    # plt.legend()
 
-
-
-    first_values = 100
-    values_for_sd = 100
-
-    # time_to_adapt_before_down_1 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_before_down_1, perturbation_index_down, sd_factor, first_values, consecutive_values, values_for_sd, 'before_down_1', plot=False)
-    # time_to_adapt_before_down_2 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_before_down_2, perturbation_index_down, sd_factor, first_values, consecutive_values, values_for_sd, 'before_down_2', plot=False)
-    # time_to_adapt_before_down_3 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_before_down_3, perturbation_index_down, sd_factor, first_values, consecutive_values, values_for_sd, 'before_down_3', plot=False)
-    # time_to_adapt_before_up_1 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_before_up_1, perturbation_index_up, sd_factor, first_values, consecutive_values, values_for_sd, 'before_up_1', plot=False)
-    # time_to_adapt_before_up_2 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_before_up_2, perturbation_index_up, sd_factor, first_values, consecutive_values, values_for_sd, 'before_up_2', plot=False)
-    # time_to_adapt_before_up_3 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_before_up_3, perturbation_index_up, sd_factor, first_values, consecutive_values, values_for_sd, 'before_up_3', plot=False)
-    # time_to_adapt_after_down_1 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_after_down_1, perturbation_index_down, sd_factor, first_values, consecutive_values, values_for_sd, 'after_down_1', plot=False)
-    # time_to_adapt_after_down_2 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_after_down_2, perturbation_index_down, sd_factor, first_values, consecutive_values, values_for_sd, 'after_down_2', plot=False)
-    # time_to_adapt_after_down_3 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_after_down_3, perturbation_index_down, sd_factor, first_values, consecutive_values, values_for_sd, 'after_down_3', plot=False)
-    # time_to_adapt_after_up_1 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_after_up_1, perturbation_index_up, sd_factor, first_values, consecutive_values, values_for_sd, 'after_up_1', plot=False)
-    # time_to_adapt_after_up_2 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_after_up_2, perturbation_index_up, sd_factor, first_values, consecutive_values, values_for_sd, 'after_up_2', plot=False)
-    # time_to_adapt_after_up_3 = lb.adaptation_time_using_sd_right_before_perturbation(Perturbation_after_up_3, perturbation_index_up, sd_factor, first_values, consecutive_values, values_for_sd, 'after_up_3', plot=False)
 
     # Calculation of adaptation using sd from isometric trials
     print("Perturbation down before")
-    time_to_adapt_before_down_1_sd, time_to_adapt_before_down_1_asymp = lb.adaptation_time_using_sd_from_isometric_trials(Perturbation_before_down_1, sd_factor, time_window, ID, mean_spatial_error_10, sd_spatial_error_10, asymptote_fraction=asymptote_fraction, plot='None')
+    time_to_adapt_before_down_1_sd, time_to_adapt_before_down_1_asymp = lb.adaptation_time_using_sd_from_isometric_trials_and_asymptotes(Perturbation_before_down_1, sd_factor, time_window, ID, mean_spatial_error_10, sd_spatial_error_10, asymptote_fraction=asymptote_fraction, plot='combined')
     time_to_adapt_before_down_2_sd, time_to_adapt_before_down_2_asymp = lb.adaptation_time_using_sd_from_isometric_trials(Perturbation_before_down_2, sd_factor, time_window, ID, mean_spatial_error_10, sd_spatial_error_10, asymptote_fraction=asymptote_fraction, plot='None')
     time_to_adapt_before_down_3_sd, time_to_adapt_before_down_3_asymp = lb.adaptation_time_using_sd_from_isometric_trials(Perturbation_before_down_3, sd_factor, time_window, ID, mean_spatial_error_10, sd_spatial_error_10, asymptote_fraction=asymptote_fraction, plot='None')
     print("Perturbation up before")
