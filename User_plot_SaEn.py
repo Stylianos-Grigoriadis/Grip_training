@@ -405,6 +405,37 @@ def plot_saen_training_sets_with_slopes(results, box_width=0.08, jitter=0.015, s
     plt.tight_layout()
     plt.show()
 
+def compute_saen_slope(results):
+    """
+    Calculate the slope of SaEn across training sets (1–10)
+    for each participant (row).
+
+    Returns
+    -------
+    pandas.Series
+        One slope value per participant.
+    """
+
+    import numpy as np
+    import pandas as pd
+
+    saen_cols = [
+        'SaEn training set 1', 'SaEn training set 2',
+        'SaEn training set 3', 'SaEn training set 4',
+        'SaEn training set 5', 'SaEn training set 6',
+        'SaEn training set 7', 'SaEn training set 8',
+        'SaEn training set 9', 'SaEn training set 10'
+    ]
+
+    x = np.arange(1, 11)
+    slopes = []
+
+    for i in range(len(results)):
+        y = results.iloc[i][saen_cols].values.astype(float)
+        slope, _ = np.polyfit(x, y, 1)
+        slopes.append(slope)
+
+    return pd.Series(slopes, index=results.index, name='SaEn_slope')
 
 
 
@@ -412,9 +443,7 @@ directory = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπ�
 os.chdir(directory)
 # results = pd.read_excel('Training_trials_SaEn_results.xlsx')
 results_time_delay = pd.read_excel('Training_trials_SaEn_time_delay_results.xlsx')
-
-# print(results.columns)
-
+print(results_time_delay.columns)
 
 # plot_saen_training_sets_all(results)
 # plot_saen_training_sets_with_slopes(results, box_width=0.15)
