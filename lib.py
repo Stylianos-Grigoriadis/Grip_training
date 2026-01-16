@@ -6,6 +6,7 @@ import statistics
 import numpy as np
 from numpy.fft import fft, fftfreq
 import colorednoise as cn
+from scipy.stats import pearsonr, spearmanr
 
 def FFT(var,fs):
     dt = 1 / fs
@@ -256,3 +257,80 @@ def residual_analysis(signal, sampling_freq, list_cutoff_freq):
 
     plt.plot(list_cutoff_freq, residuals_list)
     plt.show()
+
+def correlation_analysis(x, y, method='pearson', plot=False, xlabel='X', ylabel='Y', title=None):
+    """
+    Perform correlation analysis between two data series.
+
+    Parameters
+    ----------
+    x, y : array-like or pd.Series
+        Input data
+    method : str
+        'pearson' or 'spearman'
+    plot : bool
+        If True, plot scatter with regression line
+    xlabel, ylabel : str
+        Axis labels for plot
+    title : str
+        Plot title
+
+    Returns
+    -------
+    results : dict
+        Dictionary with correlation coefficient, p-value, and N
+    """
+
+    # Convert to numpy arrays
+    x = np.asarray(x, dtype=float)
+    y = np.asarray(y, dtype=float)
+
+    # Remove NaNs pairwise
+    mask = ~np.isnan(x) & ~np.isnan(y)
+    x = x[mask]
+    y = y[mask]
+
+    if len(x) < 3:
+        raise ValueError("Not enough data points for correlation.")
+
+    # Compute correlation
+    if method.lower() == 'pearson':
+        r, p = pearsonr(x, y)
+        corr_name = 'Pearson r'
+    elif method.lower() == 'spearman':
+        r, p = spearmanr(x, y)
+        corr_name = 'Spearman ρ'
+    else:
+        raise ValueError("method must be 'pearson' or 'spearman'")
+
+    # Optional plot
+    if plot:
+        plt.figure(figsize=(5, 4))
+        plt.scatter(x, y, color='k', alpha=0.7)
+
+        # Regression line (for visualization)
+        slope, intercept = np.polyfit(x, y, 1)
+        x_fit = np.linspace(x.min(), x.max(), 100)
+        y_fit = slope * x_fit + intercept
+        plt.plot(x_fit, y_fit, 'r', lw=2)
+
+        plt.xlabel(xlabel)
+        plt.ylabel(ylabel)
+
+        if title is None:
+            plt.title(f'{corr_name} = {r:.2f}, p = {p:.3g}')
+        else:
+            plt.title(title)
+
+        plt.tight_layout()
+        plt.show()
+
+    # Return results
+    results = {
+        'method': corr_name,
+        'r': r,
+        'p_value': p,
+        'n': len(x)
+    }
+
+    return results

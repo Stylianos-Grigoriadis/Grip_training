@@ -795,5 +795,5 @@ print(results.columns)
 # plot_error_mean_sem(results, error_type='spatial')
 # plot_error_mean_sem(results, error_type='variable')
 
-plot_error_mean_sd_with_jitter_and_points(results, error_type='spatial')
-plot_error_mean_sd_with_jitter_and_points(results, error_type='variable')
+plot_error_mean_sd_with_jitter_and_points(results, error_type='spatial', show_points=False)
+# plot_error_mean_sd_with_jitter_and_points(results, error_type='variable', show_points=False)

@@ -148,6 +148,12 @@ for file in files:
     synch_df9_after_threshold = synch_df9[synch_df9['Time'] > time_threshold].reset_index(drop=True).copy()
     synch_df10_after_threshold = synch_df10[synch_df10['Time'] > time_threshold].reset_index(drop=True).copy()
 
+    # Calculation of SaEn of each training trial
+    print(synch_df1_after_threshold['Performance'])
+    AMI_training_set_1 = lb.AMI_Stergiou(synch_df1_after_threshold['Performance'].to_numpy(), 5, 75, plot=True)
+
+
+
     # Calculation of Spatial Error for each trial
     spatial_errors_1 = spatial_error(synch_df1_after_threshold)
     spatial_errors_2 = spatial_error(synch_df2_after_threshold)
