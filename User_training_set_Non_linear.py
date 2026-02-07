@@ -30,6 +30,18 @@ list_SaEn_time_delay_training_8 = []
 list_SaEn_time_delay_training_9 = []
 list_SaEn_time_delay_training_10 = []
 
+list_DFA_training_1 = []
+list_DFA_training_2 = []
+list_DFA_training_3 = []
+list_DFA_training_4 = []
+list_DFA_training_5 = []
+list_DFA_training_6 = []
+list_DFA_training_7 = []
+list_DFA_training_8 = []
+list_DFA_training_9 = []
+list_DFA_training_10 = []
+
+
 list_ID = []
 list_ID_team = []
 list_signal = []
@@ -120,6 +132,44 @@ for file in files:
     df9_after_threshold = df9[df9['Time'] > time_threshold].reset_index(drop=True).copy()
     df10_after_threshold = df10[df10['Time'] > time_threshold].reset_index(drop=True).copy()
 
+
+    # Calculation of DFA of each training trial
+    scales_training_set_1 = np.arange(10, len(df1_after_threshold['Performance'].to_numpy()) // 10)
+    scales_training_set_2 = np.arange(10, len(df2_after_threshold['Performance'].to_numpy()) // 10)
+    scales_training_set_3 = np.arange(10, len(df3_after_threshold['Performance'].to_numpy()) // 10)
+    scales_training_set_4 = np.arange(10, len(df4_after_threshold['Performance'].to_numpy()) // 10)
+    scales_training_set_5 = np.arange(10, len(df5_after_threshold['Performance'].to_numpy()) // 10)
+    scales_training_set_6 = np.arange(10, len(df6_after_threshold['Performance'].to_numpy()) // 10)
+    scales_training_set_7 = np.arange(10, len(df7_after_threshold['Performance'].to_numpy()) // 10)
+    scales_training_set_8 = np.arange(10, len(df8_after_threshold['Performance'].to_numpy()) // 10)
+    scales_training_set_9 = np.arange(10, len(df9_after_threshold['Performance'].to_numpy()) // 10)
+    scales_training_set_10 = np.arange(10, len(df10_after_threshold['Performance'].to_numpy()) // 10)
+
+
+    _, _, DFA_training_set_1 = lb.DFA_NONAN(df1_after_threshold['Performance'].to_numpy(), scales_training_set_1, order=1, plot=False)
+    _, _, DFA_training_set_2 = lb.DFA_NONAN(df2_after_threshold['Performance'].to_numpy(), scales_training_set_2, order=1, plot=False)
+    _, _, DFA_training_set_3 = lb.DFA_NONAN(df3_after_threshold['Performance'].to_numpy(), scales_training_set_3, order=1, plot=False)
+    _, _, DFA_training_set_4 = lb.DFA_NONAN(df4_after_threshold['Performance'].to_numpy(), scales_training_set_4, order=1, plot=False)
+    _, _, DFA_training_set_5 = lb.DFA_NONAN(df5_after_threshold['Performance'].to_numpy(), scales_training_set_5, order=1, plot=False)
+    _, _, DFA_training_set_6 = lb.DFA_NONAN(df6_after_threshold['Performance'].to_numpy(), scales_training_set_6, order=1, plot=False)
+    _, _, DFA_training_set_7 = lb.DFA_NONAN(df7_after_threshold['Performance'].to_numpy(), scales_training_set_7, order=1, plot=False)
+    _, _, DFA_training_set_8 = lb.DFA_NONAN(df8_after_threshold['Performance'].to_numpy(), scales_training_set_8, order=1, plot=False)
+    _, _, DFA_training_set_9 = lb.DFA_NONAN(df9_after_threshold['Performance'].to_numpy(), scales_training_set_9, order=1, plot=False)
+    _, _, DFA_training_set_10 = lb.DFA_NONAN(df10_after_threshold['Performance'].to_numpy(), scales_training_set_10, order=1, plot=False)
+
+    # Create the DFA lists
+    list_DFA_training_1.append(DFA_training_set_1)
+    list_DFA_training_2.append(DFA_training_set_2)
+    list_DFA_training_3.append(DFA_training_set_3)
+    list_DFA_training_4.append(DFA_training_set_4)
+    list_DFA_training_5.append(DFA_training_set_5)
+    list_DFA_training_6.append(DFA_training_set_6)
+    list_DFA_training_7.append(DFA_training_set_7)
+    list_DFA_training_8.append(DFA_training_set_8)
+    list_DFA_training_9.append(DFA_training_set_9)
+    list_DFA_training_10.append(DFA_training_set_10)
+
+
     # Calculation of SaEn of each training trial
     # AMI_training_set_1, _ = lb.AMI_Stergiou(df1_after_threshold['Performance'].to_numpy(), 5, 75, plot=False)
     # AMI_training_set_2, _ = lb.AMI_Stergiou(df2_after_threshold['Performance'].to_numpy(), 5, 75, plot=False)
@@ -132,56 +182,76 @@ for file in files:
     # AMI_training_set_9, _ = lb.AMI_Stergiou(df9_after_threshold['Performance'].to_numpy(), 5, 75, plot=False)
     # AMI_training_set_10, _ = lb.AMI_Stergiou(df10_after_threshold['Performance'].to_numpy(), 5, 75, plot=False)
 
-    SaEn_time_delay_training_1 = lb.SaEn_once_again(df1_after_threshold['Performance'], 2, 0.2, tau=None, Theiler_Window=False)
-    SaEn_time_delay_training_2 = lb.SaEn_once_again(df2_after_threshold['Performance'], 2, 0.2, tau=None, Theiler_Window=False)
-    SaEn_time_delay_training_3 = lb.SaEn_once_again(df3_after_threshold['Performance'], 2, 0.2, tau=None, Theiler_Window=False)
-    SaEn_time_delay_training_4 = lb.SaEn_once_again(df4_after_threshold['Performance'], 2, 0.2, tau=None, Theiler_Window=False)
-    SaEn_time_delay_training_5 = lb.SaEn_once_again(df5_after_threshold['Performance'], 2, 0.2, tau=None, Theiler_Window=False)
-    SaEn_time_delay_training_6 = lb.SaEn_once_again(df6_after_threshold['Performance'], 2, 0.2, tau=None, Theiler_Window=False)
-    SaEn_time_delay_training_7 = lb.SaEn_once_again(df7_after_threshold['Performance'], 2, 0.2, tau=None, Theiler_Window=False)
-    SaEn_time_delay_training_8 = lb.SaEn_once_again(df8_after_threshold['Performance'], 2, 0.2, tau=None, Theiler_Window=False)
-    SaEn_time_delay_training_9 = lb.SaEn_once_again(df9_after_threshold['Performance'], 2, 0.2, tau=None, Theiler_Window=False)
-    SaEn_time_delay_training_10 = lb.SaEn_once_again(df10_after_threshold['Performance'], 2, 0.2, tau=None, Theiler_Window=False)
 
-    # Create the lists
-    list_SaEn_time_delay_training_1.append(SaEn_time_delay_training_1)
-    list_SaEn_time_delay_training_2.append(SaEn_time_delay_training_2)
-    list_SaEn_time_delay_training_3.append(SaEn_time_delay_training_3)
-    list_SaEn_time_delay_training_4.append(SaEn_time_delay_training_4)
-    list_SaEn_time_delay_training_5.append(SaEn_time_delay_training_5)
-    list_SaEn_time_delay_training_6.append(SaEn_time_delay_training_6)
-    list_SaEn_time_delay_training_7.append(SaEn_time_delay_training_7)
-    list_SaEn_time_delay_training_8.append(SaEn_time_delay_training_8)
-    list_SaEn_time_delay_training_9.append(SaEn_time_delay_training_9)
-    list_SaEn_time_delay_training_10.append(SaEn_time_delay_training_10)
+    # SaEn_time_delay_training_1 = lb.SaEn_once_again(df1_after_threshold['Performance'], 2, 0.2, tau=None, Theiler_Window=False)
+    # SaEn_time_delay_training_2 = lb.SaEn_once_again(df2_after_threshold['Performance'], 2, 0.2, tau=None, Theiler_Window=False)
+    # SaEn_time_delay_training_3 = lb.SaEn_once_again(df3_after_threshold['Performance'], 2, 0.2, tau=None, Theiler_Window=False)
+    # SaEn_time_delay_training_4 = lb.SaEn_once_again(df4_after_threshold['Performance'], 2, 0.2, tau=None, Theiler_Window=False)
+    # SaEn_time_delay_training_5 = lb.SaEn_once_again(df5_after_threshold['Performance'], 2, 0.2, tau=None, Theiler_Window=False)
+    # SaEn_time_delay_training_6 = lb.SaEn_once_again(df6_after_threshold['Performance'], 2, 0.2, tau=None, Theiler_Window=False)
+    # SaEn_time_delay_training_7 = lb.SaEn_once_again(df7_after_threshold['Performance'], 2, 0.2, tau=None, Theiler_Window=False)
+    # SaEn_time_delay_training_8 = lb.SaEn_once_again(df8_after_threshold['Performance'], 2, 0.2, tau=None, Theiler_Window=False)
+    # SaEn_time_delay_training_9 = lb.SaEn_once_again(df9_after_threshold['Performance'], 2, 0.2, tau=None, Theiler_Window=False)
+    # SaEn_time_delay_training_10 = lb.SaEn_once_again(df10_after_threshold['Performance'], 2, 0.2, tau=None, Theiler_Window=False)
 
-# Create a dictionery
-dist = {
+    # Create the SaEn lists
+    # list_SaEn_time_delay_training_1.append(SaEn_time_delay_training_1)
+    # list_SaEn_time_delay_training_2.append(SaEn_time_delay_training_2)
+    # list_SaEn_time_delay_training_3.append(SaEn_time_delay_training_3)
+    # list_SaEn_time_delay_training_4.append(SaEn_time_delay_training_4)
+    # list_SaEn_time_delay_training_5.append(SaEn_time_delay_training_5)
+    # list_SaEn_time_delay_training_6.append(SaEn_time_delay_training_6)
+    # list_SaEn_time_delay_training_7.append(SaEn_time_delay_training_7)
+    # list_SaEn_time_delay_training_8.append(SaEn_time_delay_training_8)
+    # list_SaEn_time_delay_training_9.append(SaEn_time_delay_training_9)
+    # list_SaEn_time_delay_training_10.append(SaEn_time_delay_training_10)
+
+# Create a dictionary SaEn
+# dist_SaEn = {
+#        'ID'        : list_ID,
+#        'Group ID'  : list_ID_team,
+#        'Signal'    : list_signal,
+#        'Speed'     : list_speed,
+#        'SaEn training set 1': list_SaEn_time_delay_training_1,
+#        'SaEn training set 2': list_SaEn_time_delay_training_2,
+#        'SaEn training set 3': list_SaEn_time_delay_training_3,
+#        'SaEn training set 4': list_SaEn_time_delay_training_4,
+#        'SaEn training set 5': list_SaEn_time_delay_training_5,
+#        'SaEn training set 6': list_SaEn_time_delay_training_6,
+#        'SaEn training set 7': list_SaEn_time_delay_training_7,
+#        'SaEn training set 8': list_SaEn_time_delay_training_8,
+#        'SaEn training set 9': list_SaEn_time_delay_training_9,
+#        'SaEn training set 10': list_SaEn_time_delay_training_10,
+#        }
+
+# Create a dictionary DFA
+dist_DFA = {
        'ID'        : list_ID,
        'Group ID'  : list_ID_team,
        'Signal'    : list_signal,
        'Speed'     : list_speed,
-       'SaEn training set 1': list_SaEn_time_delay_training_1,
-       'SaEn training set 2': list_SaEn_time_delay_training_2,
-       'SaEn training set 3': list_SaEn_time_delay_training_3,
-       'SaEn training set 4': list_SaEn_time_delay_training_4,
-       'SaEn training set 5': list_SaEn_time_delay_training_5,
-       'SaEn training set 6': list_SaEn_time_delay_training_6,
-       'SaEn training set 7': list_SaEn_time_delay_training_7,
-       'SaEn training set 8': list_SaEn_time_delay_training_8,
-       'SaEn training set 9': list_SaEn_time_delay_training_9,
-       'SaEn training set 10': list_SaEn_time_delay_training_10,
+       'DFA training set 1': list_DFA_training_1,
+       'DFA training set 2': list_DFA_training_2,
+       'DFA training set 3': list_DFA_training_3,
+       'DFA training set 4': list_DFA_training_4,
+       'DFA training set 5': list_DFA_training_5,
+       'DFA training set 6': list_DFA_training_6,
+       'DFA training set 7': list_DFA_training_7,
+       'DFA training set 8': list_DFA_training_8,
+       'DFA training set 9': list_DFA_training_9,
+       'DFA training set 10': list_DFA_training_10,
        }
 
 
-df_results = pd.DataFrame(dist)
+
+df_results = pd.DataFrame(dist_DFA)
 if Stylianos == True:
     directory_to_save = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Results'
 else:
     directory_to_save = r'C:\Users\USER\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\Grip training\Results'
 
 os.chdir(directory_to_save)
-df_results.to_excel('Training_trials_SaEn_results.xlsx')
+df_results.to_excel('Training_trials_DFA_10_N10_results.xlsx')
 
 
 

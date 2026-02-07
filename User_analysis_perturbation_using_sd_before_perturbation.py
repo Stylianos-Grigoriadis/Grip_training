@@ -210,7 +210,7 @@ for file in files:
 
     # Calculation of adaptation using sd from isometric trials
     print("Perturbation down before")
-    time_to_adapt_before_down_1_sd, time_to_adapt_before_down_1_asymp = lb.adaptation_time_using_sd_from_isometric_trials_and_asymptotes(Perturbation_before_down_1, sd_factor, time_window, ID, mean_spatial_error_10, sd_spatial_error_10, asymptote_fraction=asymptote_fraction, plot='both')
+    time_to_adapt_before_down_1_sd, time_to_adapt_before_down_1_asymp = lb.adaptation_time_using_sd_from_isometric_trials_and_asymptotes(Perturbation_before_down_1, sd_factor, time_window, ID, mean_spatial_error_10, sd_spatial_error_10, asymptote_fraction=asymptote_fraction, plot='sd method')
     time_to_adapt_before_down_2_sd, time_to_adapt_before_down_2_asymp = lb.adaptation_time_using_sd_from_isometric_trials(Perturbation_before_down_2, sd_factor, time_window, ID, mean_spatial_error_10, sd_spatial_error_10, asymptote_fraction=asymptote_fraction, plot='None')
     time_to_adapt_before_down_3_sd, time_to_adapt_before_down_3_asymp = lb.adaptation_time_using_sd_from_isometric_trials(Perturbation_before_down_3, sd_factor, time_window, ID, mean_spatial_error_10, sd_spatial_error_10, asymptote_fraction=asymptote_fraction, plot='None')
     print("Perturbation up before")

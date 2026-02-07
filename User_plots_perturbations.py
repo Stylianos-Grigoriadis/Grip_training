@@ -12,9 +12,9 @@ pd.set_option('display.max_columns', None)
 plt.rcParams['font.family'] = 'serif'
 plt.rcParams['font.size'] = 16
 
-def plot_time_to_adapt_seaborn(results, mode='min', box_width=0.08, jitter=0.015):
+def plot_time_to_adapt_seaborn(results, mode='min', box_width=0.08, jitter=0.015, show_data_points=True):
     """
-    Boxplots with TRUE spacing between groups, outlined datapoints,
+    Boxplots with TRUE spacing between groups, optional outlined datapoints,
     readable legend labels, hatching for Slow groups (including legend),
     and zoomed x-axis.
 
@@ -31,6 +31,9 @@ def plot_time_to_adapt_seaborn(results, mode='min', box_width=0.08, jitter=0.015
 
     jitter : float
         Horizontal jitter for datapoints.
+
+    show_data_points : bool
+        Whether to show raw datapoints.
     """
 
     sns.set_style("whitegrid")
@@ -130,7 +133,7 @@ def plot_time_to_adapt_seaborn(results, mode='min', box_width=0.08, jitter=0.015
     ax = plt.gca()
 
     # -------------------------------
-    # Draw boxplots + datapoints
+    # Draw boxplots (+ optional datapoints)
     # -------------------------------
     for gi, group in enumerate(group_order):
         for si, set_name in enumerate(set_order):
@@ -159,7 +162,6 @@ def plot_time_to_adapt_seaborn(results, mode='min', box_width=0.08, jitter=0.015
                 patch.set_edgecolor('black')
                 patch.set_alpha(0.9)
 
-                # Hatch Slow groups
                 if group.endswith('_65'):
                     patch.set_hatch('////')
 
@@ -168,18 +170,19 @@ def plot_time_to_adapt_seaborn(results, mode='min', box_width=0.08, jitter=0.015
                     item.set_color('black')
                     item.set_linewidth(1.2)
 
-            # Raw datapoints
-            x_jitter = np.random.normal(pos, jitter, size=len(data))
-            ax.scatter(
-                x_jitter,
-                data,
-                s=35,
-                facecolor=palette[group],
-                edgecolor='black',
-                linewidth=0.8,
-                alpha=0.75,
-                zorder=3
-            )
+            # Optional raw datapoints
+            if show_data_points:
+                x_jitter = np.random.normal(pos, jitter, size=len(data))
+                ax.scatter(
+                    x_jitter,
+                    data,
+                    s=35,
+                    facecolor=palette[group],
+                    edgecolor='black',
+                    linewidth=0.8,
+                    alpha=0.75,
+                    zorder=3
+                )
 
     # -------------------------------
     # Axes formatting
@@ -190,7 +193,6 @@ def plot_time_to_adapt_seaborn(results, mode='min', box_width=0.08, jitter=0.015
     ax.set_title(f"Time to Adapt ({mode.upper()})")
     ax.set_xlabel("")
 
-    # Zoom x-axis to remove whitespace
     ax.set_xlim(
         base_positions[0] - 0.45,
         base_positions[-1] + 0.45
@@ -228,11 +230,11 @@ def plot_time_to_adapt_seaborn(results, mode='min', box_width=0.08, jitter=0.015
     plt.tight_layout()
     plt.show()
 
-def plot_difference_time_to_adapt(results, mode='min', box_width=0.08, jitter=0.015):
+def plot_difference_time_to_adapt(results, mode='min', box_width=0.08, jitter=0.015, show_data_points=False):
     """
     Plot difference in time to adapt (After - Before) for Down and Up,
-    with true spacing between groups, hatching for Slow groups,
-    outlined datapoints, and a 1x6 legend.
+    with true spacing between groups, optional outlined datapoints,
+    hatching for Slow groups, and a 1x6 legend.
 
     Parameters
     ----------
@@ -247,6 +249,9 @@ def plot_difference_time_to_adapt(results, mode='min', box_width=0.08, jitter=0.
 
     jitter : float
         Horizontal jitter for datapoints.
+
+    show_data_points : bool
+        Whether to show raw datapoints.
     """
 
     sns.set_style("whitegrid")
@@ -288,6 +293,7 @@ def plot_difference_time_to_adapt(results, mode='min', box_width=0.08, jitter=0.
     # Orders and labels
     # -------------------------------
     directions = ['Down', 'Up']
+
     group_order = [
         "Sine_100", "Pink_100", "White_100",
         "Sine_65", "Pink_65", "White_65"
@@ -321,7 +327,7 @@ def plot_difference_time_to_adapt(results, mode='min', box_width=0.08, jitter=0.
     ax = plt.gca()
 
     # -------------------------------
-    # Draw boxplots + datapoints
+    # Draw boxplots (+ optional datapoints)
     # -------------------------------
     for gi, group in enumerate(group_order):
         for di, direction in enumerate(directions):
@@ -350,7 +356,6 @@ def plot_difference_time_to_adapt(results, mode='min', box_width=0.08, jitter=0.
                 patch.set_edgecolor('black')
                 patch.set_alpha(0.9)
 
-                # Hatch Slow groups
                 if group.endswith('_65'):
                     patch.set_hatch('////')
 
@@ -359,18 +364,19 @@ def plot_difference_time_to_adapt(results, mode='min', box_width=0.08, jitter=0.
                     item.set_color('black')
                     item.set_linewidth(1.2)
 
-            # Raw datapoints
-            x_jitter = np.random.normal(pos, jitter, size=len(data))
-            ax.scatter(
-                x_jitter,
-                data,
-                s=35,
-                facecolor=palette[group],
-                edgecolor='black',
-                linewidth=0.8,
-                alpha=0.75,
-                zorder=3
-            )
+            # Optional raw datapoints
+            if show_data_points:
+                x_jitter = np.random.normal(pos, jitter, size=len(data))
+                ax.scatter(
+                    x_jitter,
+                    data,
+                    s=35,
+                    facecolor=palette[group],
+                    edgecolor='black',
+                    linewidth=0.8,
+                    alpha=0.75,
+                    zorder=3
+                )
 
     # -------------------------------
     # Axes formatting
@@ -381,13 +387,12 @@ def plot_difference_time_to_adapt(results, mode='min', box_width=0.08, jitter=0.
     ax.set_title(f"Difference in Time to Adapt ({mode.upper()})")
     ax.set_xlabel("")
 
-    # Zoom x-axis
     ax.set_xlim(
         base_positions[0] - 0.45,
         base_positions[-1] + 0.45
     )
 
-    # Zero reference line (important for differences)
+    # Zero reference line
     ax.axhline(0, color='black', linewidth=1, linestyle='--', alpha=0.6)
 
     # -------------------------------
@@ -421,14 +426,7 @@ def plot_difference_time_to_adapt(results, mode='min', box_width=0.08, jitter=0.
     plt.tight_layout()
     plt.show()
 
-def plot_difference_min_time_boxplot(
-    df,
-    box_width=0.15,
-    group_spacing=0.25,
-    show_jitter=True,
-    jitter_width=0.04,
-    show_ids=False
-):
+def plot_difference_min_time_boxplot(df, box_width=0.15, group_spacing=0.25, show_jitter=False, jitter_width=0.04, show_ids=False):
     """
     Parameters
     ----------
@@ -445,10 +443,6 @@ def plot_difference_min_time_boxplot(
     show_ids : bool
         Whether to show participant IDs next to each datapoint
     """
-
-    import numpy as np
-    import pandas as pd
-    import matplotlib.pyplot as plt
 
     # -------------------------------------------------
     # 1. Filter excluded rows
