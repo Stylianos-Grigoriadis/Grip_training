@@ -13,6 +13,7 @@ from matplotlib import font_manager
 import matplotlib.image as mpimg
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 
+
 pd.set_option('display.max_rows', None)
 pd.set_option('display.max_columns', None)
 
@@ -58,6 +59,13 @@ time_pink = np.linspace(0, 30, len(pink))
 white = lb.white_noise_signal_creation(65, 15, 50)
 time_white = np.linspace(0, 30, len(white))
 
+sine_image = sine[:60]
+sine_time_image = np.linspace(0, 30, len(sine_image))
+pink_image = pink[:20]
+pink_time_image = np.linspace(0, 30, len(pink_image))
+white_image = white[:10]
+white_time_image = np.linspace(0, 30, len(white_image))
+
 # plt.plot(time_sine, sine, label='Sine')
 # plt.plot(time_pink, pink, label='Pink')
 # plt.plot(time_white, white, label='White')
@@ -65,65 +73,83 @@ time_white = np.linspace(0, 30, len(white))
 # plt.show()
 
 
-sine_slope, sine_positive_freqs_log, sine_positive_magnitude_log, sine_intercept, sine_r, sine_p = quality_assessment_of_temporal_structure_FFT_method(sine)
-pink_slope, pink_positive_freqs_log, pink_positive_magnitude_log, pink_intercept, pink_r, pink_p = quality_assessment_of_temporal_structure_FFT_method(pink)
-white_slope, white_positive_freqs_log, white_positive_magnitude_log, white_intercept, white_r, white_p = quality_assessment_of_temporal_structure_FFT_method(white)
+fig, ax = plt.subplots()
 
+# Make figure transparent
+fig.patch.set_alpha(0)
+ax.set_facecolor('none')
 
-fig, axes = plt.subplots(2, 3, figsize=(15, 5))  # Adjust figsize as needed
+# Plot only the line
+ax.plot(pink_image, lw=15, c="#E59EDD")
 
-font = font_manager.FontProperties(family='serif', size=12, weight='bold')
+# Remove everything else
+ax.axis('off')
 
-
-axes[0,0].scatter(sine_positive_freqs_log, sine_positive_magnitude_log, label='X axis', c='#2F2F2F')
-axes[0,0].plot(sine_positive_freqs_log, sine_slope * sine_positive_freqs_log + sine_intercept, label=f'Slope = {sine_slope:.1f}', c='#2F2F2F', lw=3)
-axes[0,0].set_title("Non-variable group")
-axes[0,0].set_xlabel("Log(Frequency)")
-axes[0,0].set_ylabel("Log(Power)\n")
-axes[0,0].legend(frameon=False, prop=font)
-axes[0,0].xaxis.set_major_formatter(FormatStrFormatter('%.1f'))
-axes[0,0].yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
-
-
-axes[0,1].scatter(pink_positive_freqs_log, pink_positive_magnitude_log, label='X axis', c='#FF8FA3')
-axes[0,1].plot(pink_positive_freqs_log, pink_slope * pink_positive_freqs_log + pink_intercept, label=f'Slope = {pink_slope:.1f}', c='#FF8FA3', lw=3)
-axes[0,1].set_title("Structured group")
-axes[0,1].set_xlabel("Log(Frequency)")
-axes[0,1].legend(loc='lower left', bbox_to_anchor=(0, 0), frameon=False, prop=font)
-axes[0,1].xaxis.set_major_formatter(FormatStrFormatter('%.1f'))
-axes[0,1].yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
-
-
-axes[0,2].scatter(white_positive_freqs_log, white_positive_magnitude_log, label='X axis', c='#B0B0B0')
-axes[0,2].plot(white_positive_freqs_log, white_slope * white_positive_freqs_log + white_intercept, label=f'Slope = {np.abs(white_slope):.1f}', c='#B0B0B0', lw=3)
-axes[0,2].set_title("Non-structured group")
-axes[0,2].set_xlabel("Log(Frequency)")
-axes[0,2].legend(loc='lower left', bbox_to_anchor=(0, 0), frameon=False, prop=font)
-axes[0,2].xaxis.set_major_formatter(FormatStrFormatter('%.1f'))
-axes[0,2].yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
-
-axes[1,0].plot(time_sine, sine, label=f'Sinusoidal signal', c='#2F2F2F', lw=3)
-axes[1,0].set_xlabel("Time (seconds)")
-axes[1,0].set_ylabel("Screen Height %")
-
-axes[1,1].plot(time_pink, pink, label=f'Pink noise signal', c='#FF8FA3', lw=3)
-axes[1,1].set_xlabel("Time (seconds)")
-
-axes[1,2].plot(time_white, white, label=f'White noise signal', c='#B0B0B0', lw=3)
-axes[1,2].set_xlabel("Time (seconds)")
-
-
-
-# Optional: Adjust layout
-plt.subplots_adjust(
-    left=0.08,     # space from left edge of figure
-    bottom=0.08,    # space from bottom edge
-    right=0.98,    # space from right edge
-    top=0.95,       # space from top edge
-    wspace=0.17,    # width (horizontal) space between subplots
-    hspace=0.3     # height (vertical) space between subplots
-)
+# Save with transparent background (important!)
+# plt.savefig("sine_only.png", transparent=True, dpi=300)
 plt.show()
+
+
+
+# sine_slope, sine_positive_freqs_log, sine_positive_magnitude_log, sine_intercept, sine_r, sine_p = quality_assessment_of_temporal_structure_FFT_method(sine)
+# pink_slope, pink_positive_freqs_log, pink_positive_magnitude_log, pink_intercept, pink_r, pink_p = quality_assessment_of_temporal_structure_FFT_method(pink)
+# white_slope, white_positive_freqs_log, white_positive_magnitude_log, white_intercept, white_r, white_p = quality_assessment_of_temporal_structure_FFT_method(white)
+#
+#
+# fig, axes = plt.subplots(2, 3, figsize=(15, 5))  # Adjust figsize as needed
+#
+# font = font_manager.FontProperties(family='serif', size=12, weight='bold')
+#
+#
+# axes[0,0].scatter(sine_positive_freqs_log, sine_positive_magnitude_log, label='X axis', c='#2F2F2F')
+# axes[0,0].plot(sine_positive_freqs_log, sine_slope * sine_positive_freqs_log + sine_intercept, label=f'Slope = {sine_slope:.1f}', c='#2F2F2F', lw=3)
+# axes[0,0].set_title("Non-variable group")
+# axes[0,0].set_xlabel("Log(Frequency)")
+# axes[0,0].set_ylabel("Log(Power)\n")
+# axes[0,0].legend(frameon=False, prop=font)
+# axes[0,0].xaxis.set_major_formatter(FormatStrFormatter('%.1f'))
+# axes[0,0].yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
+#
+#
+# axes[0,1].scatter(pink_positive_freqs_log, pink_positive_magnitude_log, label='X axis', c='#FF8FA3')
+# axes[0,1].plot(pink_positive_freqs_log, pink_slope * pink_positive_freqs_log + pink_intercept, label=f'Slope = {pink_slope:.1f}', c='#FF8FA3', lw=3)
+# axes[0,1].set_title("Structured group")
+# axes[0,1].set_xlabel("Log(Frequency)")
+# axes[0,1].legend(loc='lower left', bbox_to_anchor=(0, 0), frameon=False, prop=font)
+# axes[0,1].xaxis.set_major_formatter(FormatStrFormatter('%.1f'))
+# axes[0,1].yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
+#
+#
+# axes[0,2].scatter(white_positive_freqs_log, white_positive_magnitude_log, label='X axis', c='#B0B0B0')
+# axes[0,2].plot(white_positive_freqs_log, white_slope * white_positive_freqs_log + white_intercept, label=f'Slope = {np.abs(white_slope):.1f}', c='#B0B0B0', lw=3)
+# axes[0,2].set_title("Non-structured group")
+# axes[0,2].set_xlabel("Log(Frequency)")
+# axes[0,2].legend(loc='lower left', bbox_to_anchor=(0, 0), frameon=False, prop=font)
+# axes[0,2].xaxis.set_major_formatter(FormatStrFormatter('%.1f'))
+# axes[0,2].yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
+#
+# axes[1,0].plot(time_sine, sine, label=f'Sinusoidal signal', c='#2F2F2F', lw=3)
+# axes[1,0].set_xlabel("Time (seconds)")
+# axes[1,0].set_ylabel("Screen Height %")
+#
+# axes[1,1].plot(time_pink, pink, label=f'Pink noise signal', c='#FF8FA3', lw=3)
+# axes[1,1].set_xlabel("Time (seconds)")
+#
+# axes[1,2].plot(time_white, white, label=f'White noise signal', c='#B0B0B0', lw=3)
+# axes[1,2].set_xlabel("Time (seconds)")
+#
+#
+#
+# # Optional: Adjust layout
+# plt.subplots_adjust(
+#     left=0.08,     # space from left edge of figure
+#     bottom=0.08,    # space from bottom edge
+#     right=0.98,    # space from right edge
+#     top=0.95,       # space from top edge
+#     wspace=0.17,    # width (horizontal) space between subplots
+#     hspace=0.3     # height (vertical) space between subplots
+# )
+# plt.show()
 
 # Colors
 # "Static Lighter"  : #6F6F6F
