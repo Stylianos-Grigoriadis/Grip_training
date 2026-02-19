@@ -1471,11 +1471,27 @@ def pink_noise_signal_creation_using_cn(N, desired_sd, desired_average):
     return pink_noise_z
 
 def white_noise_signal_creation(N, desired_sd, desired_average):
+    white = False
+    iterations = 0
+    while white == False:
 
-    white_noise = np.random.normal(0, 1, N)
-    white_signal_z = z_transform(white_noise, desired_sd, desired_average)
+        white_noise = np.random.normal(0, 1, N)
 
-    return white_signal_z
+        white_noise_z = z_transform(white_noise, desired_sd, desired_average)
+
+        slope, positive_freqs_log, positive_magnitude_log, intercept, name, r, p, positive_freqs, positive_magnitude = quality_assessment_of_temporal_structure_FFT_method(white_noise_z, 'white_noise_z')
+        print(f"slope: {round(slope, 2)}")
+        print(f"r: {r}")
+        print(f"p: {p}")
+
+        if round(slope, 2) == 0.0:
+            white = True
+        else:
+            # print('Not valid pink noise signal')
+            iterations +=1
+            # print(iterations)
+
+    return white_noise_z
 
 def quality_assessment_of_temporal_structure_FFT_method(signal, name):
     # Apply FFT

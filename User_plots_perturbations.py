@@ -602,14 +602,12 @@ def plot_difference_min_time_boxplot(df, box_width=0.15, group_spacing=0.25, sho
 directory = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Results\Perturbation results'
 os.chdir(directory)
 results_sd = pd.read_excel('Sd Method Perturbation_results_3_sd_after_max_threshold.xlsx')
-results_asymp = pd.read_excel('Asymptote Method Perturbation results 0.95.xlsx')
 print(results_sd.columns)
-print(results_asymp.columns)
 
-plot_time_to_adapt_seaborn(results_sd, mode='min')
+# plot_time_to_adapt_seaborn(results_sd, mode='min')
 # plot_time_to_adapt_seaborn(results_sd, mode='avg')
 
-plot_difference_time_to_adapt(results_sd, mode='min')
+# plot_difference_time_to_adapt(results_sd, mode='min')
 # plot_difference_time_to_adapt(results_sd, mode='avg')
 
 # plot_time_to_adapt_seaborn(results_asymp, mode='min')
