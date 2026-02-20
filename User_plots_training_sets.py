@@ -6,6 +6,13 @@ import seaborn as sns
 import plotly.express as px
 
 
+pd.set_option('display.max_rows', None)
+pd.set_option('display.max_columns', None)
+
+plt.rcParams['font.family'] = 'serif'
+plt.rcParams['font.size'] = 16
+
+
 def plot_error_boxplots(
     df,
     error_type='spatial',
@@ -617,11 +624,13 @@ def plot_error_mean_sd_with_jitter_and_points(
     show_points=True
 ):
     """
-    Plots mean ± SD of error across sets for each Signal (Pink, Sine, White),
-    excluding rows where Exclude == 1 and collapsing across Speed.
+    Plots mean ± SD of error across sets for each Signal
+    (Pink, Sine, White), excluding rows where Exclude == 1
+    and collapsing across Speed.
 
     - Mean lines use larger fixed x-jitter
     - Raw datapoints use smaller random x-jitter
+    - Data are converted from kg to Newtons
     """
 
     error_type = error_type.lower()
@@ -637,13 +646,9 @@ def plot_error_mean_sd_with_jitter_and_points(
     if error_type == 'spatial':
         cols = [c for c in df.columns if 'Mean Spatial error' in c]
         y_label = 'Spatial Error'
-        title = 'Spatial Error across Sets (Mean ± SD)'
-
     elif error_type == 'variable':
         cols = [c for c in df.columns if 'Variable Error trial' in c]
         y_label = 'Variable Error'
-        title = 'Variable Error across Sets (Mean ± SD)'
-
     else:
         raise ValueError("error_type must be 'spatial' or 'variable'")
 
@@ -664,9 +669,14 @@ def plot_error_mean_sd_with_jitter_and_points(
     )
 
     # -------------------------------
+    # Convert kg to Newtons
+    # -------------------------------
+    df_long[y_label] = df_long[y_label] * 9.81
+
+    # -------------------------------
     # Keep only desired signals
     # -------------------------------
-    signal_order = ['Pink', 'Sine', 'White']
+    signal_order = ['Sine', 'Pink', 'White']
     df_long = df_long[df_long['Signal'].isin(signal_order)]
 
     # -------------------------------
@@ -680,11 +690,11 @@ def plot_error_mean_sd_with_jitter_and_points(
     )
 
     # -------------------------------
-    # COLOR CONTROL (EDIT / IMPORT)
+    # COLOR CONTROL
     # -------------------------------
     signal_colors = {
-        'Pink':  '#E75480',
         'Sine':  '#4F4F4F',
+        'Pink': '#E75480',
         'White': '#BFBFBF'
     }
 
@@ -692,8 +702,8 @@ def plot_error_mean_sd_with_jitter_and_points(
     # Jitter offsets for mean lines
     # -------------------------------
     line_offsets = {
-        'Pink':  -line_jitter,
-        'Sine':   0.0,
+        'Sine':  -line_jitter,
+        'Pink':   0.0,
         'White':  line_jitter
     }
 
@@ -719,7 +729,11 @@ def plot_error_mean_sd_with_jitter_and_points(
             capsize=4,
             markersize=5,
             color=signal_colors[signal],
-            label=signal,
+            label={
+                'Sine': 'Non-variable',
+                'Pink': 'Structured',
+                'White': 'Non-structured'
+            }[signal],
             zorder=3
         )
 
@@ -748,15 +762,29 @@ def plot_error_mean_sd_with_jitter_and_points(
     # -------------------------------
     # Axis formatting
     # -------------------------------
-    plt.xlabel('Set')
-    plt.ylabel(y_label)
-    plt.title(title)
-    plt.ylim(0.3, 2.6)
+    plt.xlabel('Training Set')
+    plt.ylabel(f'{y_label} (N)')
 
+    if error_type == 'spatial':
+        plt.title('Average Spatial Error across Training Sets')
+    elif error_type == 'variable':
+        plt.title('Average Variable Error across Training Sets')
+
+    plt.ylim(0.3 * 9.81, 2.6 * 9.81)
     plt.xticks(np.arange(1, 11))
     plt.grid(axis='y', alpha=0.3)
 
-    plt.legend(title='Signal')
+    # -------------------------------
+    # Legend (centered below plot)
+    # -------------------------------
+    plt.legend(
+        title='Group',
+        loc='upper center',
+        bbox_to_anchor=(0.5, -0.15),
+        ncol=3,
+        frameon=True
+    )
+
     plt.tight_layout()
     plt.show()
 
@@ -795,5 +823,5 @@ print(results.columns)
 # plot_error_mean_sem(results, error_type='spatial')
 # plot_error_mean_sem(results, error_type='variable')
 
-plot_error_mean_sd_with_jitter_and_points(results, error_type='spatial', show_points=True)
-# plot_error_mean_sd_with_jitter_and_points(results, error_type='variable', show_points=False)
+plot_error_mean_sd_with_jitter_and_points(results, error_type='spatial', show_points=False)
+plot_error_mean_sd_with_jitter_and_points(results, error_type='variable', show_points=False)

@@ -80,7 +80,7 @@ fig.patch.set_alpha(0)
 ax.set_facecolor('none')
 
 # Plot only the line
-ax.plot(pink_image, lw=15, c="#E59EDD")
+ax.plot(white_image, lw=15, c="#E59EDD")
 
 # Remove everything else
 ax.axis('off')

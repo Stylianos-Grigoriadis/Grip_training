@@ -570,18 +570,32 @@ def plot_difference_min_time_boxplot(df, box_width=0.15, group_spacing=0.25, sho
     # 6. Axis formatting
     # -------------------------------------------------
     ax.set_xticks(base_positions)
-    ax.set_xticklabels(direction_order)
-    ax.set_ylabel('Time to Adapt (Before − After)')
-    ax.set_title('Difference in Minimum Time to Adapt\nBefore vs After')
+    ax.set_xticklabels([
+        'Upward\nPerturbation',
+        'Downward\nPerturbation'
+    ])
+    ax.set_ylabel('Δtime (Post-Training − Pre-Training)')
+    ax.set_title('Difference in Minimum Time to Adapt\nPost vs Pre Training')
     ax.set_ylim(-2.2, 1.5)
     ax.grid(axis='y', alpha=0.3)
 
     # -------------------------------------------------
-    # 7. Custom legend
+    # 7. Custom legend (RENAMED LABELS)
     # -------------------------------------------------
+    legend_name_map = {
+        'Sine': 'Non-variable',
+        'Pink': 'Structured',
+        'White': 'Non-structured'
+    }
+
     legend_handles = [
-        plt.Line2D([0], [0], color=color, lw=8, label=signal)
-        for signal, color in signal_colors.items()
+        plt.Line2D(
+            [0], [0],
+            color=signal_colors[signal],
+            lw=8,
+            label=legend_name_map[signal]
+        )
+        for signal in signal_colors.keys()
     ]
 
     ax.legend(
