@@ -2022,3 +2022,25 @@ def DFA_NONAN(data, scales, order=1, plot=True):
 
     # Return the scales used, fluctuation functions and the alpha value
     return scales, fluctuation, alpha
+
+
+def signal_interpolation(signal, step, plot=False):
+
+    signal = np.array(signal)
+    x_original = np.linspace(0, len(signal), len(signal))
+    y_original = signal
+    total_data_points = step * len(signal)
+    x_new = np.linspace(x_original[0], x_original[-1], total_data_points)
+    y_new = np.interp(x_new, x_original, y_original)
+
+    if plot == True:
+        plt.figure(figsize=(8, 4))
+        plt.scatter(x_original, y_original, label='Original (100 pts)', s=100)
+        plt.scatter(x_new, y_new, label='Upsampled (1000 pts)', s=1)
+        plt.legend()
+        plt.xlabel("X")
+        plt.ylabel("Signal")
+        plt.title("Linear Interpolation (Resampling from 100 → 1000 points)")
+        plt.show()
+
+    return y_new

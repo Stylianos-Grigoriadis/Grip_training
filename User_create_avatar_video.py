@@ -75,70 +75,128 @@ def fgn_sim(n=1000, H=0.7):
 # VARIABLE ERROR ENVELOPE
 # =========================================================
 def make_variable_error_signal(
-    total_length,
-    perturbation_index,
-    start_sd_high=4.0,
-    pre_sd_low=1.0,
-    perturb_sd_high=5.0,
-    post_sd_low=1.0,
-    initial_fraction=0.20,
-    transition_width=25,
-    seed=None
+    length_of_signal,
+    initial_sd_pre_perturbation,
+    ending_sd_pre_perturbation,
+    perturbation_start_index,
+    perturbation_end_index,
+    initial_sd_post_perturbation,
+    ending_sd_post_perturbation,
+    seed=None,
+    smooth_noise=True,
+    smoothing_kernel_size=11
 ):
     """
-    Create a noise/error signal whose SD changes over time:
-    high at the beginning -> lower before perturbation ->
-    high again around perturbation -> lower afterward.
+    Create a time-varying error signal whose SD changes linearly before and after perturbation.
+
+    Parameters
+    ----------
+    length_of_signal : int
+        Total number of points in the signal.
+
+    initial_sd_pre_perturbation : float
+        SD at the beginning of the pre-perturbation phase.
+
+    ending_sd_pre_perturbation : float
+        SD at the end of the pre-perturbation phase
+        (just before perturbation_start_index).
+
+    perturbation_start_index : int
+        Index where the perturbation starts.
+
+    perturbation_end_index : int
+        Index where the perturbation ends.
+
+    initial_sd_post_perturbation : float
+        SD at the beginning of the post-perturbation phase
+        (starting at perturbation_end_index).
+
+    ending_sd_post_perturbation : float
+        SD at the end of the post-perturbation phase.
+
+    seed : int or None
+        Random seed.
+
+    smooth_noise : bool
+        Whether to smooth the random noise slightly.
+
+    smoothing_kernel_size : int
+        Kernel size for smoothing the random noise.
+
+    Returns
+    -------
+    error_signal : np.ndarray
+        Random error signal with time-varying SD.
     """
 
     if seed is not None:
         np.random.seed(seed)
 
-    x = np.arange(total_length, dtype=float)
+    length_of_signal = int(length_of_signal)
+    perturbation_start_index = int(perturbation_start_index)
+    perturbation_end_index = int(perturbation_end_index)
 
-    # Base white-noise-like signal with mean 0 and std 1
-    noise = np.random.normal(0, 1, total_length)
+    if length_of_signal <= 0:
+        raise ValueError("length_of_signal must be > 0")
 
-    # Smooth it a bit so it looks more natural
-    kernel_size = max(5, int(total_length * 0.01))
-    if kernel_size % 2 == 0:
-        kernel_size += 1
-    kernel = np.ones(kernel_size) / kernel_size
-    noise = np.convolve(noise, kernel, mode='same')
+    if not (0 <= perturbation_start_index <= perturbation_end_index <= length_of_signal):
+        raise ValueError(
+            "Indices must satisfy: 0 <= perturbation_start_index <= perturbation_end_index <= length_of_signal"
+        )
 
-    # Re-standardize after smoothing
+    # -----------------------------------------------------
+    # 1. Create base random noise
+    # -----------------------------------------------------
+    noise = np.random.normal(0, 1, length_of_signal)
+
+    if smooth_noise:
+        smoothing_kernel_size = int(smoothing_kernel_size)
+        if smoothing_kernel_size < 1:
+            smoothing_kernel_size = 1
+        if smoothing_kernel_size % 2 == 0:
+            smoothing_kernel_size += 1
+
+        kernel = np.ones(smoothing_kernel_size) / smoothing_kernel_size
+        noise = np.convolve(noise, kernel, mode='same')
+
+    # Re-standardize to mean=0, std=1
     noise = noise - np.mean(noise)
     noise_std = np.std(noise)
     if noise_std > 0:
         noise = noise / noise_std
 
-    # Key time points
-    initial_end = int(initial_fraction * total_length)
+    # -----------------------------------------------------
+    # 2. Create SD profile
+    # -----------------------------------------------------
+    sd_profile = np.zeros(length_of_signal, dtype=float)
 
-    # Envelope starts high
-    sd_profile = np.full(total_length, start_sd_high, dtype=float)
+    # Pre-perturbation phase: linear change
+    if perturbation_start_index > 0:
+        sd_profile[:perturbation_start_index] = np.linspace(
+            initial_sd_pre_perturbation,
+            ending_sd_pre_perturbation,
+            perturbation_start_index
+        )
 
-    # Before perturbation -> lower error
-    if initial_end < perturbation_index:
-        sd_profile[initial_end:perturbation_index] = pre_sd_low
+    # Perturbation phase: keep constant at initial post-perturbation SD
+    if perturbation_end_index > perturbation_start_index:
+        sd_profile[perturbation_start_index:perturbation_end_index] = initial_sd_post_perturbation
 
-    # Around perturbation -> high error again
-    p0 = max(0, perturbation_index - transition_width)
-    p1 = min(total_length, perturbation_index + transition_width)
-    sd_profile[p0:p1] = perturb_sd_high
+    # Post-perturbation phase: linear change
+    post_length = length_of_signal - perturbation_end_index
+    if post_length > 0:
+        sd_profile[perturbation_end_index:] = np.linspace(
+            initial_sd_post_perturbation,
+            ending_sd_post_perturbation,
+            post_length
+        )
 
-    # After perturbation -> lower again
-    if p1 < total_length:
-        sd_profile[p1:] = post_sd_low
+    # -----------------------------------------------------
+    # 3. Multiply noise by SD profile
+    # -----------------------------------------------------
+    error_signal = noise * sd_profile
 
-    # Smooth the SD profile so changes are gradual, not blocky
-    env_kernel_size = max(11, int(total_length * 0.03))
-    if env_kernel_size % 2 == 0:
-        env_kernel_size += 1
-    env_kernel = np.ones(env_kernel_size) / env_kernel_size
-    sd_profile = np.convolve(sd_profile, env_kernel, mode='same')
-
-    return noise * sd_profile
+    return error_signal
 
 
 # =========================================================
@@ -159,7 +217,9 @@ def plot_movable_pink_line_with_bg_and_avatar(
     avatar_height=None,
     avatar_rescale_with_zoom=True,
     autoplay_speed=1,
-    autoplay_interval=40
+    autoplay_interval=40,
+    xlim=None,
+    ylim=None
 ):
 
     y_data = np.asarray(y_data, dtype=float)
@@ -183,8 +243,15 @@ def plot_movable_pink_line_with_bg_and_avatar(
     xlim_initial = (np.min(x_data) - x_margin, np.max(x_data) + x_margin)
     ylim_initial = (np.min(y_data) - y_margin, np.max(y_data) + y_margin)
 
-    ax.set_xlim(*xlim_initial)
-    ax.set_ylim(*ylim_initial)
+    if xlim is not None:
+        ax.set_xlim(*xlim)
+    else:
+        ax.set_xlim(*xlim_initial)
+
+    if ylim is not None:
+        ax.set_ylim(*ylim)
+    else:
+        ax.set_ylim(*ylim_initial)
 
     bg_artist = ax.imshow(
         bg_img,
@@ -337,24 +404,33 @@ y_pink = lb.z_transform(y_pink, sd, average)
 y_sine = lb.z_transform(y_sine, sd, average)
 
 step_points = 500
-y_step = np.concatenate([np.full(step_points // 2, 30), np.full(step_points - step_points // 2, 50)])
+y_step_high = np.concatenate([np.full(step_points // 2, 30), np.full(step_points - step_points // 2, 50)])
 
 # Choose where perturbation happens
 perturb_random = len(y_random) // 2
-perturb_pink = len(y_pink) // 2
-perturb_sine = len(y_sine) // 2
-perturb_step = len(y_step) // 2
+
+# Create the avatar's movement
+preperturbation_duration = 250
+perturbtion_duration = 20
+postperturbation_duration = step_points - preperturbation_duration - perturbtion_duration
+perturbation_end_index = preperturbation_duration + perturbtion_duration
+y_step_avatar_high = np.concatenate([np.full(preperturbation_duration, 30), np.linspace(30, 50, perturbtion_duration), np.full(postperturbation_duration, 50)])
+
 
 # Variable error signals
-error_random = make_variable_error_signal(len(y_random), perturb_random, start_sd_high=4.0, pre_sd_low=1.0, perturb_sd_high=5.0, post_sd_low=1.2, initial_fraction=0.20, transition_width=20)
-error_pink = make_variable_error_signal(len(y_pink), perturb_pink, start_sd_high=4.0, pre_sd_low=1.0, perturb_sd_high=5.0, post_sd_low=1.2, initial_fraction=0.20, transition_width=20)
-error_sine = make_variable_error_signal(len(y_sine), perturb_sine, start_sd_high=4.0, pre_sd_low=1.0, perturb_sd_high=5.0, post_sd_low=1.2, initial_fraction=0.20, transition_width=20)
-error_step = make_variable_error_signal(len(y_step), perturb_step, start_sd_high=4.0, pre_sd_low=1.0, perturb_sd_high=6.0, post_sd_low=1.0, initial_fraction=0.20, transition_width=25)
+interpolation_step = 5
+error_sd = 2
+error_average = 0
+error_white = lb.signal_interpolation(lb.z_transform(np.random.uniform(0, 10, len(y_random)//interpolation_step), error_sd, error_average),interpolation_step)
+error_pink = lb.signal_interpolation(lb.z_transform(np.random.uniform(0, 10, len(y_pink)//interpolation_step), error_sd, error_average),interpolation_step)
+error_sine = lb.signal_interpolation(lb.z_transform(np.random.uniform(0, 10, len(y_sine)//interpolation_step), error_sd, error_average),interpolation_step)
+error_step = make_variable_error_signal(len(y_step_high), 2.0, 0.2, preperturbation_duration, perturbation_end_index, 5.0, 0.2)
 
-avatar_random = y_random + error_random
+
+avatar_random = y_random + error_white
 avatar_pink = y_pink + error_pink
 avatar_sine = y_sine + error_sine
-avatar_step = y_step + error_step
+avatar_step_high = y_step_avatar_high + error_step
 
 # =========================================================
 # PATHS
@@ -369,7 +445,7 @@ avatar_path = "avatar.png"
 # =========================================================
 # RUN
 # =========================================================
-plot_movable_pink_line_with_bg_and_avatar(y_step, background_path, avatar_path, avatar_y_data=avatar_step, bg_alpha=0.8, avatar_x=0, avatar_scale=0.18, avatar_rescale_with_zoom=True, figsize=(8, 7), autoplay_speed=autoplay_speed, autoplay_interval=autoplay_interval)
-plot_movable_pink_line_with_bg_and_avatar(y_random, background_path, avatar_path, avatar_y_data=avatar_random, bg_alpha=0.8, avatar_x=0, avatar_scale=0.18, avatar_rescale_with_zoom=True, figsize=(8, 7), autoplay_speed=autoplay_speed, autoplay_interval=autoplay_interval)
-plot_movable_pink_line_with_bg_and_avatar(y_sine, background_path, avatar_path, avatar_y_data=avatar_sine, bg_alpha=0.8, avatar_x=0, avatar_scale=0.18, avatar_rescale_with_zoom=True, figsize=(8, 7), autoplay_speed=autoplay_speed, autoplay_interval=autoplay_interval)
-plot_movable_pink_line_with_bg_and_avatar(y_pink, background_path, avatar_path, avatar_y_data=avatar_pink, bg_alpha=0.8, avatar_x=0, avatar_scale=0.18, avatar_rescale_with_zoom=True, figsize=(8, 7), autoplay_speed=autoplay_speed, autoplay_interval=autoplay_interval)
+plot_movable_pink_line_with_bg_and_avatar(y_step_high, background_path, avatar_path, avatar_y_data=avatar_step_high, bg_alpha=0.8, avatar_x=0, avatar_scale=0.22, avatar_rescale_with_zoom=True, figsize=(8, 7), autoplay_speed=autoplay_speed, autoplay_interval=autoplay_interval, linewidth=8, xlim=(-0.5,4), ylim=(-2,62))
+plot_movable_pink_line_with_bg_and_avatar(y_random, background_path, avatar_path, avatar_y_data=avatar_random, bg_alpha=0.8, avatar_x=0, avatar_scale=0.22, avatar_rescale_with_zoom=True, figsize=(8, 7), autoplay_speed=autoplay_speed, autoplay_interval=autoplay_interval, linewidth=8, xlim=(-0.5,4), ylim=(-2,62))
+plot_movable_pink_line_with_bg_and_avatar(y_sine, background_path, avatar_path, avatar_y_data=avatar_sine, bg_alpha=0.8, avatar_x=0, avatar_scale=0.22, avatar_rescale_with_zoom=True, figsize=(8, 7), autoplay_speed=autoplay_speed, autoplay_interval=autoplay_interval, linewidth=8, xlim=(-0.5,4), ylim=(-2,62))
+plot_movable_pink_line_with_bg_and_avatar(y_pink, background_path, avatar_path, avatar_y_data=avatar_pink, bg_alpha=0.8, avatar_x=0, avatar_scale=0.22, avatar_rescale_with_zoom=True, figsize=(8, 7), autoplay_speed=autoplay_speed, autoplay_interval=autoplay_interval, linewidth=8, xlim=(-0.5,4), ylim=(-2,62))
