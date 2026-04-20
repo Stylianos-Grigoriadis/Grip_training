@@ -72,16 +72,86 @@ def fgn_sim(n=1000, H=0.7):
 
 
 # =========================================================
+# VARIABLE ERROR ENVELOPE
+# =========================================================
+def make_variable_error_signal(
+    total_length,
+    perturbation_index,
+    start_sd_high=4.0,
+    pre_sd_low=1.0,
+    perturb_sd_high=5.0,
+    post_sd_low=1.0,
+    initial_fraction=0.20,
+    transition_width=25,
+    seed=None
+):
+    """
+    Create a noise/error signal whose SD changes over time:
+    high at the beginning -> lower before perturbation ->
+    high again around perturbation -> lower afterward.
+    """
+
+    if seed is not None:
+        np.random.seed(seed)
+
+    x = np.arange(total_length, dtype=float)
+
+    # Base white-noise-like signal with mean 0 and std 1
+    noise = np.random.normal(0, 1, total_length)
+
+    # Smooth it a bit so it looks more natural
+    kernel_size = max(5, int(total_length * 0.01))
+    if kernel_size % 2 == 0:
+        kernel_size += 1
+    kernel = np.ones(kernel_size) / kernel_size
+    noise = np.convolve(noise, kernel, mode='same')
+
+    # Re-standardize after smoothing
+    noise = noise - np.mean(noise)
+    noise_std = np.std(noise)
+    if noise_std > 0:
+        noise = noise / noise_std
+
+    # Key time points
+    initial_end = int(initial_fraction * total_length)
+
+    # Envelope starts high
+    sd_profile = np.full(total_length, start_sd_high, dtype=float)
+
+    # Before perturbation -> lower error
+    if initial_end < perturbation_index:
+        sd_profile[initial_end:perturbation_index] = pre_sd_low
+
+    # Around perturbation -> high error again
+    p0 = max(0, perturbation_index - transition_width)
+    p1 = min(total_length, perturbation_index + transition_width)
+    sd_profile[p0:p1] = perturb_sd_high
+
+    # After perturbation -> lower again
+    if p1 < total_length:
+        sd_profile[p1:] = post_sd_low
+
+    # Smooth the SD profile so changes are gradual, not blocky
+    env_kernel_size = max(11, int(total_length * 0.03))
+    if env_kernel_size % 2 == 0:
+        env_kernel_size += 1
+    env_kernel = np.ones(env_kernel_size) / env_kernel_size
+    sd_profile = np.convolve(sd_profile, env_kernel, mode='same')
+
+    return noise * sd_profile
+
+
+# =========================================================
 # MAIN FUNCTION
 # =========================================================
 def plot_movable_pink_line_with_bg_and_avatar(
     y_data,
     bg_path,
     avatar_path,
-    avatar_y_data=None,   # 👈 NEW
+    avatar_y_data=None,
     bg_alpha=1.0,
     color='#FF4FA3',
-    linewidth=4,          # 👈 already there, now emphasized
+    linewidth=4,
     figsize=(10, 5),
     avatar_x=0,
     avatar_scale=0.18,
@@ -95,7 +165,6 @@ def plot_movable_pink_line_with_bg_and_avatar(
     y_data = np.asarray(y_data, dtype=float)
     x_data = np.arange(len(y_data), dtype=float)
 
-    # 👇 Avatar data handling
     if avatar_y_data is None:
         avatar_y_data = y_data
     else:
@@ -125,13 +194,11 @@ def plot_movable_pink_line_with_bg_and_avatar(
         zorder=0
     )
 
-    # 👇 LINE uses y_data
     line_artist, = ax.plot(x_data, y_data, color=color, linewidth=linewidth, zorder=1)
 
     current_shift = 0
     is_playing = False
 
-    # 👇 Avatar uses avatar_y_data
     def get_avatar_y(shift):
         sample_x = avatar_x - shift
         return np.interp(sample_x, x_data, avatar_y_data, left=avatar_y_data[0], right=avatar_y_data[-1])
@@ -246,6 +313,7 @@ def plot_movable_pink_line_with_bg_and_avatar(
 
     plt.show()
 
+
 # =========================================================
 # DATA
 # =========================================================
@@ -253,11 +321,8 @@ n_points = 50
 sine_points = 250
 average = 20
 sd = 5
-plus_sd = 2
-plus_average = 0
-autoplay_speed=1
-autoplay_interval=50
-
+autoplay_speed = 1
+autoplay_interval = 50
 
 y_random = np.random.uniform(0, 10, n_points)
 y_pink = fgn_sim(n=n_points, H=0.99)
@@ -271,24 +336,25 @@ y_random = lb.z_transform(y_random, sd, average)
 y_pink = lb.z_transform(y_pink, sd, average)
 y_sine = lb.z_transform(y_sine, sd, average)
 
-plus_random = lb.z_transform(np.random.uniform(0, 10, n_points), plus_sd, plus_average)
-plus_random = signal_interpolation(plus_random, 10)
-avatar_random = y_random + plus_random
-
-plus_pink = lb.z_transform(np.random.uniform(0, 10, n_points), plus_sd, plus_average)
-plus_pink = signal_interpolation(plus_pink, 10)
-avatar_pink = y_pink + plus_pink
-
-plus_sine = lb.z_transform(np.random.uniform(0, 10, n_points), plus_sd, plus_average)
-plus_sine = signal_interpolation(plus_sine, 10)
-avatar_sine = y_sine + plus_sine
-
 step_points = 500
 y_step = np.concatenate([np.full(step_points // 2, 30), np.full(step_points - step_points // 2, 50)])
-plus_step = lb.z_transform(np.random.uniform(0, 10, n_points), plus_sd, plus_average)
-plus_step = signal_interpolation(plus_step, int(np.ceil(len(y_step) / n_points)))
-plus_step = plus_step[:len(y_step)]
-avatar_step = y_step + plus_step
+
+# Choose where perturbation happens
+perturb_random = len(y_random) // 2
+perturb_pink = len(y_pink) // 2
+perturb_sine = len(y_sine) // 2
+perturb_step = len(y_step) // 2
+
+# Variable error signals
+error_random = make_variable_error_signal(len(y_random), perturb_random, start_sd_high=4.0, pre_sd_low=1.0, perturb_sd_high=5.0, post_sd_low=1.2, initial_fraction=0.20, transition_width=20)
+error_pink = make_variable_error_signal(len(y_pink), perturb_pink, start_sd_high=4.0, pre_sd_low=1.0, perturb_sd_high=5.0, post_sd_low=1.2, initial_fraction=0.20, transition_width=20)
+error_sine = make_variable_error_signal(len(y_sine), perturb_sine, start_sd_high=4.0, pre_sd_low=1.0, perturb_sd_high=5.0, post_sd_low=1.2, initial_fraction=0.20, transition_width=20)
+error_step = make_variable_error_signal(len(y_step), perturb_step, start_sd_high=4.0, pre_sd_low=1.0, perturb_sd_high=6.0, post_sd_low=1.0, initial_fraction=0.20, transition_width=25)
+
+avatar_random = y_random + error_random
+avatar_pink = y_pink + error_pink
+avatar_sine = y_sine + error_sine
+avatar_step = y_step + error_step
 
 # =========================================================
 # PATHS
@@ -304,7 +370,6 @@ avatar_path = "avatar.png"
 # RUN
 # =========================================================
 plot_movable_pink_line_with_bg_and_avatar(y_step, background_path, avatar_path, avatar_y_data=avatar_step, bg_alpha=0.8, avatar_x=0, avatar_scale=0.18, avatar_rescale_with_zoom=True, figsize=(8, 7), autoplay_speed=autoplay_speed, autoplay_interval=autoplay_interval)
-plot_movable_pink_line_with_bg_and_avatar(y_random, background_path, avatar_path,avatar_y_data=avatar_random, bg_alpha=0.8, avatar_x=0, avatar_scale=0.18, avatar_rescale_with_zoom=True, figsize=(8, 7), autoplay_speed=autoplay_speed, autoplay_interval=autoplay_interval)
-plot_movable_pink_line_with_bg_and_avatar(y_sine, background_path, avatar_path,avatar_y_data=avatar_sine, bg_alpha=0.8, avatar_x=0, avatar_scale=0.18, avatar_rescale_with_zoom=True, figsize=(8, 7), autoplay_speed=autoplay_speed, autoplay_interval=autoplay_interval)
-plot_movable_pink_line_with_bg_and_avatar(y_pink, background_path, avatar_path,avatar_y_data=avatar_pink, bg_alpha=0.8, avatar_x=0, avatar_scale=0.18, avatar_rescale_with_zoom=True, figsize=(8, 7), autoplay_speed=autoplay_speed, autoplay_interval=autoplay_interval)
-
+plot_movable_pink_line_with_bg_and_avatar(y_random, background_path, avatar_path, avatar_y_data=avatar_random, bg_alpha=0.8, avatar_x=0, avatar_scale=0.18, avatar_rescale_with_zoom=True, figsize=(8, 7), autoplay_speed=autoplay_speed, autoplay_interval=autoplay_interval)
+plot_movable_pink_line_with_bg_and_avatar(y_sine, background_path, avatar_path, avatar_y_data=avatar_sine, bg_alpha=0.8, avatar_x=0, avatar_scale=0.18, avatar_rescale_with_zoom=True, figsize=(8, 7), autoplay_speed=autoplay_speed, autoplay_interval=autoplay_interval)
+plot_movable_pink_line_with_bg_and_avatar(y_pink, background_path, avatar_path, avatar_y_data=avatar_pink, bg_alpha=0.8, avatar_x=0, avatar_scale=0.18, avatar_rescale_with_zoom=True, figsize=(8, 7), autoplay_speed=autoplay_speed, autoplay_interval=autoplay_interval)
