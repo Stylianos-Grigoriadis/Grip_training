@@ -440,8 +440,8 @@ avatar_isometric_low = y_isometric_low + error_step
 # =========================================================
 # PATHS
 # =========================================================
-background_directory = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\Presentations\2026 Human Movement Variability and Great Plains Biomechanics Conferences 2026\Figures'
-os.chdir(background_directory)
+# background_directory = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\Presentations\2026 Human Movement Variability and Great Plains Biomechanics Conferences 2026\Figures'
+# os.chdir(background_directory)
 
 background_path = "background.jpg"
 avatar_path = "avatar.png"
