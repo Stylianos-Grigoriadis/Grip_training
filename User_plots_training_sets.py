@@ -623,15 +623,16 @@ def plot_error_mean_sd_with_jitter_and_points(
     point_jitter=0.04,
     show_points=True
 ):
-    """
-    Plots mean ± SD of error across sets for each Signal
-    (Pink, Sine, White), excluding rows where Exclude == 1
-    and collapsing across Speed.
 
-    - Mean lines use larger fixed x-jitter
-    - Raw datapoints use smaller random x-jitter
-    - Data are converted from kg to Newtons
-    """
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    # -------------------------------
+    # GLOBAL TEXT BOLD (ONLY TEXT)
+    # -------------------------------
+    plt.rcParams['font.weight'] = 'bold'
+    plt.rcParams['axes.labelweight'] = 'bold'
+    plt.rcParams['axes.titleweight'] = 'bold'
 
     error_type = error_type.lower()
 
@@ -690,7 +691,7 @@ def plot_error_mean_sd_with_jitter_and_points(
     )
 
     # -------------------------------
-    # COLOR CONTROL
+    # COLORS
     # -------------------------------
     signal_colors = {
         'Sine':  '#4F4F4F',
@@ -699,7 +700,7 @@ def plot_error_mean_sd_with_jitter_and_points(
     }
 
     # -------------------------------
-    # Jitter offsets for mean lines
+    # Jitter offsets
     # -------------------------------
     line_offsets = {
         'Sine':  -line_jitter,
@@ -760,24 +761,30 @@ def plot_error_mean_sd_with_jitter_and_points(
             )
 
     # -------------------------------
-    # Axis formatting
+    # Axis formatting (TEXT BOLD ONLY)
     # -------------------------------
-    plt.xlabel('Training Set')
-    plt.ylabel(f'{y_label} (N)')
+    plt.xlabel('Training Set', fontweight='bold')
+    plt.ylabel(f'{y_label} (N)', fontweight='bold')
 
     if error_type == 'spatial':
-        plt.title('Average Spatial Error across Training Sets')
+        plt.title('Average Spatial Error across Training Sets', fontweight='bold')
     elif error_type == 'variable':
-        plt.title('Average Variable Error across Training Sets')
+        plt.title('Average Variable Error across Training Sets', fontweight='bold')
 
     plt.ylim(0.3 * 9.81, 2.6 * 9.81)
     plt.xticks(np.arange(1, 11))
+
+    # Make tick labels bold
+    plt.gca().set_xticklabels(np.arange(1, 11), fontweight='bold')
+    for label in plt.gca().get_yticklabels():
+        label.set_fontweight('bold')
+
     plt.grid(axis='y', alpha=0.3)
 
     # -------------------------------
-    # Legend (centered below plot)
+    # Legend (TEXT BOLD ONLY)
     # -------------------------------
-    plt.legend(
+    legend = plt.legend(
         title='Group',
         loc='upper center',
         bbox_to_anchor=(0.5, -0.15),
@@ -785,15 +792,17 @@ def plot_error_mean_sd_with_jitter_and_points(
         frameon=True
     )
 
+    plt.setp(legend.get_texts(), fontweight='bold')
+    plt.setp(legend.get_title(), fontweight='bold')
+
     plt.tight_layout()
     plt.show()
 
 
 
-
 Stylianos = True
 if Stylianos:
-    directory = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Results'
+    directory = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training young adults\Results'
 else:
     directory = r'C:\Users\USER\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\Grip training\Results'
 os.chdir(directory)
@@ -824,4 +833,4 @@ print(results.columns)
 # plot_error_mean_sem(results, error_type='variable')
 
 plot_error_mean_sd_with_jitter_and_points(results, error_type='spatial', show_points=False)
-plot_error_mean_sd_with_jitter_and_points(results, error_type='variable', show_points=False)
+# plot_error_mean_sd_with_jitter_and_points(results, error_type='variable', show_points=False)

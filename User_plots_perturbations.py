@@ -445,6 +445,13 @@ def plot_difference_min_time_boxplot(df, box_width=0.15, group_spacing=0.25, sho
     """
 
     # -------------------------------------------------
+    # 0. Global bold settings
+    # -------------------------------------------------
+    plt.rcParams['font.weight'] = 'bold'
+    # plt.rcParams['axes.labelweight'] = 'bold'
+    # plt.rcParams['axes.titleweight'] = 'bold'
+
+    # -------------------------------------------------
     # 1. Filter excluded rows
     # -------------------------------------------------
     df = df[df['Exclude'] == 0].copy()
@@ -482,11 +489,11 @@ def plot_difference_min_time_boxplot(df, box_width=0.15, group_spacing=0.25, sho
     )
 
     # -------------------------------------------------
-    # 4. COLOR CONTROL (EDIT ONLY THIS)
+    # 4. COLOR CONTROL
     # -------------------------------------------------
     signal_colors = {
         'Sine':  '#4F4F4F',
-        'Pink':  '#FFC0CB',
+        'Pink':  '#E75480',
         'White': '#D3D3D3'
     }
 
@@ -527,12 +534,13 @@ def plot_difference_min_time_boxplot(df, box_width=0.15, group_spacing=0.25, sho
             for whisker in bp['whiskers']:
                 whisker.set_color('black')
 
-            for cap in bp['caps']:
-                cap.set_color('black')
+            # for cap in bp['caps']:
+            #     cap.set_color('black')
+            #     cap.set_linewidth(2)
 
             for median in bp['medians']:
                 median.set_color('black')
-                median.set_linewidth(2)
+                # median.set_linewidth(3)
 
             # ---- Jittered points ----
             if show_jitter:
@@ -561,6 +569,7 @@ def plot_difference_min_time_boxplot(df, box_width=0.15, group_spacing=0.25, sho
                             y,
                             str(pid),
                             fontsize=7,
+                            fontweight='bold',
                             alpha=0.7,
                             ha='left',
                             va='center'
@@ -573,19 +582,24 @@ def plot_difference_min_time_boxplot(df, box_width=0.15, group_spacing=0.25, sho
     ax.set_xticklabels([
         'Upward\nPerturbation',
         'Downward\nPerturbation'
-    ])
-    ax.set_ylabel('Δtime (Post-Training − Pre-Training)')
-    ax.set_title('Difference in Minimum Time to Adapt\nPost vs Pre Training')
+    ], fontweight='bold')
+
+    ax.set_ylabel('Δtime (Post-Training − Pre-Training)', fontweight='bold')
+    ax.set_title('Difference in Minimum Time to Adapt\nPost vs Pre Training', fontweight='bold')
     ax.set_ylim(-2.2, 1.5)
     ax.grid(axis='y', alpha=0.3)
+    ax.set_xlim(-0.5, len(direction_order) - 0.5)
+
+    for label in ax.get_yticklabels():
+        label.set_fontweight('bold')
 
     # -------------------------------------------------
-    # 7. Custom legend (RENAMED LABELS)
+    # 7. Custom legend
     # -------------------------------------------------
     legend_name_map = {
-        'Sine': 'Non-variable',
+        'Sine': 'Repeated',
         'Pink': 'Structured',
-        'White': 'Non-structured'
+        'White': 'Random'
     }
 
     legend_handles = [
@@ -598,7 +612,7 @@ def plot_difference_min_time_boxplot(df, box_width=0.15, group_spacing=0.25, sho
         for signal in signal_colors.keys()
     ]
 
-    ax.legend(
+    legend = ax.legend(
         handles=legend_handles,
         title='Group',
         frameon=True,
@@ -607,13 +621,15 @@ def plot_difference_min_time_boxplot(df, box_width=0.15, group_spacing=0.25, sho
         ncol=3
     )
 
+    plt.setp(legend.get_texts(), fontweight='bold')
+    plt.setp(legend.get_title(), fontweight='bold')
+
     plt.tight_layout()
     plt.show()
 
 
 
-
-directory = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Results\Perturbation results'
+directory = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training young adults\Results\Perturbation results'
 os.chdir(directory)
 results_sd = pd.read_excel('Sd Method Perturbation_results_3_sd_after_max_threshold.xlsx')
 print(results_sd.columns)
@@ -630,5 +646,5 @@ print(results_sd.columns)
 # plot_difference_time_to_adapt(results_asymp, mode='min')
 # plot_difference_time_to_adapt(results_asymp, mode='avg')
 
-plot_difference_min_time_boxplot(results_sd)
+plot_difference_min_time_boxplot(results_sd, show_ids=True)
 
