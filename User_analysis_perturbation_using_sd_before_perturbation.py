@@ -13,13 +13,16 @@ import seaborn as sns
 pd.set_option('display.max_rows', None)
 
 
+
+
+
 Stylianos = True
 if Stylianos == True:
-    directory_path = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Data\Valid data\Force data'
+    directory_path = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training young adults\Data\Valid data\Force data'
 else:
     directory_path = r'C:\Users\USER\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\Grip training\Data\Valid data\Force data'
 files = glob.glob(os.path.join(directory_path, "*"))
-information_excel = pd.read_excel(r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Data\Participants.xlsx')
+information_excel = pd.read_excel(r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training young adults\Data\Participants.xlsx')
 
 list_time_to_adapt_before_down_1_sd = []
 list_time_to_adapt_before_down_2_sd = []
@@ -422,10 +425,10 @@ results_asymp = pd.DataFrame(dist_asymp)
 
 
 if Stylianos == True:
-    directory_to_save = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training\Results\Perturbation results'
+    directory_to_save = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training young adults\Results\Perturbation results'
 else:
     directory_to_save = r'C:\Users\USER\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\Grip training\Results\Perturbation results'
 
 os.chdir(directory_to_save)
-results_sd.to_excel(f'Sd Method Perturbation_results_{sd_factor}_sd_after_max_threshold.xlsx')
+# results_sd.to_excel(f'Sd Method Perturbation_results_{sd_factor}_sd_after_max_threshold.xlsx')
 # results_asymp.to_excel(f'Asymptote Method Perturbation results {asymptote_fraction}.xlsx')
