@@ -390,10 +390,20 @@ average = 20
 sd = 5
 autoplay_speed = 1
 autoplay_interval = 50
+perturbation_points = 500
+perturb_random = n_points // 2
+preperturbation_duration = 250
+perturbtion_duration = 20
+postperturbation_duration = perturbation_points - preperturbation_duration - perturbtion_duration
+interpolation_step = 5
+error_sd = 2
+error_average = 0
 
 y_random = np.random.uniform(0, 10, n_points)
 y_pink = fgn_sim(n=n_points, H=0.99)
 y_sine = np.sin(np.linspace(0, 24 * np.pi, sine_points))
+y_isometric_high = np.full(perturbation_points, 50)
+y_isometric_low = np.full(perturbation_points, 10)
 
 y_random = signal_interpolation(y_random, 10)
 y_pink = signal_interpolation(y_pink, 10)
@@ -403,24 +413,16 @@ y_random = lb.z_transform(y_random, sd, average)
 y_pink = lb.z_transform(y_pink, sd, average)
 y_sine = lb.z_transform(y_sine, sd, average)
 
-step_points = 500
-y_step_high = np.concatenate([np.full(step_points // 2, 30), np.full(step_points - step_points // 2, 50)])
-
-# Choose where perturbation happens
-perturb_random = len(y_random) // 2
+y_step_high = np.concatenate([np.full(perturbation_points // 2, 30), np.full(perturbation_points - perturbation_points // 2, 50)])
+y_step_low = np.concatenate([np.full(perturbation_points // 2, 30), np.full(perturbation_points - perturbation_points // 2, 10)])
 
 # Create the avatar's movement
-preperturbation_duration = 250
-perturbtion_duration = 20
-postperturbation_duration = step_points - preperturbation_duration - perturbtion_duration
 perturbation_end_index = preperturbation_duration + perturbtion_duration
 y_step_avatar_high = np.concatenate([np.full(preperturbation_duration, 30), np.linspace(30, 50, perturbtion_duration), np.full(postperturbation_duration, 50)])
+y_step_avatar_low = np.concatenate([np.full(preperturbation_duration, 30), np.linspace(30, 10, perturbtion_duration), np.full(postperturbation_duration, 10)])
 
 
 # Variable error signals
-interpolation_step = 5
-error_sd = 2
-error_average = 0
 error_white = lb.signal_interpolation(lb.z_transform(np.random.uniform(0, 10, len(y_random)//interpolation_step), error_sd, error_average),interpolation_step)
 error_pink = lb.signal_interpolation(lb.z_transform(np.random.uniform(0, 10, len(y_pink)//interpolation_step), error_sd, error_average),interpolation_step)
 error_sine = lb.signal_interpolation(lb.z_transform(np.random.uniform(0, 10, len(y_sine)//interpolation_step), error_sd, error_average),interpolation_step)
@@ -431,6 +433,9 @@ avatar_random = y_random + error_white
 avatar_pink = y_pink + error_pink
 avatar_sine = y_sine + error_sine
 avatar_step_high = y_step_avatar_high + error_step
+avatar_step_low = y_step_avatar_low + error_step
+avatar_isometric_high = y_isometric_high + error_step
+avatar_isometric_low = y_isometric_low + error_step
 
 # =========================================================
 # PATHS
@@ -445,7 +450,10 @@ avatar_path = "avatar.png"
 # =========================================================
 # RUN
 # =========================================================
+plot_movable_pink_line_with_bg_and_avatar(y_isometric_high, background_path, avatar_path, avatar_y_data=avatar_isometric_high, bg_alpha=0.8, avatar_x=0, avatar_scale=0.22, avatar_rescale_with_zoom=True, figsize=(8, 7), autoplay_speed=autoplay_speed, autoplay_interval=autoplay_interval, linewidth=8, xlim=(-0.5,4), ylim=(-2,62))
+plot_movable_pink_line_with_bg_and_avatar(y_isometric_low, background_path, avatar_path, avatar_y_data=avatar_isometric_low, bg_alpha=0.8, avatar_x=0, avatar_scale=0.22, avatar_rescale_with_zoom=True, figsize=(8, 7), autoplay_speed=autoplay_speed, autoplay_interval=autoplay_interval, linewidth=8, xlim=(-0.5,4), ylim=(-2,62))
 plot_movable_pink_line_with_bg_and_avatar(y_step_high, background_path, avatar_path, avatar_y_data=avatar_step_high, bg_alpha=0.8, avatar_x=0, avatar_scale=0.22, avatar_rescale_with_zoom=True, figsize=(8, 7), autoplay_speed=autoplay_speed, autoplay_interval=autoplay_interval, linewidth=8, xlim=(-0.5,4), ylim=(-2,62))
+plot_movable_pink_line_with_bg_and_avatar(y_step_low, background_path, avatar_path, avatar_y_data=avatar_step_low, bg_alpha=0.8, avatar_x=0, avatar_scale=0.22, avatar_rescale_with_zoom=True, figsize=(8, 7), autoplay_speed=autoplay_speed, autoplay_interval=autoplay_interval, linewidth=8, xlim=(-0.5,4), ylim=(-2,62))
 plot_movable_pink_line_with_bg_and_avatar(y_random, background_path, avatar_path, avatar_y_data=avatar_random, bg_alpha=0.8, avatar_x=0, avatar_scale=0.22, avatar_rescale_with_zoom=True, figsize=(8, 7), autoplay_speed=autoplay_speed, autoplay_interval=autoplay_interval, linewidth=8, xlim=(-0.5,4), ylim=(-2,62))
 plot_movable_pink_line_with_bg_and_avatar(y_sine, background_path, avatar_path, avatar_y_data=avatar_sine, bg_alpha=0.8, avatar_x=0, avatar_scale=0.22, avatar_rescale_with_zoom=True, figsize=(8, 7), autoplay_speed=autoplay_speed, autoplay_interval=autoplay_interval, linewidth=8, xlim=(-0.5,4), ylim=(-2,62))
 plot_movable_pink_line_with_bg_and_avatar(y_pink, background_path, avatar_path, avatar_y_data=avatar_pink, bg_alpha=0.8, avatar_x=0, avatar_scale=0.22, avatar_rescale_with_zoom=True, figsize=(8, 7), autoplay_speed=autoplay_speed, autoplay_interval=autoplay_interval, linewidth=8, xlim=(-0.5,4), ylim=(-2,62))
