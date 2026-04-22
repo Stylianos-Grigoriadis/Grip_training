@@ -624,9 +624,6 @@ def plot_error_mean_sd_with_jitter_and_points(
     show_points=True
 ):
 
-    import matplotlib.pyplot as plt
-    import numpy as np
-
     # -------------------------------
     # GLOBAL TEXT BOLD (ONLY TEXT)
     # -------------------------------
@@ -731,9 +728,9 @@ def plot_error_mean_sd_with_jitter_and_points(
             markersize=5,
             color=signal_colors[signal],
             label={
-                'Sine': 'Non-variable',
+                'Sine': 'Repeated',
                 'Pink': 'Structured',
-                'White': 'Non-structured'
+                'White': 'Random'
             }[signal],
             zorder=3
         )

@@ -1042,49 +1042,82 @@ def adaptation_time_using_sd_from_isometric_trials_and_asymptotes(df, sd_factor,
     if plot == 'sd method':
         try:
             time_of_adaptation_sd
-            plt.plot(df['Time'], spatial_er, label='Spatial Error')
-            plt.scatter(df['Time'], spatial_er, lw=0.5)
 
-            # plt.axhline(y=mean_isometric_trial, c='k', label='Average')
+            # -----------------------------------
+            # Set font properties
+            # -----------------------------------
+            plt.rcParams.update({
+                'font.family': 'serif',
+                'font.size': 16
+            })
+
+            # -----------------------------------
+            # Shift time so perturbation = 0
+            # -----------------------------------
+            time_shifted = df['Time'] - df['Time'].iloc[perturbation_index]
+
+            plt.figure(figsize=(8, 5))
+
+            plt.plot(time_shifted, spatial_er, label='Spatial Error')
+            plt.scatter(time_shifted, spatial_er, lw=0.5)
+
             plt.axhline(
                 y=mean_isometric_trial + sd_isometric_trial * sd_factor,
                 c='k',
                 ls=":",
-                # label=f'{sd_factor}*std'
-                label=f'Threshold'
-
+                label='Threshold',
+                lw=3
             )
 
             plt.axvline(
-                x=df['Time'][perturbation_index] + time_of_adaptation_sd,
+                x=time_of_adaptation_sd,
                 lw=3,
                 c='red',
                 label='Adaptation instance'
             )
 
             plt.axvspan(
-                df['Time'][perturbation_index] + time_of_adaptation_sd,
-                time_until_spatial_error_is_lower_than_theshold,
+                time_of_adaptation_sd,
+                time_of_adaptation_sd + time_window,
                 color='gray',
                 alpha=0.3,
                 label='Check Window'
             )
 
             plt.axvline(
-                x=df['Time'][perturbation_index],
+                x=0,
                 linestyle='--',
                 c='gray',
-                label='Perturbation instance'
+                label='Perturbation instance',
+                lw=3
             )
 
             plt.legend()
-            plt.ylabel('Force difference (kg)')
-            plt.xlabel('Time (sec)')
+
+            # -----------------------------------
+            # Bold axis labels
+            # -----------------------------------
+            plt.ylabel('Force difference (kg)', fontweight='bold')
+            plt.xlabel('Time (sec)', fontweight='bold')
+
             plt.title(f'{name}\ntime for adaptation: {round(time_of_adaptation_sd, 3)} sec')
+
+            plt.tight_layout()
             plt.show()
 
         except NameError:
-            plt.plot(df['Time'], spatial_er, label='Spatial Error')
+
+            plt.rcParams.update({
+                'font.family': 'serif',
+                'font.size': 16
+            })
+
+            time_shifted = df['Time'] - df['Time'].iloc[perturbation_index]
+
+            plt.figure(figsize=(8, 5))
+
+            plt.plot(time_shifted, spatial_er, label='Spatial Error')
+
             plt.axhline(y=mean_isometric_trial, c='k', label='Average')
             plt.axhline(
                 y=mean_isometric_trial + sd_isometric_trial * sd_factor,
@@ -1092,17 +1125,22 @@ def adaptation_time_using_sd_from_isometric_trials_and_asymptotes(df, sd_factor,
                 ls=":",
                 label=f'{sd_factor}*std'
             )
+
             plt.axvline(
-                x=df['Time'][perturbation_index],
+                x=0,
                 linestyle='--',
                 c='gray',
                 label='Perturbation instance'
             )
 
             plt.legend()
-            plt.ylabel('Force difference (kg)')
-            plt.xlabel('Time (sec)')
+
+            plt.ylabel('Force difference (kg)', fontweight='bold')
+            plt.xlabel('Time (sec)', fontweight='bold')
+
             plt.title(f'{name}\nNo adaptation')
+
+            plt.tight_layout()
             plt.show()
 
     if plot == 'asymptote method' and time_to_adapt_asymptote is not None:
@@ -1248,6 +1286,7 @@ def adaptation_time_using_sd_from_isometric_trials_and_asymptotes(df, sd_factor,
     )
 
     return sd_val, asymp_val
+
 def single_perturbation_generator(baseline, perturbation, data_num):
     baseline_array = np.full(int(data_num/2), baseline)
     perturbation_array = np.full(int(data_num/2), perturbation)
