@@ -202,6 +202,9 @@ def make_variable_error_signal(
 # =========================================================
 # MAIN FUNCTION
 # =========================================================
+# =========================================================
+# MAIN FUNCTION
+# =========================================================
 def plot_movable_pink_line_with_bg_and_avatar(
     y_data,
     bg_path,
@@ -220,7 +223,8 @@ def plot_movable_pink_line_with_bg_and_avatar(
     autoplay_interval=40,
     xlim=None,
     ylim=None,
-    show_ticks=False  # <-- NEW ARGUMENT
+    show_ticks=False,
+    show_background=True  # <-- NEW ARGUMENT
 ):
 
     import numpy as np
@@ -239,7 +243,9 @@ def plot_movable_pink_line_with_bg_and_avatar(
     fig, ax = plt.subplots(figsize=figsize)
     plt.subplots_adjust(bottom=0.22)
 
-    bg_img = np.array(Image.open(bg_path).convert("RGBA"))
+    if show_background:
+        bg_img = np.array(Image.open(bg_path).convert("RGBA"))
+
     avatar_img = np.array(Image.open(avatar_path).convert("RGBA"))
 
     x_margin = max(1, int(0.05 * len(x_data)))
@@ -265,13 +271,17 @@ def plot_movable_pink_line_with_bg_and_avatar(
         ax.set_yticks([])
         ax.tick_params(left=False, bottom=False)
 
-    bg_artist = ax.imshow(
-        bg_img,
-        extent=[*ax.get_xlim(), *ax.get_ylim()],
-        aspect='auto',
-        alpha=bg_alpha,
-        zorder=0
-    )
+    if show_background:
+        bg_artist = ax.imshow(
+            bg_img,
+            extent=[*ax.get_xlim(), *ax.get_ylim()],
+            aspect='auto',
+            alpha=bg_alpha,
+            zorder=0
+        )
+    else:
+        bg_artist = None
+        ax.set_facecolor("white")
 
     line_artist, = ax.plot(x_data, y_data, color=color, linewidth=linewidth, zorder=1)
 
@@ -382,7 +392,9 @@ def plot_movable_pink_line_with_bg_and_avatar(
         xlim = ax.get_xlim()
         ylim = ax.get_ylim()
 
-        bg_artist.set_extent([*xlim, *ylim])
+        if show_background:
+            bg_artist.set_extent([*xlim, *ylim])
+
         update_avatar_extent()
 
         fig.canvas.draw_idle()
