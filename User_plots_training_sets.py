@@ -627,9 +627,9 @@ def plot_error_mean_sd_with_jitter_and_points(
     # -------------------------------
     # GLOBAL TEXT BOLD (ONLY TEXT)
     # -------------------------------
-    plt.rcParams['font.weight'] = 'bold'
-    plt.rcParams['axes.labelweight'] = 'bold'
-    plt.rcParams['axes.titleweight'] = 'bold'
+    # plt.rcParams['font.weight'] = 'bold'
+    # plt.rcParams['axes.labelweight'] = 'bold'
+    # plt.rcParams['axes.titleweight'] = 'bold'
 
     error_type = error_type.lower()
 
@@ -728,7 +728,7 @@ def plot_error_mean_sd_with_jitter_and_points(
             markersize=5,
             color=signal_colors[signal],
             label={
-                'Sine': 'Repeated',
+                'Sine': 'Blocked',
                 'Pink': 'Structured',
                 'White': 'Random'
             }[signal],
@@ -760,21 +760,21 @@ def plot_error_mean_sd_with_jitter_and_points(
     # -------------------------------
     # Axis formatting (TEXT BOLD ONLY)
     # -------------------------------
-    plt.xlabel('Training Set', fontweight='bold')
-    plt.ylabel(f'{y_label} (N)', fontweight='bold')
+    plt.xlabel('Practice Set')
+    plt.ylabel(f'{y_label} (N)')
 
     if error_type == 'spatial':
-        plt.title('Average Spatial Error across Training Sets', fontweight='bold')
+        plt.title('Average Spatial Error across Practice Sets', fontweight='bold')
     elif error_type == 'variable':
-        plt.title('Average Variable Error across Training Sets', fontweight='bold')
+        plt.title('Average Variable Error across Practice Sets', fontweight='bold')
 
     plt.ylim(0.3 * 9.81, 2.6 * 9.81)
     plt.xticks(np.arange(1, 11))
 
     # Make tick labels bold
-    plt.gca().set_xticklabels(np.arange(1, 11), fontweight='bold')
-    for label in plt.gca().get_yticklabels():
-        label.set_fontweight('bold')
+    plt.gca().set_xticklabels(np.arange(1, 11))
+    # for label in plt.gca().get_yticklabels():
+    #     label.set_fontweight('bold')
 
     plt.grid(axis='y', alpha=0.3)
 
@@ -789,8 +789,8 @@ def plot_error_mean_sd_with_jitter_and_points(
         frameon=True
     )
 
-    plt.setp(legend.get_texts(), fontweight='bold')
-    plt.setp(legend.get_title(), fontweight='bold')
+    # plt.setp(legend.get_texts(), fontweight='bold')
+    # plt.setp(legend.get_title(), fontweight='bold')
 
     plt.tight_layout()
     plt.show()

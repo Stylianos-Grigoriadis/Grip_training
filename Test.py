@@ -325,7 +325,7 @@ ax_random_lowest = axes[2, 2]
 ax_blocked_top.scatter(
     time_blocked,
     blocked_practice,
-    color="darkred",
+    color="grey",
     s=45,
     edgecolor="black",
     linewidth=0.5,
@@ -355,6 +355,8 @@ ax_blocked_top.scatter(
 ax_blocked_top.set_title("Blocked Practice", fontweight="bold")
 ax_blocked_top.set_xlabel("Index")
 ax_blocked_top.set_ylabel("Signal Magnitude")
+ax_blocked_middle.set_ylabel("Practice Order")
+ax_blocked_lowest.set_ylabel("Practice Location")
 ax_blocked_top.set_xlim(0, 52)
 ax_blocked_top.set_ylim(2.5, 12.5)
 
@@ -367,7 +369,7 @@ ax_blocked_top.spines["right"].set_visible(False)
 ax_pink_top.scatter(
     time_pink,
     pink_signal,
-    color="darkred",
+    color="grey",
     s=45,
     edgecolor="black",
     linewidth=0.5,
@@ -411,7 +413,7 @@ ax_pink_top.spines["left"].set_visible(False)
 ax_random_top.scatter(
     time_random,
     random_practice,
-    color="darkred",
+    color="grey",
     s=45,
     edgecolor="black",
     linewidth=0.5,
@@ -438,7 +440,7 @@ ax_random_top.scatter(
     zorder=4
 )
 
-ax_random_top.set_title("Random Practice", fontweight="bold")
+ax_random_top.set_title("Contextual Interference", fontweight="bold")
 ax_random_top.set_xlabel("Index")
 ax_random_top.set_ylabel("")
 ax_random_top.set_yticks([])
@@ -571,5 +573,9 @@ fig.subplots_adjust(
     wspace=0.10,
     hspace=0.12
 )
+
+ax_blocked_top.yaxis.set_label_coords(-0.09, 0.5)
+ax_blocked_middle.yaxis.set_label_coords(-0.09, 0.5)
+ax_blocked_lowest.yaxis.set_label_coords(-0.09, 0.5)
 
 plt.show()

@@ -447,7 +447,7 @@ def plot_difference_min_time_boxplot(df, box_width=0.15, group_spacing=0.25, sho
     # -------------------------------------------------
     # 0. Global bold settings
     # -------------------------------------------------
-    plt.rcParams['font.weight'] = 'bold'
+    # plt.rcParams['font.weight'] = 'bold'
     # plt.rcParams['axes.labelweight'] = 'bold'
     # plt.rcParams['axes.titleweight'] = 'bold'
 
@@ -569,7 +569,7 @@ def plot_difference_min_time_boxplot(df, box_width=0.15, group_spacing=0.25, sho
                             y,
                             str(pid),
                             fontsize=7,
-                            fontweight='bold',
+                            # fontweight='bold',
                             alpha=0.7,
                             ha='left',
                             va='center'
@@ -582,22 +582,23 @@ def plot_difference_min_time_boxplot(df, box_width=0.15, group_spacing=0.25, sho
     ax.set_xticklabels([
         'Upward\nPerturbation',
         'Downward\nPerturbation'
-    ], fontweight='bold')
+    ]
+        )
 
-    ax.set_ylabel('Δtime (Post-Training − Pre-Training)', fontweight='bold')
-    ax.set_title('Difference in Minimum Time to Adapt\nPost vs Pre Training', fontweight='bold')
+    ax.set_ylabel('Δtime (Post-Practice − Pre-Practice)')
+    ax.set_title('Difference in Minimum Time to Adapt\nPost vs Pre Practice', fontweight='bold')
     ax.set_ylim(-2.2, 1.5)
     ax.grid(axis='y', alpha=0.3)
     ax.set_xlim(-0.5, len(direction_order) - 0.5)
 
-    for label in ax.get_yticklabels():
-        label.set_fontweight('bold')
+    # for label in ax.get_yticklabels():
+    #     label.set_fontweight('bold')
 
     # -------------------------------------------------
     # 7. Custom legend
     # -------------------------------------------------
     legend_name_map = {
-        'Sine': 'Repeated',
+        'Sine': 'Blocked',
         'Pink': 'Structured',
         'White': 'Random'
     }
@@ -621,8 +622,8 @@ def plot_difference_min_time_boxplot(df, box_width=0.15, group_spacing=0.25, sho
         ncol=3
     )
 
-    plt.setp(legend.get_texts(), fontweight='bold')
-    plt.setp(legend.get_title(), fontweight='bold')
+    # plt.setp(legend.get_texts(), fontweight='bold')
+    # plt.setp(legend.get_title(), fontweight='bold')
 
     plt.tight_layout()
     plt.show()
