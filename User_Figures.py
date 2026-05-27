@@ -101,15 +101,15 @@ y_sine = np.sin(np.linspace(0, 8 * np.pi, n_points))
 # make_plot(x, y_pink, "pink_line.png", show_scatter=False, show_line=True)
 
 
-# # =========================
-# # SINE
-# # =========================
-# # scatter + line
+# =========================
+# SINE
+# =========================
+# scatter + line
 # make_plot(x, y_sine, "sine_scatter_line.png", show_scatter=True, show_line=True)
 #
 # # line only
 # make_plot(x, y_sine, "sine_line.png", show_scatter=False, show_line=True)
-
+#
 
 
 
