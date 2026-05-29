@@ -440,7 +440,7 @@ ax_random_top.scatter(
     zorder=4
 )
 
-ax_random_top.set_title("Contextual Interference", fontweight="bold")
+ax_random_top.set_title("Random Practice", fontweight="bold")
 ax_random_top.set_xlabel("Index")
 ax_random_top.set_ylabel("")
 ax_random_top.set_yticks([])
