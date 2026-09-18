@@ -630,7 +630,7 @@ def plot_difference_min_time_boxplot(df, box_width=0.15, group_spacing=0.25, sho
 
 
 
-directory = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training young adults\Results\Perturbation results'
+directory = r'C:\Users\Administrator\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training young adults\Results\Perturbation results'
 os.chdir(directory)
 results_sd = pd.read_excel('Sd Method Perturbation_results_3_sd_after_max_threshold.xlsx')
 print(results_sd.columns)

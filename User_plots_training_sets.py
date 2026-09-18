@@ -791,7 +791,7 @@ def plot_error_mean_sd_with_jitter_and_points(
 
     # plt.setp(legend.get_texts(), fontweight='bold')
     # plt.setp(legend.get_title(), fontweight='bold')
-
+    plt.ylim(6, 21)
     plt.tight_layout()
     plt.show()
 
@@ -799,7 +799,7 @@ def plot_error_mean_sd_with_jitter_and_points(
 
 Stylianos = True
 if Stylianos:
-    directory = r'C:\Users\Stylianos\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training young adults\Results'
+    directory = r'C:\Users\Administrator\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\My Files\PhD\Projects\Grip training young adults\Results'
 else:
     directory = r'C:\Users\USER\OneDrive - Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης\Grip training\Results'
 os.chdir(directory)
